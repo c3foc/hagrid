@@ -16,7 +16,11 @@ This is a software for merchandise sale at Chaos Communication Congress.
 
 ### Setup
 
-For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` in a seperate python environment to install the dependencies. Make sure to adjust the (security related) settings in `settings.py` for use in production.
+For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` in a seperate python environment to install the dependencies. Make sure to adjust the `ALLOWED_HOSTS`, `DEBUG`, `SECRET_KEY` and `DATABASES` settings in a `local_settings.py` for use in production.
+
+Run `python3 manage.py migrate` to initialize the database.
+
+Run `python3 manage.py collectstatic` to collect all static files into the `static.dist` folder, from where all files under `/static/` should be served from. You probably want to use a webserver and uwsgi or something similar for that.
 
 All configuration views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage.
 
