@@ -1,0 +1,15 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<p>Are you sure you want to submit your reservation? You wont be able to change the products, as we will start to pack them for you.</p>
+
+
+<form method="post">
+  {% csrf_token %}
+  <a class="btn btn-secondary" href="{% url "reservationdetail" secret=reservation.secret %}">Back</a>
+  <input class="btn btn-primary" type="submit" value="Submit Reservation"/>
+</form>
+
+{% endblock %}

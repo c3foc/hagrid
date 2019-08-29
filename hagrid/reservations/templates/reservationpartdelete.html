@@ -1,0 +1,16 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<p>Are you sure you want to delte {{ part }}?</p>
+
+{% include "reservationpart_productlist.html" with part=part %}
+
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-secondary" href="{% url "reservationdetail" secret=part.reservation.secret %}">Back</button>
+  <input class="btn btn-danger" type="submit" value="Delete"/>
+</form>
+
+{% endblock %}

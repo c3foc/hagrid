@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% load reservation %}
+
+{% block content %}
+
+<h2>Reservations</h2>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Team Name</th>
+      <th scope="col">Contact</th>
+      <th scope="col">Mail</th>
+      <th scope="col">DECT</th>
+      <th scope="col">Price</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for reservation in reservations %}
+    <tr>
+      <th scope="row">{{ reservation.id }}</th>
+      <td>{{ reservation.team_name }}</td>
+      <td>{{ reservation.contact_name }}</td>
+      <td><a href="mailto:{{ reservation.contact_mail }}">{{ reservation.contact_mail }}</a></td>
+      <td><a href="tel:{{ reservation.contact_dect }}">{{ reservation.contact_dect }}</a></td>
+      <td>{{ reservation.price | as_currency }}</a></td>
+      <form method="post">
+        <td>
+          {% csrf_token %}
+          <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+          <div class="btn-group">
+            <a href="{% url "reservationdetail" secret=reservation.secret %}" class="btn btn-secondary btn-sm" role="button">View</a>
+            <a href="{% url "reservationpdf" reservation_id=reservation.id %}" class="btn btn-secondary btn-sm" role="button">PDF</a>
+          </div>
+        </td>
+        <td>
+          <div class="btn-group pipeline">
+            {% for button in state_buttons %}
+            {% if reservation.state == button.state %}
+            <button disabled class="btn btn-sm {{ button.active_classes }}">{{ button.label }}</button>
+            {% else %}
+            <button type="submit" name="new_state" value="{{ button.state }}" class="btn btn-sm {{ button.inactive_classes }}">{{ button.label }}</button>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </td>
+      </form>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+{% endblock %}

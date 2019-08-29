@@ -1,0 +1,27 @@
+{% load reservation %}
+
+<table class="table table-sm">
+  <caption class="sr-only">List of reservation part positions</caption>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Product</th>
+      <th scope="col" class="text-right">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for position in part.positions.all %}
+    <tr>
+      <td>{{ position.amount }}</td>
+      <td>{{ position.variation }}</td>
+      <td class="text-right">{{ position.price|as_currency }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td></td>
+      <td></td>
+      <td class="text-right font-weight-bold">{{ part.price|as_currency }}</td>
+    </tr>
+  </tbody>
+</table>
+

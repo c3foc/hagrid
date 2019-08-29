@@ -1,0 +1,36 @@
+{% load reservation %}
+
+{% if reservation.parts.exists %}
+  <div class="card-columns">
+    {% for part in reservation.parts.all %}
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title">
+          {{ part.title }}
+        </h6>
+        {% include "reservationpart_productlist.html" with part=part %}
+
+        {% if show_part_edit_buttons %}
+        <a class="btn btn-sm btn-secondary" href="{% url "reservationpartdetail" secret=reservation.secret part_id=part.id %}">Edit</a>
+        <a class="btn btn-sm btn-danger" href="{% url "reservationpartdelete" secret=reservation.secret part_id=part.id %}">Delete</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if show_part_edit_buttons %}
+<p>
+<form method="post" action="{% url "reservationpartcreate" secret=reservation.secret %}">
+  {% csrf_token %}
+  <input class="btn btn-secondary" type="submit" value="Add part"/>
+</form>
+</p>
+{% endif %}
+
+{% if reservation.parts.count %}
+<p>
+  Total: <span class="badge badge-dark">{{ reservation.price | as_currency }}</span>
+</p>
+{% endif %}

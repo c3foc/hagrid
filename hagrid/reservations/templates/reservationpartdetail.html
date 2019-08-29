@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit reservation part</h1>
+
+<form method="post">
+  {% csrf_token %}
+
+  {% for field in part_form %}
+    <div class="form-group">
+    {{ field.errors }}
+    {{ field.label_tag }}
+    {{ field }}
+    </div>
+  {% endfor %}
+
+  {% for table in variation_tables %}
+  {% include "variation_table.html" with table=table %}
+  {% endfor %}
+  <input class="btn btn-lg btn-primary" type="submit" value="Save"/>
+</form>
+
+<script>
+function markNumberInputs() {
+  for(let input of document.getElementsByTagName('input')) {
+    if(input.type.toLowerCase() == 'number') {
+      // see the variation picker box template
+      if(input.value > 0)
+        input.parentElement.parentElement.classList.add('bg-primary');
+      else
+        input.parentElement.parentElement.classList.remove('bg-primary');
+    }
+  }
+}
+setInterval(markNumberInputs, 100);
+</script>
+
+{% endblock %}
+

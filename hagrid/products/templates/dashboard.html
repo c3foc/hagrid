@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for table in availability_tables %}
+{% include 'variation_table.html' with table=table %}
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,38 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Apply for Reservation</h2>
+
+<div class="row">
+  <div class="col-sm">
+    <p>
+      Many teams are busy working on their area of expertise. To make their life and ours easier, they can reserve merch to pick it up later. If you consider your team to be eligible, please provide contact information through the form below.
+    </p>
+  </div>
+  <div class="col-sm">
+    <p>
+      Here is a list of teams which we are happy to pre-pack some merchandise for.
+    </p>
+    <ul>
+      <li>LOC, POC, VOC</li>
+      <li>Internetmanufaktur, Infodesk, Heaven</li>
+      <li>PL</li>
+    </ul>
+  </div>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+      {{ field.errors }}
+      {{ field.label_tag }}
+      {{ field }}
+      </div>
+    {% endfor %}
+  <input class="btn btn-lg btn-primary" type="submit" value="Send"/>
+</form>
+
+{% endblock %}
