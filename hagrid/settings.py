@@ -138,3 +138,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "hagrid", "static"),
 ]
+
+try:
+    from .localsettings import *
+except ImportError:
+    pass
