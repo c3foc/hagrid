@@ -3,6 +3,11 @@
   {{ form.variation }}
 </div>
 {{ form.non_field_errors }}
-<div class="text-center">
+<div class="text-center" data-toggle="tooltip" data-placement="bottom" title="{{ form.max_amount }} available">
+  {% for error in form.amount.errors %}
+    <span class="badge badge-danger">{{ error }}</span>
+    
+  {% endfor %}
   {{ form.amount }}
 </div>
+

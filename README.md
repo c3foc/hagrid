@@ -22,8 +22,8 @@ All configuration views are only visible to logged in superusers. Using `./manag
 
 ### Todo List
 
-* Limit reservation to intial amount
 * add a note to the whole reservation
 * image/price gallery
 * email notifications und SIP/DECT notifications
-* Size, Sizegroup and Product reodering
+* Size, Sizegroup and Product reodering and editing outside django admin
+* Own Login/Logout/Usermanagement

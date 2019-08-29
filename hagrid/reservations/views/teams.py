@@ -8,6 +8,7 @@ from django.utils.crypto import get_random_string
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
+from django.db.models import Sum
 
 from hagrid.products.models import Size, SizeGroup
 from hagrid.products.views import SizeTable
@@ -93,16 +94,46 @@ class ReservationPartCreateView(View):
         # return redirect('reservationdetail', secret=secret)
 
 
+
+def amount_reserved(variation):
+    return ReservationPosition.objects.filter(variation=variation).aggregate(reserved=Sum('amount'))['reserved'] or 0
+
+
 class ReservationPositionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['amount'].widget.attrs.update({'style': 'width: 7ch;'})
         self.fields['variation'].widget = forms.NumberInput()
+        variation = self.initial['variation']
+        old_amount = self.initial['amount']
+        self.max_amount = variation.initial_amount - amount_reserved(variation) + old_amount
+        self.fields['amount'].widget.attrs.update({
+            'style': 'width: 7ch;',
+            'class': 'variationcounthighlight',
+            'max': self.max_amount})
+
+        if self.max_amount == 0:
+            self.fields['amount'].widget.attrs.update({'readonly': ''})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        variation = cleaned_data['variation']
+        old_amount = self.initial['amount']
+        new_amount = cleaned_data.get('amount', 0)
+        max_amount = variation.initial_amount - amount_reserved(variation) + old_amount
+        if variation and new_amount:
+            if new_amount > max_amount:
+                msg = "No {variation} available." if max_amount == 0 else "Only {amount} {variation} available."
+                msg += " Choose {amount} at most."
+                self.add_error('amount', msg.format(amount=max_amount, variation=str(variation)))
+                if 'readonly' in self.fields['amount'].widget.attrs:
+                    del self.fields['amount'].widget.attrs['readonly']
 
     class Meta:
         model = ReservationPosition
         exclude = ['part']
+
+
 
 class ReservationPartTitleForm(forms.ModelForm):
     class Meta:
@@ -119,7 +150,10 @@ class ReservationPartDetailView(View):
         if part_form.is_valid():
             part_form.save()
         else:
-            return self.get(request, secret=secret, part_id=part_id)
+            return render(request, "reservationpartdetail.html", {
+                    'variation_tables': variation_tables,
+                    'part_form': ReservationPartTitleForm(instance=reservation_part),
+            })
         for form in variation_forms:
             if form.is_valid():
                 if form.cleaned_data['amount']:
@@ -132,7 +166,10 @@ class ReservationPartDetailView(View):
                 else:
                     ReservationPosition.objects.filter(part=reservation_part, variation=form.cleaned_data['variation']).delete()
             else:
-                return self.get(request, secret=secret, part_id=part_id)
+                return render(request, "reservationpartdetail.html", {
+                        'variation_tables': variation_tables,
+                        'part_form': ReservationPartTitleForm(instance=reservation_part),
+                })
         messages.add_message(self.request, messages.SUCCESS, 'Part {} has been saved.'.format(reservation_part.title))
         return redirect('reservationdetail', secret=secret)
 
@@ -140,12 +177,10 @@ class ReservationPartDetailView(View):
     def get(self, request, secret, part_id):
         reservation_part = get_object_or_404(ReservationPart, id=part_id)
         variation_tables, variation_forms = self.get_variation_tables_and_forms(request, reservation_part)
-        part_form = ReservationPartTitleForm(instance=reservation_part)
-        context = {
+        return render(request, "reservationpartdetail.html", {
                 'variation_tables': variation_tables,
-                'part_form': part_form,
-        }
-        return render(request, "reservationpartdetail.html", context)
+                'part_form': ReservationPartTitleForm(instance=reservation_part),
+        })
 
     def get_variation_tables_and_forms(self, request, part):
         forms = []
@@ -156,13 +191,18 @@ class ReservationPartDetailView(View):
             return render_to_string('variation_picker_box.html', context={'form': form}, request=request)
         def render_variation_form(variation):
             prefix = "{}".format(variation.id)
+            try:
+                amount = part_positions.get(variation=variation).amount
+            except ReservationPosition.DoesNotExist:
+                amount = 0
             if request.POST:
-                form = ReservationPositionForm(request.POST, prefix=prefix)
+                form = ReservationPositionForm(request.POST, prefix=prefix, initial={
+                    'amount': amount,
+                    'variation': variation,
+                    'part': part,
+                })
+                form.full_clean()
             else:
-                try:
-                    amount = part_positions.get(variation=variation).amount
-                except ReservationPosition.DoesNotExist:
-                    amount = 0
                 form = ReservationPositionForm(prefix=prefix, initial={
                     'amount': amount,
                     'variation': variation,

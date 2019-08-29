@@ -23,17 +23,21 @@
 
 <script>
 function markNumberInputs() {
-  for(let input of document.getElementsByTagName('input')) {
-    if(input.type.toLowerCase() == 'number') {
-      // see the variation picker box template
-      if(input.value > 0)
-        input.parentElement.parentElement.classList.add('bg-primary');
-      else
-        input.parentElement.parentElement.classList.remove('bg-primary');
-    }
+  for(let input of $("input.variationcounthighlight")) {//document.getElementsByTagName('input')) {
+    input.closest("td").classList.toggle('bg-primary', input.value > 0);
   }
 }
 setInterval(markNumberInputs, 100);
+function defer(method) {
+    if (window.jQuery) {
+        method();
+    } else {
+        setTimeout(function() { defer(method) }, 200);
+    }
+}
+defer(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
 </script>
 
 {% endblock %}
