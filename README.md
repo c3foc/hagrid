@@ -5,10 +5,14 @@ This is a software for merchandise sale at Chaos Communication Congress.
 
 ### Features
 
-* Configure Products (Hoodie, Shirt, Zipper, ...) in various sizes (Straight M, ...).
+* Configure Products (Hoodie, Shirt, Zipper, ...) in various sizes (Fitted M, Unisex 5XL, ...).
 * Display product availability in a public dashboard.
 * Allow teams to apply for and edit their reservations.
 * Let c3foc manage reservations.
+
+### Design principles
+
+* All Functionality should not require javascript to be enabled in the user's browser. Javascript is used for bootstrap's responsive menus on small screens and for some cosmetics.
 
 ### Setup
 
