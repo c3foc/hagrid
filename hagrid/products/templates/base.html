@@ -45,10 +45,10 @@ body {
       <li class="nav-item">
         <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
       </li>
+      {% if request.user.is_superuser %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'reservationapplication' %}">Apply for Reservation</a>
       </li>
-      {% if request.user.is_superuser %}
       <li class="nav-item">
         <a class="nav-link font-weight-bold" href="{% url 'productconfig' %}">Product Config</a>
       </li>

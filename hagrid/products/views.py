@@ -60,6 +60,8 @@ class VariationConfigForm(forms.ModelForm):
         self.fields['exist'].widget.attrs.update({'style': 'display: none'})
         self.fields['initial_amount'].widget.attrs.update({'style': 'width: 10ch;'})
         self.fields['availability'].widget = forms.RadioSelect(choices=Variation.AVAILABILITY_STATES, attrs={'style': 'position:fixed;opacity:0;'})
+        self.fields['product'].widget = forms.NumberInput()
+        self.fields['size'].widget = forms.NumberInput()
 
     class Meta:
         model = Variation

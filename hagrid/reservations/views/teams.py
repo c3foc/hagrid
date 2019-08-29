@@ -98,6 +98,7 @@ class ReservationPositionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs.update({'style': 'width: 7ch;'})
+        self.fields['variation'].widget = forms.NumberInput()
 
     class Meta:
         model = ReservationPosition
