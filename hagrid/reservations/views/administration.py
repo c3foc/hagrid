@@ -46,7 +46,7 @@ class ReservationAdministrationView(LoginRequiredMixin, View):
             reservation.save()
         else:
             messages.add_message(request, messages.ERROR, 'This action could not be performed.')
-        return self.get(request)
+        return redirect("reservationadministration")
 
     def get(self, request):
         return render(request, self.template_name, {
