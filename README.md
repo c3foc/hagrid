@@ -18,6 +18,8 @@ This is a software for merchandise sale at Chaos Communication Congress.
 
 For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` in a seperate python environment to install the dependencies. Make sure to adjust the (security related) settings in `settings.py` for use in production.
 
+All configuration views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage.
+
 ### Todo List
 
 * Limit reservation to intial amount
