@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-
+from django.conf.urls.static import static
+from django.conf import settings
 from hagrid.products.views import DashboardView
 
 urlpatterns = [
+    path('', DashboardView.as_view(), name='dashboard'),
     path('admin/', admin.site.urls),
     path('products/', include('hagrid.products.urls')),
     path('reservations/', include('hagrid.reservations.urls')),
-    path('', DashboardView.as_view(), name='dashboard'),
-]
+    path('gallery/', include('hagrid.gallery.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

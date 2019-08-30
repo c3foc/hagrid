@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'hagrid.products',
     'hagrid.reservations',
+    'hagrid.gallery',
 ]
 
 LOGIN_URL = "admin:login"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert alert-dark',

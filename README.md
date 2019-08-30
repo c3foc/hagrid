@@ -16,7 +16,7 @@ This is a software for merchandise sale at Chaos Communication Congress.
 
 ### Setup
 
-For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` in a seperate python environment to install the dependencies. Make sure to adjust the `ALLOWED_HOSTS`, `DEBUG`, `SECRET_KEY` and `DATABASES` settings in a `local_settings.py` for use in production.
+For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` in a seperate python environment to install the dependencies. Make sure to adjust the `ALLOWED_HOSTS`, `DEBUG`, `SECRET_KEY`, `MEDIA_ROOT` and `DATABASES` settings in a `local_settings.py` for use in production. See the [Django Docs](https://docs.djangoproject.com/en/2.2/ref/settings/) on what these do.
 
 Run `python3 manage.py migrate` to initialize the database.
 
@@ -26,8 +26,11 @@ All configuration views are only visible to logged in superusers. Using `./manag
 
 ### Todo List
 
-* add a note to the whole reservation
-* image/price gallery
+New Features
+* Opening times and other notes on the dashboard
+* let teams add a note to the whole reservation
 * email notifications und SIP/DECT notifications
-* Size, Sizegroup and Product reodering and editing outside django admin
+
+Enhancements
+* Size, Sizegroup, Image and Product reodering and editing outside django admin
 * Own Login/Logout/Usermanagement
