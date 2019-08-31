@@ -20,9 +20,9 @@ For now, this is a pretty standard Django Application developed with python3.7. 
 
 Run `python3 manage.py migrate` to initialize the database.
 
-Run `python3 manage.py collectstatic` to collect all static files into the `static.dist` folder, from where all files under `/static/` should be served from. You probably want to use a webserver and uwsgi or something similar for that.
+Run `python3 manage.py collectstatic` to collect all static files into the `static.dist` folder, from where all files under `/static/` should be served from. Also, everything under `/media/` should point to the `MEDIA_ROOT` you configured. You probably want to use a webserver and uwsgi or something similar for the setup.
 
-All configuration views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage.
+All configuration/management views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage.
 
 ### Todo List
 
