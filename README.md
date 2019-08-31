@@ -30,6 +30,7 @@ New Features
 * Opening times and other notes on the dashboard
 * let teams add a note to the whole reservation
 * email notifications und SIP/DECT notifications
+* Dashboard API
 
 Enhancements
 * Size, Sizegroup, Image and Product reodering and editing outside django admin
