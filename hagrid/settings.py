@@ -54,7 +54,7 @@ MESSAGE_TAGS = {
     messages.INFO: 'alert alert-info',
     messages.SUCCESS: 'alert alert-success',
     messages.WARNING: 'alert alert-warning',
-    messages.ERROR: 'alert alert-error',
+    messages.ERROR: 'alert alert-danger',
 }
 
 MIDDLEWARE = [
@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'hagrid.products.context.contextprocessor',
             ],
         },
     },

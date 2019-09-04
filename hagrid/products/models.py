@@ -1,6 +1,25 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+class StoreSettings(models.Model):
+    dashboard_is_public = models.BooleanField(help_text="Show the dashboard to anonymous users", default=True)
+    gallery_is_public = models.BooleanField(help_text="Show the gallery to anonymous users", default=True)
+    reservations_enabled = models.BooleanField(help_text="Allow people to submit reservations", default=False)
+    reservations_link_in_navbar = models.BooleanField(help_text="Show the link to the reservation form in the navbar", default=False)
+
+    def __str__(self):
+        return "The Store Settings"
+        
+    class Meta:
+        verbose_name = "Store Settings"
+        verbose_name_plural = "Store Settings"
+
+    def save(self, *args, **kwargs):
+        self.id=1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
 
 
 class Product(models.Model):

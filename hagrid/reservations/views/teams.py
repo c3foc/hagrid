@@ -10,7 +10,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.db.models import Sum
 
-from hagrid.products.models import Size, SizeGroup
+from hagrid.products.models import Size, SizeGroup, StoreSettings
 from hagrid.products.views import SizeTable
 
 from ..models import Reservation, ReservationPart, ReservationPosition
@@ -227,6 +227,9 @@ class ReservationApplicationView(FormView):
     form_class = ReservationApplicationForm
 
     def form_valid(self, form):
+        if not StoreSettings.objects.first().reservations_enabled:
+            messages.add_message(self.request, messages.ERROR, 'Reservations are disabled.')
+            return redirect('reservationapplication')
         new_reservation = form.save()
         new_reservation.secret = get_random_string(length=16)
         while Reservation.objects.filter(secret=new_reservation.secret).exists():

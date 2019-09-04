@@ -6,7 +6,7 @@
   " class="thead-dark">
     <tr>
       {% for sizename in table.header %}
-      <th class="text-center" scope="col">{{ sizename }}</th>
+      <th class="text-center" scope="col"{% if forloop.first %} width="100rem"{% endif %}>{{ sizename }}</th>
       {% endfor %}
     </tr>
   </thead>

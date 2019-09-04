@@ -48,18 +48,17 @@ body {
       <li class="nav-item">
         <a class="nav-link" href="{% url 'gallery' %}">Gallery</a>
       </li>
-      {% if request.user.is_superuser %}
+      {% if request.user.is_superuser or store_settings.reservations_link_in_navbar %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'reservationapplication' %}">Apply for Reservation</a>
       </li>
+      {% endif %}
+      {% if request.user.is_superuser %}
       <li class="nav-item">
         <a class="nav-link font-weight-bold" href="{% url 'productconfig' %}">Product Config</a>
       </li>
       <li class="nav-item">
         <a class="nav-link font-weight-bold" href="{% url 'reservationadministration' %}">Reservations</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'admin:index' %}">Django Admin</a>
       </li>
       {% else %}
       <li class="nav-item">

@@ -23,16 +23,22 @@
   </div>
 </div>
 
-<form method="post">
-  {% csrf_token %}
-    {% for field in form %}
-      <div class="form-group">
-      {{ field.errors }}
-      {{ field.label_tag }}
-      {{ field }}
-      </div>
-    {% endfor %}
-  <input class="btn btn-lg btn-primary" type="submit" value="Send"/>
-</form>
+{% if store_settings.reservations_enabled %}
+  <form method="post">
+    {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+        {{ field.errors }}
+        {{ field.label_tag }}
+        {{ field }}
+        </div>
+      {% endfor %}
+    <input class="btn btn-lg btn-primary" type="submit" value="Send"/>
+  </form>
+{% else %}
+<div class="alert alert-primary" role="alert">
+  Reservations are disabled at the moment.
+</div>
+{% endif %}
 
 {% endblock %}
