@@ -30,6 +30,7 @@ New Features
 * let teams add a note to the whole reservation
 * email notifications und SIP/DECT notifications
 * Dashboard API
+* Provide reason note for cancellation
 
 Enhancements
 * Size, Sizegroup, Image and Product reodering and editing outside django admin
