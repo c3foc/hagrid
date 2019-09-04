@@ -2,23 +2,25 @@
 
 {% block content %}
 
+{% if store_settings.dashboard_text %}
+{{ store_settings.dashboard_text|safe }}
+{% endif %}
+
 {% if store_settings.dashboard_is_public or request.user.is_superuser %}
 
-{% if not store_settings.dashboard_is_public %}
-<div class="alert alert-warning" role="alert">
-  The dashboard is only visible to superusers.
-</div>
-{% endif %}
+  {% if not store_settings.dashboard_is_public %}
+  <div class="alert alert-warning" role="alert">
+    The dashboard is only visible to superusers.
+  </div>
+  {% endif %}
 
   {% for table in availability_tables %}
     {% include 'variation_table.html' with table=table %}
   {% endfor %}
-{% else %}
-
+{% elif not store_settings.dashboard_text %}
 <p>
-The dashboard is currently not available.
+  The dashboard is currently not available.
 </p>
-
 {% endif %}
 
 {% endblock %}

@@ -27,7 +27,6 @@ All configuration/management views are only visible to logged in superusers. Usi
 ### Todo List
 
 New Features
-* Opening times and other notes on the dashboard
 * let teams add a note to the whole reservation
 * email notifications und SIP/DECT notifications
 * Dashboard API

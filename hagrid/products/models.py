@@ -6,6 +6,7 @@ class StoreSettings(models.Model):
     gallery_is_public = models.BooleanField(help_text="Show the gallery to anonymous users", default=True)
     reservations_enabled = models.BooleanField(help_text="Allow people to submit reservations", default=False)
     reservations_link_in_navbar = models.BooleanField(help_text="Show the link to the reservation form in the navbar", default=False)
+    dashboard_text = models.TextField(help_text="HTML that will be rendered on the top of the dashboard", blank=True, default="")
 
     def __str__(self):
         return "The Store Settings"
