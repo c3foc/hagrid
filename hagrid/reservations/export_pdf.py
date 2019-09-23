@@ -12,6 +12,7 @@ import qrcode
 import time
 
 from .models import Reservation, ReservationPosition, ReservationPart
+from hagrid.products.models import Variation
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,8 @@ class Document:
         if bookmark is not None:
             self.bookmark_page(bookmark)
         self.apply_watermark()
+        page_number_text = "Page " + str(self.page)
+        self.canvas.drawString(self.w - self.right_inset - self.get_text_width(page_number_text), 50, page_number_text)
 
     def wrap_up(self):
         self.canvas.showPage()
@@ -133,20 +136,48 @@ def render_collection_table_header(d: Document):
     d.canvas.line(d.w - canvas.right_inset, d.cursor_y, d.w - canvas.right_inset, d.cursor_y - 15)
     d.canvas.line(d.cursor_x, d.cursor_y - 15, d.w - canvas.right_inset, d.cursor_y - 15)
 
-    d.canvas.drawString(55, d.cursor_y - 10, "Article")
-    d.canvas.drawString(155, d.cursor_y - 10, "Quantity")
-    d.canvas.drawString(235, d.cursor_y - 10, "Notes")
+    d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 10, "Article")
+    d.canvas.drawString(d.cursor_x + 110, d.cursor_y - 10, "Quantity")
+    d.canvas.drawString(d.cursor_x + 190, d.cursor_y - 10, "Notes?")
     d.canvas.drawString(A4[0] - 61, d.cursor_y - 10, "X")
 
-    d.canvas.line(50, d.cursor_y, 50, d.cursor_y - 15)
-    d.canvas.line(150, d.cursor_y, 150, d.cursor_y - 15)
-    d.canvas.line(230, d.cursor_y, 230, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x + 5, d.cursor_y, d.cursor_x + 5, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x + 105, d.cursor_y, d.cursor_x + 105, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x + 185, d.cursor_y, d.cursor_x + 185, d.cursor_y - 15)
 
+    d.cursor_y -= 15
+
+
+def render_collection_list_entry(pos: Variation, amount: int, d: Document):
+    # Draw table boxes
+    d.canvas.line(d.cursor_x, d.cursor_y, d.w - canvas.right_inset, d.cursor_y)
+    d.canvas.line(d.cursor_x, d.cursor_y, d.cursor_x, d.cursor_y - 15)
+    d.canvas.line(d.w - canvas.right_inset, d.cursor_y, d.w - canvas.right_inset, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x, d.cursor_y - 15, d.w - canvas.right_inset, d.cursor_y - 15)
+
+    # Draw table separation lines
+    d.canvas.line(d.cursor_x + 5, d.cursor_y, d.cursor_x + 5, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x + 105, d.cursor_y, d.cursor_x + 105, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x + 185, d.cursor_y, d.cursor_x + 185, d.cursor_y - 15)
+
+    # Draw hollow rect for package checking
+    d.canvas.line(d.w - d.right_inset - 2, d.cursor_y - 2, d.w - d.right_inset - 2, d.cursor_y - 13)
+    d.canvas.line(d.w - d.right_inset - 13, d.cursor_y - 2, d.w - d.right_inset - 13, d.cursor_y - 13)
+    d.canvas.line(d.w - d.right_inset - 13, d.cursor_y - 2, d.w - d.right_inset - 2, d.cursor_y - 2)
+    d.canvas.line(d.w - d.right_inset - 13, d.cursor_y - 13, d.w - d.right_inset - 2, d.cursor_y - 13)
+
+    d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 13, str(pos))
+    d.canvas.drawString(d.cursor_x + 110, d.cursor_y - 10, str(amount))
     d.cursor_y -= 15
 
 
 def render_collection_list(l, d: Document):
     render_collection_table_header(d)
+    for request in l:
+        if d.cursor_y < (75 + 15):
+            d.new_page()
+            render_collection_table_header(d)
+        render_collection_list_entry(request[0], request[1], d)
 
 
 def render_reservation(r: Reservation, d: Document):
