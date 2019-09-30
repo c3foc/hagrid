@@ -31,6 +31,7 @@ New Features
 * email notifications und SIP/DECT notifications
 * Dashboard API
 * Provide reason note for cancellation
+* Race conditions?
 
 Enhancements
 * Size, Sizegroup, Image and Product reodering and editing outside django admin
