@@ -34,22 +34,7 @@ input[type=radio]:checked + .btn-outline-danger {
 
 {% block content %}
 
-<h1>Configuration</h1>
-
-
-<h2>Products and Sizegroups</h2>
-<p>
-  Some models are currently only configurable using Django Admin.
-</p>
-<ul>
-  <li><a href="{% url 'admin:products_storesettings_changelist' %}1/change/">Store Settings</a></li>
-  <li><a href="{% url 'admin:products_product_changelist' %}">Products</a></li>
-  <li><a href="{% url 'admin:products_sizegroup_changelist' %}">Sizegroups</a></li>
-  <li><a href="{% url 'admin:products_size_changelist' %}">Sizes</a></li>
-  <li><a href="{% url 'admin:gallery_galleryimage_changelist' %}">Gallery Images</a></li>
-</ul>
-
-<h2>Sizes</h2>
+<h1>Configure which Variations are available</h1>
 
 <form method="post">
   {% csrf_token %}
