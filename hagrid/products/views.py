@@ -173,10 +173,6 @@ class VariationChangeAvailabilityView(LoginRequiredMixin, View):
         return render(request, "availabilityconfig.html", context)
 
 
-
-
-
-
 def render_variation_to_colorful_html(variation):
     if variation.availability == Variation.STATE_MANY_AVAILABLE:
         return '<div class="text-center"><span class="badge badge-success">&#10003;</span></div>'

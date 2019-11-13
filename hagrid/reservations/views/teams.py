@@ -32,14 +32,44 @@ def require_reservation_state(required_state, superuser_bypass=False):
     return decorator
 
 
+
+
+class ReservationCommentForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['comment'].widget.attrs['rows'] = 1
+        self.fields['comment'].widget.attrs['style'] = "float: left; margin-right: 10px"
+
+    class Meta:
+        model = Reservation
+        fields = ['comment']
+
+
 class ReservationDetailView(TemplateView):
     template_name = 'reservationdetail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        secret = kwargs['secret']
-        context['reservation'] = get_object_or_404(Reservation, secret=secret)
-        return context
+    @require_reservation_state(Reservation.STATE_EDITABLE)
+    def get(self, request, secret):
+        reservation = get_object_or_404(Reservation, secret=secret)
+        return render(request, self.template_name, {
+            'reservation': reservation,
+            'comment_form': ReservationCommentForm(instance=reservation),
+        })
+
+    @require_reservation_state(Reservation.STATE_EDITABLE)
+    def post(self, request, secret):
+        reservation = get_object_or_404(Reservation, secret=secret)
+        form = ReservationCommentForm(request.POST, instance=reservation)
+        if form.is_valid():
+            reservation.comment = form.cleaned_data['comment']
+            reservation.save()
+            messages.add_message(self.request, messages.SUCCESS, 'Comment has been updated.')
+            return redirect('reservationdetail', secret=secret)
+        return render(request, self.template_name, {
+            'reservation': reservation,
+            'comment_form': form,
+        })
 
 
 class ReservationSubmitView(View):
