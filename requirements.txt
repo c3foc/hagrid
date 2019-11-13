@@ -1,4 +1,5 @@
 Babel==2.7.0
+django-positions
 Django==2.2.4
 isort==4.3.21
 mysqlclient==1.4.4
