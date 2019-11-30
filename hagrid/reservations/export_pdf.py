@@ -5,6 +5,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.colors import black
 
 import datetime
 import logging
@@ -39,9 +40,11 @@ class Document:
     watermark: str = ""
     cursor_y = 0
     cursor_x = 0
+    ready = False
 
     def __init__(self, filename: str, title: str, author: str, subject: str, side_label=""):
         self.page = 0
+        self.ready = False
         self.watermark = ""
         self.bytes_buffer = BytesIO()
         self.canvas = canvas.Canvas(self.bytes_buffer, pagesize=A4, pageCompression=0)
@@ -51,6 +54,7 @@ class Document:
         self.canvas.setSubject(subject)
         self.side_label = side_label
         self.new_page()
+        self.ready = True
 
     def bookmark_page(self, text: str):
         self.canvas.addOutlineEntry(text, "p" + str(self.page))
@@ -76,7 +80,8 @@ class Document:
         return pdfmetrics.stringWidth(text, "Helvetica", 14)
 
     def new_page(self, bookmark=None):
-        self.canvas.showPage()
+        if self.ready:
+            self.canvas.showPage()
         self.right_inset = 45
         self.page += 1
         self.cursor_y = self.h - 45
@@ -84,7 +89,7 @@ class Document:
         self.canvas.setFont("Helvetica", 9)
         self.canvas.rotate(90)
         self.canvas.drawString(35, -25, self.side_label)
-        self.canvas.rotate(-270)
+        self.canvas.rotate(270)
         self.canvas.setFont("Helvetica", 14)
         if bookmark is not None:
             self.bookmark_page(bookmark)
@@ -130,35 +135,48 @@ def generate_collection_list(reservation: Reservation):
     return sorted(article_list, key=lambda t: t[0].__str__())
 
 
+def render_invoice_header(r: Reservation, d: Document):
+    # TODO render reservation header
+    d.canvas.drawString(50, d.h - 50, "Main reservation [" + str(r.id) + "] of " + str(r.team_name))
+    text = Paragraph(r.comment.replace("\n", "<br />"), style=NOTES_STYLE)
+    textwidth, textheight = text.wrapOn(d.canvas, d.w - 200, d.h - 250)
+    text.drawOn(d.canvas, 30, d.h - 75 - textheight)
+    d.cursor_y -= textheight
+    pass
+
+
 def render_collection_table_header(d: Document):
-    d.canvas.line(d.cursor_x, d.cursor_y, d.w - canvas.right_inset, d.cursor_y)
+    d.canvas.setFillColor(black)
+    d.canvas.line(d.cursor_x, d.cursor_y, d.w - d.right_inset, d.cursor_y)
     d.canvas.line(d.cursor_x, d.cursor_y, d.cursor_x, d.cursor_y - 15)
-    d.canvas.line(d.w - canvas.right_inset, d.cursor_y, d.w - canvas.right_inset, d.cursor_y - 15)
-    d.canvas.line(d.cursor_x, d.cursor_y - 15, d.w - canvas.right_inset, d.cursor_y - 15)
+    d.canvas.line(d.w - d.right_inset, d.cursor_y, d.w - d.right_inset, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x, d.cursor_y - 15, d.w - d.right_inset, d.cursor_y - 15)
 
     d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 10, "Article")
-    d.canvas.drawString(d.cursor_x + 110, d.cursor_y - 10, "Quantity")
-    d.canvas.drawString(d.cursor_x + 190, d.cursor_y - 10, "Notes?")
+    d.canvas.drawString(d.cursor_x + 310, d.cursor_y - 10, "Quantity")
+    # d.canvas.drawString(d.cursor_x + 290, d.cursor_y - 10, "Notes?")
     d.canvas.drawString(A4[0] - 61, d.cursor_y - 10, "X")
 
     d.canvas.line(d.cursor_x + 5, d.cursor_y, d.cursor_x + 5, d.cursor_y - 15)
-    d.canvas.line(d.cursor_x + 105, d.cursor_y, d.cursor_x + 105, d.cursor_y - 15)
-    d.canvas.line(d.cursor_x + 185, d.cursor_y, d.cursor_x + 185, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x + 305, d.cursor_y, d.cursor_x + 305, d.cursor_y - 15)
+    # d.canvas.line(d.cursor_x + 285, d.cursor_y, d.cursor_x + 285, d.cursor_y - 15)
+    d.canvas.line(d.w - d.right_inset - 18, d.cursor_y, d.w - d.right_inset - 18, d.cursor_y - 15)
 
     d.cursor_y -= 15
 
 
 def render_collection_list_entry(pos: Variation, amount: int, d: Document):
     # Draw table boxes
-    d.canvas.line(d.cursor_x, d.cursor_y, d.w - canvas.right_inset, d.cursor_y)
+    d.canvas.line(d.cursor_x, d.cursor_y, d.w - d.right_inset, d.cursor_y)
     d.canvas.line(d.cursor_x, d.cursor_y, d.cursor_x, d.cursor_y - 15)
-    d.canvas.line(d.w - canvas.right_inset, d.cursor_y, d.w - canvas.right_inset, d.cursor_y - 15)
-    d.canvas.line(d.cursor_x, d.cursor_y - 15, d.w - canvas.right_inset, d.cursor_y - 15)
+    d.canvas.line(d.w - d.right_inset, d.cursor_y, d.w - d.right_inset, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x, d.cursor_y - 15, d.w - d.right_inset, d.cursor_y - 15)
 
     # Draw table separation lines
     d.canvas.line(d.cursor_x + 5, d.cursor_y, d.cursor_x + 5, d.cursor_y - 15)
-    d.canvas.line(d.cursor_x + 105, d.cursor_y, d.cursor_x + 105, d.cursor_y - 15)
-    d.canvas.line(d.cursor_x + 185, d.cursor_y, d.cursor_x + 185, d.cursor_y - 15)
+    d.canvas.line(d.cursor_x + 305, d.cursor_y, d.cursor_x + 305, d.cursor_y - 15)
+    # d.canvas.line(d.cursor_x + 285, d.cursor_y, d.cursor_x + 285, d.cursor_y - 15)
+    d.canvas.line(d.w - d.right_inset - 18, d.cursor_y, d.w - d.right_inset - 18, d.cursor_y - 15)
 
     # Draw hollow rect for package checking
     d.canvas.line(d.w - d.right_inset - 2, d.cursor_y - 2, d.w - d.right_inset - 2, d.cursor_y - 13)
@@ -167,7 +185,7 @@ def render_collection_list_entry(pos: Variation, amount: int, d: Document):
     d.canvas.line(d.w - d.right_inset - 13, d.cursor_y - 13, d.w - d.right_inset - 2, d.cursor_y - 13)
 
     d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 13, str(pos))
-    d.canvas.drawString(d.cursor_x + 110, d.cursor_y - 10, str(amount))
+    d.canvas.drawString(d.cursor_x + 310, d.cursor_y - 10, str(amount))
     d.cursor_y -= 15
 
 
@@ -186,7 +204,9 @@ def render_reservation(r: Reservation, d: Document):
     else:
         d.set_watermark(str(r.state))
     articles = generate_collection_list(r)
+    render_invoice_header(r, d)
     render_collection_list(articles, d)
+    # TODO render summary
 
 
 def export_invoices_as_pdf(reservations, filename: str, username = "nobody", title = "C3FOC - Reservations"):
@@ -217,6 +237,7 @@ def export_invoices_as_pdf(reservations, filename: str, username = "nobody", tit
             "This document, originally created at " + timestamp(filestr=False) + ", contains the requested reservations")
     reservation_counter = 0
     for r in reservations:
+        print("writing res: " + str(r))
         reservation_counter += 1
 
         # Test for document appending
@@ -226,3 +247,5 @@ def export_invoices_as_pdf(reservations, filename: str, username = "nobody", tit
         
         render_reservation(r, d)
     return d.wrap_up()
+
+
