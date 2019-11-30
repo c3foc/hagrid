@@ -17,6 +17,8 @@ from hagrid.products.models import Variation
 
 logger = logging.getLogger(__name__)
 
+QR_TEXT_FORMAT = "https://c3foc.net/reservations/{0}/"
+
 NOTES_STYLE = ParagraphStyle('notesstyle', fontSize=11)
 ARTICLE_NOTES_STYLE = ParagraphStyle('articlestyle', fontSize=11)
 INFO_STYLE = ParagraphStyle(
@@ -136,17 +138,48 @@ def generate_collection_list(reservation: Reservation):
 
 
 def render_invoice_header(r: Reservation, d: Document):
-    # TODO render reservation header
-    d.canvas.drawString(50, d.h - 50, "Main reservation [" + str(r.id) + "] of " + str(r.team_name))
+    # render reservation header
+    d.canvas.setFillColor(black)
+    d.canvas.setFont("Helvetica", 14)
+    d.canvas.drawString(d.cursor_x, d.cursor_y, "Main reservation [" + str(r.id) + "] of " + str(r.team_name))
+    d.canvas.setFont("Helvetica", 11)
+    d.cursor_y -= 30
+    
+    # Render reservation comment
     text = Paragraph(r.comment.replace("\n", "<br />"), style=NOTES_STYLE)
     textwidth, textheight = text.wrapOn(d.canvas, d.w - 200, d.h - 250)
-    text.drawOn(d.canvas, 30, d.h - 75 - textheight)
-    d.cursor_y -= textheight
-    pass
+    text.drawOn(d.canvas, d.cursor_x, d.cursor_y - textheight)
+    d.canvas.line(d.cursor_x, d.cursor_y + 5, d.w - 145, d.cursor_y + 5)
+    if len(r.comment.replace(" ", "").replace("\n", "").replace("\t", "")) > 0:
+        d.canvas.line(d.cursor_x, (d.cursor_y - textheight) - 5, d.w - 145, \
+                (d.cursor_y - textheight) - 5)
+    d.cursor_y -= textheight + 20
+
+    # Render QR Code next to the comment
+    i = generate_qr_code(QR_TEXT_FORMAT.format(r.secret))
+    d.canvas.drawInlineImage(i, d.w - 150, d.h - 175, 125, 125)
+
+    # Render Contact info below comment if short
+    # Render below QR code if comment is long
+    d.canvas.setFont("Helvetica", 9)
+    if textheight + 25 > 160:
+        # Render below QR code
+        d.canvas.drawString(d.w - 150, d.h - 180, "Contact: " + str(r.contact_name))
+        d.canvas.drawString(d.w - 150, d.h - 195, "DECT: " + str(r.contact_dect))
+        d.canvas.drawString(d.w - 150, d.h - 210, "MAIL: " + str(r.contact_mail))
+    else:
+        # Render below Notes
+        d.canvas.drawString(d.cursor_x, d.cursor_y + 5, "Contact: " + str(r.contact_name) + \
+                " DECT: " + str(r.contact_dect) + " MAIL: " + str(r.contact_mail))
+        if d.cursor_y > d.h - 180:
+            d.cursor_y = d.h - 180
+    d.canvas.setFont("Helvetica", 11)
 
 
 def render_collection_table_header(d: Document):
-    d.canvas.setFillColor(black)
+    d.canvas.drawString(d.cursor_x, d.cursor_y - 5, "packing list: ")
+    d.cursor_y -= 15
+
     d.canvas.line(d.cursor_x, d.cursor_y, d.w - d.right_inset, d.cursor_y)
     d.canvas.line(d.cursor_x, d.cursor_y, d.cursor_x, d.cursor_y - 15)
     d.canvas.line(d.w - d.right_inset, d.cursor_y, d.w - d.right_inset, d.cursor_y - 15)
@@ -155,12 +188,14 @@ def render_collection_table_header(d: Document):
     d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 10, "Article")
     d.canvas.drawString(d.cursor_x + 310, d.cursor_y - 10, "Quantity")
     # d.canvas.drawString(d.cursor_x + 290, d.cursor_y - 10, "Notes?")
-    d.canvas.drawString(A4[0] - 61, d.cursor_y - 10, "X")
+    d.canvas.drawString(A4[0] - 81, d.cursor_y - 10, "C1")
+    d.canvas.drawString(A4[0] - 61, d.cursor_y - 10, "C2")
 
     d.canvas.line(d.cursor_x + 5, d.cursor_y, d.cursor_x + 5, d.cursor_y - 15)
     d.canvas.line(d.cursor_x + 305, d.cursor_y, d.cursor_x + 305, d.cursor_y - 15)
     # d.canvas.line(d.cursor_x + 285, d.cursor_y, d.cursor_x + 285, d.cursor_y - 15)
     d.canvas.line(d.w - d.right_inset - 18, d.cursor_y, d.w - d.right_inset - 18, d.cursor_y - 15)
+    d.canvas.line((d.w - d.right_inset) - 38, d.cursor_y, (d.w - d.right_inset) - 38, d.cursor_y - 15)
 
     d.cursor_y -= 15
 
@@ -177,12 +212,14 @@ def render_collection_list_entry(pos: Variation, amount: int, d: Document):
     d.canvas.line(d.cursor_x + 305, d.cursor_y, d.cursor_x + 305, d.cursor_y - 15)
     # d.canvas.line(d.cursor_x + 285, d.cursor_y, d.cursor_x + 285, d.cursor_y - 15)
     d.canvas.line(d.w - d.right_inset - 18, d.cursor_y, d.w - d.right_inset - 18, d.cursor_y - 15)
+    d.canvas.line((d.w - d.right_inset) - 38, d.cursor_y, (d.w - d.right_inset) - 38, d.cursor_y - 15)
 
     # Draw hollow rect for package checking
-    d.canvas.line(d.w - d.right_inset - 2, d.cursor_y - 2, d.w - d.right_inset - 2, d.cursor_y - 13)
-    d.canvas.line(d.w - d.right_inset - 13, d.cursor_y - 2, d.w - d.right_inset - 13, d.cursor_y - 13)
-    d.canvas.line(d.w - d.right_inset - 13, d.cursor_y - 2, d.w - d.right_inset - 2, d.cursor_y - 2)
-    d.canvas.line(d.w - d.right_inset - 13, d.cursor_y - 13, d.w - d.right_inset - 2, d.cursor_y - 13)
+    for i in range(2):
+        d.canvas.line((d.w - d.right_inset - 2) - i * 20, d.cursor_y - 2, (d.w - d.right_inset - 2) - i * 20, d.cursor_y - 13)
+        d.canvas.line((d.w - d.right_inset - 13) - i * 20, d.cursor_y - 2, (d.w - d.right_inset - 13) - i * 20, d.cursor_y - 13)
+        d.canvas.line((d.w - d.right_inset - 13) - i * 20, d.cursor_y - 2, (d.w - d.right_inset - 2) - i * 20, d.cursor_y - 2)
+        d.canvas.line((d.w - d.right_inset - 13) - i * 20, d.cursor_y - 13, (d.w - d.right_inset - 2) - i * 20, d.cursor_y - 13)
 
     d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 13, str(pos))
     d.canvas.drawString(d.cursor_x + 310, d.cursor_y - 10, str(amount))
@@ -198,6 +235,61 @@ def render_collection_list(l, d: Document):
         render_collection_list_entry(request[0], request[1], d)
 
 
+def render_settlement_head(d: Document):
+    d.canvas.setFont("Helvetica", 11)
+    d.cursor_y -= 30
+    if d.cursor_y < (75 + 15):
+        d.new_page()
+    d.canvas.drawString(d.cursor_x, d.cursor_y - 5, "settlement: ")
+    d.cursor_y -= 20
+
+    # Render table head
+    p = d.canvas
+    p.line(45, d.cursor_y, 45, d.cursor_y - 15)
+    p.line(d.w - 45, d.cursor_y, d.w - 45, d.cursor_y - 15)
+    p.line(45, d.cursor_y, d.w - 45, d.cursor_y)
+    p.line(45, d.cursor_y - 15, d.w - 45, d.cursor_y - 15)
+    p.drawString(50, d.cursor_y - 10, "Amount")
+    p.drawString(100, d.cursor_y - 10, "Article")
+    p.drawString(250, d.cursor_y - 10, "Single Item price")
+    p.drawString(d.w - 175, d.cursor_y - 10, "Sum")
+    d.cursor_y -= 15
+    d.canvas.setFont("Helvetica", 9)
+
+
+def render_invoice_end(l, d: Document):
+    render_settlement_head(d)
+    total = 0
+    for request in l:
+        if d.cursor_y < (75 + 15):
+            d.new_page()
+        amount: int = request[1]
+        a: Variation = request[0]
+        price = a.product.price
+        total += price * amount
+        d.canvas.line(45, d.cursor_y, 45, d.cursor_y - 15)
+        d.canvas.line(d.w - 45, d.cursor_y, d.w - 45, d.cursor_y - 15)
+        d.canvas.drawString(100, d.cursor_y - 10, str(a))
+        d.canvas.drawString(50, d.cursor_y - 10, str(amount))
+        d.canvas.drawString(250, d.cursor_y - 10, '{:20,.2f} €'.format(price))
+        d.canvas.drawString(d.w - 175, d.cursor_y - 10, '{:20,.2f} €'.format(price * amount))
+        d.cursor_y -= 15
+    cy = d.cursor_y
+    d.canvas.line(45, cy, d.w - 45, cy)
+    d.canvas.line(45, cy, 45, cy - 15)
+    d.canvas.line(d.w - 45, cy, d.w - 45, cy - 15)
+    d.canvas.line(45, cy - 15, d.w - 45, cy - 15)
+    d.canvas.drawString(50, cy - 10, "TOTAL:")
+    d.canvas.drawString(100, cy - 10, "[EUR]")
+    d.canvas.drawString(d.w - 175, cy - 10, '{:20,.2f} €'.format(total))
+    # Signature of person who packed and person who checked
+    d.cursor_y -= 75
+    d.canvas.line(55, d.cursor_y, 235, d.cursor_y)
+    d.canvas.drawString(60, d.cursor_y - 10, "Signature of person who packed")
+    d.canvas.line(255, d.cursor_y, 435, d.cursor_y)
+    d.canvas.drawString(260, d.cursor_y - 10, "Signature of person who checked")
+
+
 def render_reservation(r: Reservation, d: Document):
     if r.state == r.STATE_SUBMITTED:
         d.set_watermark("")
@@ -206,7 +298,7 @@ def render_reservation(r: Reservation, d: Document):
     articles = generate_collection_list(r)
     render_invoice_header(r, d)
     render_collection_list(articles, d)
-    # TODO render summary
+    render_invoice_end(articles, d)
 
 
 def export_invoices_as_pdf(reservations, filename: str, username = "nobody", title = "C3FOC - Reservations"):
@@ -237,7 +329,6 @@ def export_invoices_as_pdf(reservations, filename: str, username = "nobody", tit
             "This document, originally created at " + timestamp(filestr=False) + ", contains the requested reservations")
     reservation_counter = 0
     for r in reservations:
-        print("writing res: " + str(r))
         reservation_counter += 1
 
         # Test for document appending
