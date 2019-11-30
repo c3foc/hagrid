@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from positions import PositionField
 
 class StoreSettings(models.Model):
     dashboard_is_public = models.BooleanField(help_text="Show the dashboard to anonymous users", default=True)
@@ -26,31 +27,44 @@ class StoreSettings(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=30, unique=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    position = PositionField()
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['position']
 
 
 class SizeGroup(models.Model):
     name = models.CharField(max_length=30, unique=True)
+    position = PositionField()
     
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['position']
+
+
 class Size(models.Model):
     name = models.CharField(max_length=30)
     group = models.ForeignKey(SizeGroup, related_name='sizes', on_delete=models.CASCADE)
+    position = PositionField(collection='group')
 
     def __str__(self):
         return "{} {}".format(str(self.group), self.name)
 
+    class Meta:
+        ordering = ['position']
+
 
 class Variation(models.Model):
-    STATE_SUBMITTED = 'available'
+    STATE_MANY_AVAILABLE = 'available'
     STATE_FEW_AVAILABLE = 'few available'
     STATE_SOLD_OUT = 'sold out'
     AVAILABILITY_STATES = [
-            (STATE_SUBMITTED, 'many available'),
+            (STATE_MANY_AVAILABLE, 'many available'),
             (STATE_FEW_AVAILABLE, 'few available'),
             (STATE_SOLD_OUT, 'sold out')
     ]

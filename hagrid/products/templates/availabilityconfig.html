@@ -1,0 +1,54 @@
+
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+input[type=radio]:checked + .btn-outline-success {
+  background-color: #28a745;
+}
+input[type=radio]:checked + .btn-outline-warning {
+  background-color: #ffc107;
+}
+input[type=radio]:checked + .btn-outline-danger {
+  background-color: #dc3545;
+}
+
+.btn-availability {
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>Configuration</h1>
+
+
+<h2>Products and Sizegroups</h2>
+<p>
+  Some models are currently only configurable using Django Admin.
+</p>
+<ul>
+  <li><a href="{% url 'admin:products_storesettings_changelist' %}1/change/">Store Settings</a></li>
+  <li><a href="{% url 'admin:products_product_changelist' %}">Products</a></li>
+  <li><a href="{% url 'admin:products_sizegroup_changelist' %}">Sizegroups</a></li>
+  <li><a href="{% url 'admin:products_size_changelist' %}">Sizes</a></li>
+  <li><a href="{% url 'admin:gallery_galleryimage_changelist' %}">Gallery Images</a></li>
+</ul>
+
+<h2>Sizes</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {% for table in variation_tables %}
+  {% include "variation_table.html" with table=table %}
+  {% endfor %}
+  <input class="btn btn-lg btn-primary" type="submit" value="Save Availability"/>
+  <a class="btn btn-lg btn-secondary" type="button" href="{% url "productconfig" %}">Edit Variations</a>
+</form>
+
+
+{% endblock %}

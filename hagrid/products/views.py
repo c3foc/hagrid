@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.template.loader import render_to_string
 from django.views import View
 from django.views.generic import TemplateView
@@ -42,16 +42,6 @@ class SizeTable:
         return rows
 
 
-def render_variation_to_colorful_html(variation):
-    if variation.availability == Variation.STATE_SUBMITTED:
-        return '<div class="text-center"><span class="badge badge-success">&#10003;</span></div>'
-    if variation.availability == Variation.STATE_FEW_AVAILABLE:
-        return '<div class="text-center"><span class="badge badge-warning">&#9888;</span></div>'
-    if variation.availability == Variation.STATE_SOLD_OUT:
-        return '<div class="text-center"><span class="badge badge-danger">&#10007;</span></div>'
-
-
-
 class VariationConfigForm(forms.ModelForm):
     exist = forms.BooleanField(required=False)
 
@@ -67,8 +57,7 @@ class VariationConfigForm(forms.ModelForm):
         model = Variation
         exclude = []
 
-
-class ProductConfigView(LoginRequiredMixin, View):
+class VariationConfigView(LoginRequiredMixin, View):
 
     def post(self, request):
         variation_tables, forms = self.get_variation_tables_and_forms(request)
@@ -78,13 +67,13 @@ class ProductConfigView(LoginRequiredMixin, View):
                     variation, created= Variation.objects.get_or_create(
                             product=form.cleaned_data['product'],
                             size=form.cleaned_data['size'],
-                            )
+                    )
                     variation.availability = form.cleaned_data['availability']
                     variation.initial_amount = form.cleaned_data['initial_amount']
                     variation.save()
                 else:
                     Variation.objects.filter(product=form.cleaned_data['product'], size=form.cleaned_data['size']).delete()
-        return redirect('productconfig')
+        return redirect('availabilityconfig')
 
     def get_variation_tables_and_forms(self, request):
         forms = []
@@ -122,6 +111,76 @@ class ProductConfigView(LoginRequiredMixin, View):
                 'variation_tables': variation_tables,
         }
         return render(request, "productconfig.html", context)
+
+
+
+
+class VariationsAvailabilityForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for variation in Variation.objects.all():
+            key = 'variation_{}'.format(variation.pk)
+            self.fields[key] = forms.ChoiceField(
+                    choices=Variation.AVAILABILITY_STATES,
+                    initial=variation.availability,
+                    widget=forms.RadioSelect(
+                        choices=Variation.AVAILABILITY_STATES,
+                        attrs={'style': 'position:fixed;opacity:0;'}),
+            )
+
+    def field_for_rendering_by_variation(self, variation):
+        key = 'variation_{}'.format(variation.pk)
+        return self[key]
+
+
+class VariationChangeAvailabilityView(LoginRequiredMixin, View):
+
+
+    def get_variation_tables_and_form(self, request):
+        form = VariationsAvailabilityForm(request.POST or None)
+
+        def render_variation_form(variation):
+            field = form.field_for_rendering_by_variation(variation)
+            return render_to_string('variation_availability_box.html', context={'field': field}, request=request)
+        def render_empty_form(product, size):
+            return ""
+
+        tables = [SizeTable(sizegroup,
+                            render_variation=render_variation_form,
+                            render_empty=render_empty_form,
+                            show_empty_rows=False)
+            for sizegroup in SizeGroup.objects.all()]
+        return tables, form
+
+    def post(self, request):
+        return self.get(request)
+
+    def get(self, request):
+        variation_tables, form = self.get_variation_tables_and_form(request)
+
+        if form.is_valid():
+            for key, value in form.cleaned_data.items():
+                variation_id = int(key.rsplit("_", 1)[-1])
+                variation = get_object_or_404(Variation, id=variation_id)
+                variation.availability = value
+                variation.save()
+
+        context = {
+                'products': Product.objects.all(),
+                'variation_tables': variation_tables,
+        }
+        return render(request, "availabilityconfig.html", context)
+
+
+def render_variation_to_colorful_html(variation):
+    if variation.availability == Variation.STATE_MANY_AVAILABLE:
+        return '<div class="text-center"><span class="badge badge-success">&#10003;</span></div>'
+    if variation.availability == Variation.STATE_FEW_AVAILABLE:
+        return '<div class="text-center"><span class="badge badge-warning">&#9888;</span></div>'
+    if variation.availability == Variation.STATE_SOLD_OUT:
+        return '<div class="text-center"><span class="badge badge-danger">&#10007;</span></div>'
+
 
 class DashboardView(TemplateView):
 

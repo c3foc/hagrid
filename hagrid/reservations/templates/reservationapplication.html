@@ -1,6 +1,16 @@
 
 {% extends "base.html" %}
 
+{% block head %}
+<style>
+.reservation-form .form-group label {
+  clear: left;
+  width: 120px;
+  text-align: left;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 
 <h2>Apply for Reservation</h2>
@@ -24,7 +34,7 @@
 </div>
 
 {% if store_settings.reservations_enabled %}
-  <form method="post">
+  <form method="post" class="reservation-form">
     {% csrf_token %}
       {% for field in form %}
         <div class="form-group">
