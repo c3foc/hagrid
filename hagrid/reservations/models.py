@@ -27,6 +27,7 @@ class Reservation(models.Model):
     contact_dect = models.CharField(max_length=10, blank=True)
     secret = models.CharField(max_length=16, unique=True)
     state = models.CharField(max_length=20, choices=STATES, default=STATE_UNAPPROVED)
+    comment = models.TextField(default="", blank=True)
 
     def __str__(self):
         return "Reservation for {} by {}".format(self.team_name, self.contact_name)

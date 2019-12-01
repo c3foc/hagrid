@@ -13,36 +13,53 @@
 
 <p>This is a reservation by {{ reservation.contact_name }} for {{reservation.team_name }}.</p>
 
+  <form method="post">
+    {% csrf_token %}
+      {% for field in comment_form %}
+      <div class="form-group" style="display: inline-block;">
+        <label>You can provide a comment with additional information:</label><br/>
+        {{ field.errors }}
+        {{ field }}
+        <input class="btn btn-secondary" type="submit" value="Save"/>
+      </div>
+      {% endfor %}
+  </form>
+
+<p></p>
+
 {% if reservation.state == reservation.STATE_CANCELLED %} 
 <div class="alert alert-danger" role="alert">
 Your reservation has been cancelled.
 </div>
 {% include "reservation_partoverview.html" with show_part_edit_buttons=request.user.is_superuser %}
 {% else %}
-
-<div class="accordion" id="accordionExample">
+<div class="accordion">
   <div class="card">
-    <div class="card-header {% if reservation.state == reservation.STATE_UNAPPROVED %}font-weight-bold{% endif %}" id="headingOne">
+    <div class="card-header {% if reservation.state == reservation.STATE_UNAPPROVED %}font-weight-bold{% endif %}">
       1. Application received
     </div>
-    <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_UNAPPROVED %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_UNAPPROVED %}show{% endif %}">
       <div class="card-body">
+        {% if reservation.state == reservation.STATE_UNAPPROVED %}
         <p>Please wait until we approve your reservation request.</p>
         {% include "reservation_partoverview.html" with show_part_edit_buttons=request.user.is_superuser %}
+        {% endif %}
       </div>
     </div>
   </div>
   <div class="card">
-    <div class="card-header {% if reservation.state  == reservation.STATE_EDITABLE %}font-weight-bold{% endif %}" id="headingOne">
+    <div class="card-header {% if reservation.state  == reservation.STATE_EDITABLE %}font-weight-bold{% endif %}">
       2. Edit Reservation {{request.user.is_superuser }}
     </div>
-    <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_EDITABLE %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_EDITABLE %}show{% endif %}">
       <div class="card-body">
+        {% if reservation.state == reservation.STATE_EDITABLE %}
         <p>Please edit your reservation now.</p>
         <p>A reservation consists of multiple parts. Each part contains a number of products. You can have a single part or multiple - one for each person or sub-team. You can add a meaningful title to each part. Choose wisely.</p>
 
         {% include "reservation_partoverview.html" with show_part_edit_buttons=True %}
         <a class="btn btn-primary" href="{% url "reservationsubmit" secret=reservation.secret %}">Submit Reservation</a>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -50,10 +67,12 @@ Your reservation has been cancelled.
     <div class="card-header {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}font-weight-bold{% endif %}" id="headingOne">
       3. Wait for packing
     </div>
-      <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}show{% endif %}">
       <div class="card-body">
+        {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}
         <p>Please wait while we pack your reservation. Here is what you ordered.</p>
         {% include "reservation_partoverview.html" with show_part_edit_buttons=request.user.is_superuser %}
+        {% endif %}
       </div>
     </div>
   </div>
@@ -61,10 +80,12 @@ Your reservation has been cancelled.
     <div class="card-header {% if reservation.state == reservation.STATE_READY %}font-weight-bold{% endif %}" id="headingOne">
       4. Pay and pick up
     </div>
-	<div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_READY %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordionExample">
+	<div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_READY %}show{% endif %}">
       <div class="card-body">
+        {% if reservation.state == reservation.STATE_READY %}
         <p>Please come and pick up your reservation at c3foc. Please bring the money in cash.</p>
         {% include "reservation_partoverview.html" with show_part_edit_buttons=request.user.is_superuser  %}
+        {% endif %}
       </div>
     </div>
   </div>
@@ -72,10 +93,12 @@ Your reservation has been cancelled.
     <div class="card-header {% if reservation.state == reservation.STATE_PICKED_UP %}font-weight-bold{% endif %}" id="headingOne">
       5. Done
     </div>
-	<div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_PICKED_UP %}show{% endif %}" aria-labelledby="headingOne" data-parent="#accordionExample">
+	<div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_PICKED_UP %}show{% endif %}">
       <div class="card-body">
+        {% if reservation.state == reservation.STATE_PICKED_UP %}
         <p>Thank you for choosing c3foc.</p>
         {% include "reservation_partoverview.html" with show_part_edit_buttons=request.user.is_superuser  %}
+        {% endif %}
       </div>
     </div>
   </div>
