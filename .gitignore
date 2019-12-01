@@ -125,5 +125,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# VIM plugin bullshit
+# VIM plugin artefacts
 .idea

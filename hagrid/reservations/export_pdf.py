@@ -1,3 +1,4 @@
+from django.utils.text import slugify
 from io import BytesIO
 
 from reportlab.pdfbase import pdfmetrics
@@ -110,10 +111,11 @@ class Document:
 
 
 def timestamp(filestr=True):
+    timestring: str = str(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
     if filestr:
-        return datetime.datetime.fromtimestamp(time.time()).strftime('%d_%m_%Y__%H_%M_Uhr')
+        return slugify(timestring)
     else:
-        return datetime.datetime.fromtimestamp(time.time()).strftime('%m/%d/%Y %H:%M:%S Uhr')
+        return timestring
 
 
 def generate_qr_code(link: str):
@@ -325,8 +327,8 @@ def export_invoices_as_pdf(reservations, filename: str, username = "nobody", tit
         The bytes of the PDF file
     """
     logger.debug("Exporting reservations: " + str(reservations))
-    d: Document = Document(filename, title, "The robots in slavery by " + str(username),
-            "This document, originally created at " + timestamp(filestr=False) + ", contains the requested reservations")
+    d: Document = Document(filename, title, "The robots in slavery by {0}.".format(str(username)),
+            "This document, originally created at {0}, contains the requested reservations.".format(timestamp(filestr=False)))
     reservation_counter = 0
     for r in reservations:
         reservation_counter += 1
