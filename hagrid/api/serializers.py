@@ -23,6 +23,7 @@ class SizeAPISerializer(serializers.ModelSerializer):
 
 class VariationAPISerializer(serializers.ModelSerializer):
     size = SizeAPISerializer()
+    product = ProductAPISerializer()
     class Meta:
         model = Variation
         fields = '__all__'
