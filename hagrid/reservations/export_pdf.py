@@ -303,6 +303,11 @@ def render_reservation(r: Reservation, d: Document):
     render_invoice_end(articles, d)
 
 
+def get_side_stip_text(r: Reservation):
+    return "Reservation state: {0}, Printed at {1}".format(
+            str(r.state), timestamp())
+
+
 def generate_packing_pdf(reservations, filename: str, username = "nobody", title = "C3FOC - Reservations"):
     """
     This method turns an array of reservations into a PDF file and returns its bytes.
@@ -326,15 +331,19 @@ def generate_packing_pdf(reservations, filename: str, username = "nobody", title
     bytes:
         The bytes of the PDF file
     """
+    if (len(reservations) < 1):
+        raise Exception("There needs to be at least one reservation to export.")
     logger.debug("Exporting reservations: " + str(reservations))
     d: Document = Document(filename, title, "The robots in slavery by {0}.".format(str(username)),
-            "This document, originally created at {0}, contains the requested reservations.".format(timestamp(filestr=False)))
+            "This document, originally created at {0}, contains the requested reservations.".format(timestamp(filestr=False)),
+            side_label=get_side_stip_text(reservations[0]))
     reservation_counter = 0
     for r in reservations:
         reservation_counter += 1
 
         # Test for document appending
         if reservation_counter != 1:
+            d.side_label = get_side_stip_text(r)
             d.page = 0
             d.new_page()
         
