@@ -303,7 +303,7 @@ def render_reservation(r: Reservation, d: Document):
     render_invoice_end(articles, d)
 
 
-def export_invoices_as_pdf(reservations, filename: str, username = "nobody", title = "C3FOC - Reservations"):
+def generate_packing_pdf(reservations, filename: str, username = "nobody", title = "C3FOC - Reservations"):
     """
     This method turns an array of reservations into a PDF file and returns its bytes.
 

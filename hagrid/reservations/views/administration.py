@@ -16,7 +16,7 @@ from django.utils.text import slugify
 from hagrid.products.views import SizeTable
 
 from ..models import Reservation, ReservationPart, ReservationPosition
-from ..export_pdf import export_invoices_as_pdf
+from ..export_pdf import generate_packing_pdf
 
 
 class StateChangeForm(forms.Form):
@@ -65,7 +65,7 @@ class ReservationPDFDownloadView(LoginRequiredMixin, View):
                 timestamp=datetime.datetime.now().strftime("%m-%d_%H%M%S")
         )
 
-        data = export_invoices_as_pdf([reservation], filename, username=request.user.username)
+        data = generate_packing_pdf([reservation], filename, username=request.user.username)
 
         response = HttpResponse(data, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
