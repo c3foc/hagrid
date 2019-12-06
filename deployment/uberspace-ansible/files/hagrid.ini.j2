@@ -1,0 +1,18 @@
+[uwsgi]
+base = /home/{{ ansible_user }}/hagrid/hagrid
+chdir = /home/{{ ansible_user }}/hagrid
+
+http = :8000
+master = true
+wsgi-file = %(base)/wsgi.py
+touch-reload = %(wsgi-file)
+static-map = /static=%(base)/static
+
+app = wsgi
+
+#virtualenv = %(chdir)/venv
+
+plugin = python
+
+uid = {{ ansible_user }}
+gid = {{ ansible_user }}

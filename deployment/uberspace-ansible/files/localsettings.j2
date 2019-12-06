@@ -1,0 +1,17 @@
+ALLOWED_HOSTS = ['{{ url }}']
+DEBUG = False
+
+DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': '{{ ansible_user }}_hagrid',
+            'USER': '{{ ansible_user }}',
+            'PASSWORD': '{{ db_password }}',
+            'HOST': 'localhost',
+            }
+        }
+
+STATIC_ROOT = "/var/www/virtual/{{ ansible_user }}/{{ url }}/static/"
+MEDIA_ROOT = "/var/www/virtual/{{ ansible_user }}/{{ url }}/media/"
+
+SECRET_KEY = "{{ django_secret }}"

@@ -1,0 +1,7 @@
+[program:uwsgi]
+command=uwsgi --master --emperor %(ENV_HOME)s/uwsgi/apps-enabled
+autostart=true
+autorestart=true
+stderr_logfile = ~/uwsgi/err.log
+stdout_logfile = ~/uwsgi/out.log
+stopsignal=INT

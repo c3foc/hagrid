@@ -1,0 +1,114 @@
+---
+- hosts: servers
+  vars:
+    install_root: ~/
+    project_repo: https://github.com/c3foc/hagrid.git
+  gather_facts: false
+
+  tasks:
+
+    - name: copy django_secret generator
+      template:
+        src: files/generate_django_secret.j2
+        dest: "{{ install_root }}generate_django_secret.sh"
+    - name: create django_secret file
+      shell: "sh {{ install_root }}generate_django_secret.sh"
+    - name: Read django_secret
+      shell: "cat {{ install_root }}.django-secret"
+      register: cmd_output
+    - name: Set django_secret as fact
+      set_fact:
+        django_secret: "{{ cmd_output.stdout }}"
+
+    - name: uberspace add domain
+      shell: uberspace web domain add {{ url }}
+      ignore_errors: yes  # if domain is added already, there is a non-zero exit code
+    - name: uberspace set application web backend
+      shell: uberspace web backend set {{ url }}/ --http --port 8000
+    - name: uberspace set static web backend
+      shell: uberspace web backend set {{ url }}/static/ --apache
+
+      # as we don't have private media files, we can serve them via apache
+    - name: uberspace set media web backend
+      shell: uberspace web backend set {{ url }}/media/ --apache
+
+    - name: Read Database password
+      shell: my_print_defaults client | grep password | cut -d "=" -f 2
+      register: cmd_output
+    - name: Set database password as fact
+      set_fact:
+        db_password: "{{ cmd_output.stdout }}"
+
+    - name: install uwsgi via pip
+      pip:
+        name: uwsgi
+        executable: ~/.local/bin/pip3
+        extra_args: --user
+      notify:
+      - restart uwsgi
+    - name: copy uwsgi config
+      template: src=files/uwsgi.j2 dest=~/etc/services.d/uwsgi.ini
+      notify:
+      - restart uwsgi
+    - name: create uwsgi apps-enabled directory
+      file:
+        path: ~/uwsgi/apps-enabled
+        state: directory
+    - name: create uwsgi err.log file
+      file:
+        path: ~/uwsgi/err.log
+        state: file
+    - name: create uwsgi out.log file
+      file:
+        path: ~/uwsgi/out.log
+        state: file
+
+    - name: Clone/pull project repo
+      git: 
+        repo: "{{ project_repo }}"
+        dest: "{{ install_root }}hagrid"
+        accept_hostkey: yes
+      notify:
+      - restart uwsgi
+
+    - name: install python packages from requirements file
+      pip:
+        requirements: "{{ install_root }}hagrid/requirements.txt"
+        executable: ~/.local/bin/pip3
+        extra_args: --user
+      notify:
+      - restart uwsgi
+
+    - name: copy hagrid localsettings
+      template:
+        src: "files/localsettings.j2"
+        dest: "{{ install_root }}hagrid/hagrid/local_settings.py"
+      notify:
+      - restart uwsgi
+
+    - name: django migrate
+      django_manage:
+        command: migrate
+        app_path: "{{ install_root }}hagrid"
+      notify:
+      - restart uwsgi
+
+    - name: django collectstatic
+      django_manage:
+        command: collectstatic
+        app_path: "{{ install_root }}hagrid"
+      notify:
+      - restart uwsgi
+
+    - name: copy hagrid uwsgi config
+      template:
+        src: "files/hagrid.ini.j2"
+        dest: "~/uwsgi/apps-enabled/hagrid.ini"
+      notify:
+      - restart uwsgi
+
+  handlers: 
+    - name: restart uwsgi
+      supervisorctl:
+        name: uwsgi
+        state: restarted
