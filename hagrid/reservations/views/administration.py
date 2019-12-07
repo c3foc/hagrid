@@ -102,7 +102,6 @@ class ReservationPackedAction(LoginRequiredMixin, View):
         f = ReservationPackedActionForm(request.POST)
         reservation = self.load_object_or_fail(secret, action_secret)
         if f.is_valid():
-            print(f.cleaned_data['i_checked_my_action'])
             if f.cleaned_data['i_checked_my_action']:
                 # We need to imply this additional check just in case
                 # someone manipulates the hypertext
