@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.utils.text import slugify
 from io import BytesIO
 
@@ -18,7 +19,6 @@ from hagrid.products.models import Variation
 
 logger = logging.getLogger(__name__)
 
-QR_TEXT_FORMAT = "https://c3foc.net/reservations/{0}/"
 
 NOTES_STYLE = ParagraphStyle('notesstyle', fontSize=11)
 ARTICLE_NOTES_STYLE = ParagraphStyle('articlestyle', fontSize=11)
@@ -158,7 +158,7 @@ def render_invoice_header(r: Reservation, d: Document):
     d.cursor_y -= textheight + 20
 
     # Render QR Code next to the comment
-    i = generate_qr_code(QR_TEXT_FORMAT.format(r.secret))
+    i = generate_qr_code(reverse('actionsetpacked', args=[r.secret, r.action_secret]))
     d.canvas.drawInlineImage(i, d.w - 150, d.h - 175, 125, 125)
 
     # Render Contact info below comment if short
@@ -304,8 +304,8 @@ def render_reservation(r: Reservation, d: Document):
 
 
 def get_side_stip_text(r: Reservation):
-    return "Reservation state: {0}, Printed at {1}".format(
-            str(r.state), timestamp())
+    return "Reservation ID: {2}, Reservation state: {0}, Printed at {1}".format(
+            str(r.state), timestamp(), r.id)
 
 
 def generate_packing_pdf(reservations, filename: str, username = "nobody", title = "C3FOC - Reservations"):

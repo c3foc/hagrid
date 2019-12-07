@@ -4,10 +4,12 @@ from collections import namedtuple
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.text import slugify
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
@@ -70,3 +72,44 @@ class ReservationPDFDownloadView(LoginRequiredMixin, View):
         response = HttpResponse(data, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
         return response
+
+
+class ReservationPackedActionForm(forms.Form):
+    i_checked_my_action = forms.BooleanField()
+
+
+class ReservationPackedAction(LoginRequiredMixin, View):
+
+    template_name = 'reservationactionpacked.html'
+
+
+    def load_object_or_fail(self, secret, action_secret):
+        reservation = get_object_or_404(Reservation, secret=secret)
+        if action_secret != slugify(str(reservation.action_secret)):
+            raise PermissionDenied("You don't have the permission to perform this action.")
+        return reservation
+
+
+    def get(self, request, secret, action_secret):
+        reservation = self.load_object_or_fail(secret, action_secret)
+        return render(request, self.template_name, {
+                'reservation': reservation,
+                'form': ReservationPackedActionForm(),
+            })
+
+
+    def post(self, request, secret, action_secret):
+        f = ReservationPackedActionForm(request.POST)
+        reservation = self.load_object_or_fail(secret, action_secret)
+        if f.is_valid():
+            print(f.cleaned_data['i_checked_my_action'])
+            if f.cleaned_data['i_checked_my_action']:
+                # We need to imply this additional check just in case
+                # someone manipulates the hypertext
+                reservation.state = Reservation.STATE_PACKED
+                reservation.save()
+        return render(request, self.template_name, {
+                'reservation': reservation,
+                'form': f,
+            })
+
