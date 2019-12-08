@@ -129,7 +129,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
     groups = []
     titles = []
 
-    part_set = []
+    sections = []
 
     if distinct_required:
         for part in ReservationPart.objects.all().filter(reservation=reservation):
@@ -374,4 +374,3 @@ def generate_packing_pdf(reservations, filename: str, username = "nobody", title
         
         render_reservation(r, d)
     return d.wrap_up()
-
