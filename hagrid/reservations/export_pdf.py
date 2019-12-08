@@ -132,20 +132,21 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
     sections = []
 
     if distinct_required:
-        for part in reservation.parts:
-            part_set.append([part])
+        for part in reservation.parts.all():
+            sections.append([part])
             titles.append("packing list for part {0}:".format(str(part.title)))
     else:
-        part_set = [reservation.parts]
+        sections = [reservation.parts.all()]
         titles.append("packing list:")
-    for part in part_set:
+
+    for part in sections:
         variation_dict = {}
-        for res_part in part:
-            for position in reservation_part.positions:
-                if p.variation in variation_dict:
-                    variation_dict[p.variation] += p.amount
+        for reservation_part in part:
+            for position in reservation_part.positions.all():
+                if position.variation in variation_dict:
+                    variation_dict[position.variation] += position.amount
                 else:
-                    variation_dict[p.variation] = p.amount
+                    variation_dict[position.variation] = position.amount
         article_list = []
         for entry in variation_dict:
             article_list.append((entry, variation_dict[entry]))
