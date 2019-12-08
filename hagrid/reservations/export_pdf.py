@@ -310,7 +310,7 @@ def render_invoice_end(l, d: Document):
 
 
 def render_reservation(r: Reservation, d: Document):
-    if r.state == r.STATE_SUBMITTED:
+    if r.state == Reservation.STATE_SUBMITTED:
         d.set_watermark("")
     else:
         d.set_watermark(str(r.state))
