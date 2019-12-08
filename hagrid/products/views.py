@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.views import View
 from django.views.generic import TemplateView
 
-from .models import Product, Size, SizeGroup, Variation
+from .models import Product, Size, SizeGroup, Variation, VariationAvailabilityEvent
 
 
 class SizeTable:
@@ -172,6 +172,14 @@ class VariationChangeAvailabilityView(LoginRequiredMixin, View):
         }
         return render(request, "availabilityconfig.html", context)
 
+
+class VariationAvailabilityEventListView(LoginRequiredMixin, TemplateView):
+    template_name = "variationavailabilityeventlist.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['change_events'] = VariationAvailabilityEvent.objects.order_by('-datetime')
+        return context
 
 def render_variation_to_colorful_html(variation):
     if variation.availability == Variation.STATE_MANY_AVAILABLE:

@@ -77,9 +77,32 @@ class Variation(models.Model):
         return "{} ({})".format(str(self.product), str(self.size))
 
 
-class AvailabilityEvent(models.Model):
+class VariationAvailabilityEvent(models.Model):
     old_state = models.CharField(max_length=20, choices=Variation.AVAILABILITY_STATES)
     new_state = models.CharField(max_length=20, choices=Variation.AVAILABILITY_STATES)
     datetime = models.DateTimeField(auto_now=True)
     variation = models.ForeignKey(Variation, related_name='events', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return "At {} {} changed from {} to {}".format(
+                self.datetime.strftime('%Y-%m-%d %H:%M:%S'),
+                str(self.variation),
+                self.old_state,
+                self.new_state
+        )
+
+
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
+
+@receiver(pre_save, sender=Variation, dispatch_uid="my_unique_identifier")
+def variation_availability_change(sender, instance,  **kwargs):
+    new_instance = instance
+    old_instance = Variation.objects.get(pk=instance.pk)
+    if new_instance.availability != old_instance.availability:
+        VariationAvailabilityEvent(
+            old_state=old_instance.availability,
+            new_state=new_instance.availability,
+            variation=instance
+        ).save()
