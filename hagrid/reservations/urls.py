@@ -9,6 +9,7 @@ urlpatterns = [
     path('administration/', administration.ReservationAdministrationView.as_view(), name='reservationadministration'),
     path('administration/pdf/<int:reservation_id>/', administration.ReservationPDFDownloadView.as_view(), name='reservationpdf'),
     path('<slug:secret>/', teams.ReservationDetailView.as_view(), name='reservationdetail'),
+    path('<slug:secret>/action/<slug:action_secret>/packed/', administration.ReservationPackedAction.as_view(), name='actionsetpacked'),
     path('<slug:secret>/submit/', teams.ReservationSubmitView.as_view(), name='reservationsubmit'),
     path('<slug:secret>/part/create/', teams.ReservationPartCreateView.as_view(), name='reservationpartcreate'),
     path('<slug:secret>/part/<int:part_id>/', teams.ReservationPartDetailView.as_view(), name='reservationpartdetail'),

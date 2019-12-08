@@ -9,3 +9,5 @@ Markdown==3.1.1
 Pillow==6.2.0
 pytz==2019.2
 sqlparse==0.3.0
+reportlab==3.5.23
+qrcode==6.1

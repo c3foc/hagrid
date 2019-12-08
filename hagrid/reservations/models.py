@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -26,6 +28,7 @@ class Reservation(models.Model):
     contact_mail = models.EmailField(blank=True)
     contact_dect = models.CharField(max_length=10, blank=True)
     secret = models.CharField(max_length=16, unique=True)
+    action_secret = models.UUIDField(default=uuid.uuid4)
     state = models.CharField(max_length=20, choices=STATES, default=STATE_UNAPPROVED)
     comment = models.TextField(default="", blank=True)
 
