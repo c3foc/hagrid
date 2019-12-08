@@ -46,6 +46,12 @@ INSTALLED_APPS = [
     'hagrid.api',
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
 LOGIN_URL = "admin:login"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")

@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.decorators.cache import cache_page
 from hagrid.products.views import DashboardView
 
 urlpatterns = [
-    path('', DashboardView.as_view(), name='dashboard'),
+    path('', cache_page(10)(DashboardView.as_view()), name='dashboard'),
     path('admin/', admin.site.urls),
     path('products/', include('hagrid.products.urls')),
     path('reservations/', include('hagrid.reservations.urls')),
