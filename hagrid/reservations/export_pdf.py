@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.urls import reverse
 from django.utils.text import slugify
 from io import BytesIO
@@ -140,7 +142,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
         titles.append("packing list:")
 
     for part in sections:
-        variation_dict = {}
+        variation_dict = Counter()
         for reservation_part in part:
             for position in reservation_part.positions.all():
                 if position.variation in variation_dict:
