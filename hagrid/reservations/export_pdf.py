@@ -141,7 +141,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
     for part in part_set:
         variation_dict = {}
         for res_part in part:
-            for p in ReservationPosition.objects.all().filter(part=res_part):
+            for position in reservation_part.positions:
                 if p.variation in variation_dict:
                     variation_dict[p.variation] += p.amount
                 else:
