@@ -125,18 +125,33 @@ def generate_qr_code(link: str):
     return qr.make_image()
 
 
-def generate_collection_list(reservation: Reservation):
-    variation_dict = {}
-    for res_part in ReservationPart.objects.all().filter(reservation=reservation):
-        for p in ReservationPosition.objects.all().filter(part=res_part):
-            if p.variation in variation_dict:
-                variation_dict[p.variation] += p.amount
-            else:
-                variation_dict[p.variation] = p.amount
-    article_list = []
-    for entry in variation_dict:
-        article_list.append((entry, variation_dict[entry]))
-    return sorted(article_list, key=lambda t: str(t[0]))
+def generate_collection_list(reservation: Reservation, distinct_required = False):
+    groups = []
+    titles = []
+
+    part_set = []
+
+    if distinct_required:
+        for part in ReservationPart.objects.all().filter(reservation=reservation):
+            part_set.append([part])
+            titles.append("packing list for part {0}:".format(str(part.title)))
+    else:
+        part_set = [ReservationPart.objects.all().filter(reservation=reservation)]
+        titles.append("packing list:")
+    for part in part_set:
+        variation_dict = {}
+        for res_part in part:
+            for p in ReservationPosition.objects.all().filter(part=res_part):
+                if p.variation in variation_dict:
+                    variation_dict[p.variation] += p.amount
+                else:
+                    variation_dict[p.variation] = p.amount
+        article_list = []
+        for entry in variation_dict:
+            article_list.append((entry, variation_dict[entry]))
+        groups.append(sorted(article_list, key=lambda t: t[0].__str__()))
+
+    return groups, titles
 
 
 def render_invoice_header(r: Reservation, d: Document):
@@ -178,8 +193,8 @@ def render_invoice_header(r: Reservation, d: Document):
     d.canvas.setFont("Helvetica", 11)
 
 
-def render_collection_table_header(d: Document):
-    d.canvas.drawString(d.cursor_x, d.cursor_y - 5, "packing list: ")
+def render_collection_table_header(d: Document, title: str):
+    d.canvas.drawString(d.cursor_x, d.cursor_y - 5, title)
     d.cursor_y -= 15
 
     d.canvas.line(d.cursor_x, d.cursor_y, d.w - d.right_inset, d.cursor_y)
@@ -228,13 +243,14 @@ def render_collection_list_entry(pos: Variation, amount: int, d: Document):
     d.cursor_y -= 15
 
 
-def render_collection_list(l, d: Document):
-    render_collection_table_header(d)
+def render_collection_list(l, d: Document, title: str = "packing list:"):
+    render_collection_table_header(d, title)
     for request in l:
         if d.cursor_y < (75 + 15):
             d.new_page()
-            render_collection_table_header(d)
+            render_collection_table_header(d, title)
         render_collection_list_entry(request[0], request[1], d)
+    d.cursor_y -= 15
 
 
 def render_settlement_head(d: Document):
@@ -293,14 +309,23 @@ def render_invoice_end(l, d: Document):
 
 
 def render_reservation(r: Reservation, d: Document):
-    if r.state == Reservation.STATE_SUBMITTED:
+    if r.state == r.STATE_SUBMITTED:
         d.set_watermark("")
     else:
         d.set_watermark(str(r.state))
-    articles = generate_collection_list(r)
+    articles, titles = generate_collection_list(r, r.packing_mode == Reservation.PACKING_MODE_SEPERATED_PARTS)
     render_invoice_header(r, d)
-    render_collection_list(articles, d)
-    render_invoice_end(articles, d)
+    for i in range(len(articles)):
+        article_group = articles[i]
+        title = titles[i]
+        render_collection_list(article_group, d, title)
+    if len(articles) > 1:
+        # We need to regenerate the list (this time without separation)
+        # As we still want a single sum
+        articles, titles = generate_collection_list(r, False)
+        render_invoice_end(articles[0], d)
+    else:
+        render_invoice_end(articles[0], d)
 
 
 def get_side_stip_text(r: Reservation):
