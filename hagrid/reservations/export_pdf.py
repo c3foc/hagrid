@@ -145,10 +145,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
         variation_dict = Counter()
         for reservation_part in part:
             for position in reservation_part.positions.all():
-                if position.variation in variation_dict:
-                    variation_dict[position.variation] += position.amount
-                else:
-                    variation_dict[position.variation] = position.amount
+                variation_dict[position.variation] += position.amount
         article_list = []
         for entry in variation_dict:
             article_list.append((entry, variation_dict[entry]))
