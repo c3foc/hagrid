@@ -24,15 +24,3 @@ Run `python3 manage.py collectstatic` to collect all static files into the `stat
 
 All configuration/management views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage.
 
-### Todo List
-
-New Features
-* let teams add a note to the whole reservation
-* email notifications und SIP/DECT notifications
-* Dashboard API
-* Provide reason note for cancellation
-* Race conditions?
-
-Enhancements
-* Size, Sizegroup, Image and Product reodering and editing outside django admin
-* Own Login/Logout/Usermanagement
