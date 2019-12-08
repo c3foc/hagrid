@@ -136,7 +136,7 @@ def generate_collection_list(reservation: Reservation):
     article_list = []
     for entry in variation_dict:
         article_list.append((entry, variation_dict[entry]))
-    return sorted(article_list, key=lambda t: t[0].__str__())
+    return sorted(article_list, key=lambda t: str(t[0]))
 
 
 def render_invoice_header(r: Reservation, d: Document):
@@ -293,7 +293,7 @@ def render_invoice_end(l, d: Document):
 
 
 def render_reservation(r: Reservation, d: Document):
-    if r.state == r.STATE_SUBMITTED:
+    if r.state == Reservation.STATE_SUBMITTED:
         d.set_watermark("")
     else:
         d.set_watermark(str(r.state))
