@@ -132,7 +132,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
     sections = []
 
     if distinct_required:
-        for part in ReservationPart.objects.all().filter(reservation=reservation):
+        for part in reservation.parts:
             part_set.append([part])
             titles.append("packing list for part {0}:".format(str(part.title)))
     else:
