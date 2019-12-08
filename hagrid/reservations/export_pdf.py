@@ -136,7 +136,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
             part_set.append([part])
             titles.append("packing list for part {0}:".format(str(part.title)))
     else:
-        part_set = [ReservationPart.objects.all().filter(reservation=reservation)]
+        part_set = [reservation.parts]
         titles.append("packing list:")
     for part in part_set:
         variation_dict = {}
@@ -374,5 +374,4 @@ def generate_packing_pdf(reservations, filename: str, username = "nobody", title
         
         render_reservation(r, d)
     return d.wrap_up()
-
 
