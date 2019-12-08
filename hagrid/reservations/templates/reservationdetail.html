@@ -13,18 +13,17 @@
 
 <p>This is a reservation by {{ reservation.contact_name }} for {{reservation.team_name }}.</p>
 
-  <form method="post">
+  <form method="post" autocomplete="off">
     {% csrf_token %}
-      {% for field in comment_form %}
-      <div class="form-group" style="display: inline-block;">
-        <label>While being able to edit the reservation, you can provide a comment with additional information:</label><br/>
-        {{ field.errors }}
-        {{ field }}
-        {% if request.user.is_superuser or reservation.state == reservation.STATE_EDITABLE %}
-        <input class="btn btn-secondary" type="submit" value="Save"/>
-        {% endif %}
-      </div>
-      {% endfor %}
+    <label>While being able to edit the reservation, you can provide a comment with additional information. Also, you can choose wether we should pack each reservation part into an individual bag, so it's easier for you to distribute later, or wether we can aggregate everything to ease packing.</label><br/>
+
+    <table>
+    {{ comment_form.as_table }}
+    </table>
+
+    {% if request.user.is_superuser or reservation.state == reservation.STATE_EDITABLE %}
+    <input class="btn btn-secondary" type="submit" value="Save"/>
+    {% endif %}
   </form>
 
 <p></p>

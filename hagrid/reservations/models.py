@@ -23,6 +23,14 @@ class Reservation(models.Model):
             (STATE_PICKED_UP, 'picked up'),
             (STATE_CANCELLED, 'cancelled'),
     ]
+
+    PACKING_MODE_AGGREGATED = 'aggregated'
+    PACKING_MODE_SEPERATED_PARTS = 'seperated parts'
+    PACKING_MODES = [
+            (PACKING_MODE_AGGREGATED, "Don't seperate reservation parts"),
+            (PACKING_MODE_SEPERATED_PARTS, "Pack every reservation part individually")
+    ]
+
     team_name = models.CharField(max_length=30)
     contact_name = models.CharField(max_length=30)
     contact_mail = models.EmailField(blank=True)
@@ -31,6 +39,7 @@ class Reservation(models.Model):
     action_secret = models.UUIDField(default=uuid.uuid4)
     state = models.CharField(max_length=20, choices=STATES, default=STATE_UNAPPROVED)
     comment = models.TextField(default="", blank=True)
+    packing_mode = models.CharField(max_length=20, choices=PACKING_MODES, default=PACKING_MODE_AGGREGATED)
 
     def __str__(self):
         return "Reservation for {} by {}".format(self.team_name, self.contact_name)

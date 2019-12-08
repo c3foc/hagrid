@@ -33,47 +33,49 @@ def require_reservation_state(required_state, superuser_bypass=False):
     return decorator
 
 
-
-
 class ReservationCommentForm(forms.ModelForm):
 
     def __init__(self, *args, editable=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['comment'].widget.attrs['rows'] = 2
-        self.fields['comment'].widget.attrs['style'] = "float: left; margin-right: 10px"
         if not editable:
-            self.fields['comment'].widget.attrs['readonly'] = "readonly"
+            for field in self.fields.values():
+                field.disabled = True 
 
     class Meta:
         model = Reservation
-        fields = ['comment']
+        fields = ['comment', 'packing_mode']
 
 
 class ReservationDetailView(TemplateView):
     template_name = 'reservationdetail.html'
 
+    def get_form(self, request, reservation):
+        return ReservationCommentForm(
+                request.POST or None,
+                instance=reservation,
+                editable=reservation.state==Reservation.STATE_EDITABLE or request.user.is_superuser
+        )
+
+
     def get(self, request, secret):
         reservation = get_object_or_404(Reservation, secret=secret)
         return render(request, self.template_name, {
             'reservation': reservation,
-            'comment_form': ReservationCommentForm(
-                instance=reservation,
-                editable=reservation.state==Reservation.STATE_EDITABLE or request.user.is_superuser
-            ),
+            'comment_form': self.get_form(request, reservation),
         })
 
     @require_reservation_state(Reservation.STATE_EDITABLE, superuser_bypass=True)
     def post(self, request, secret):
         reservation = get_object_or_404(Reservation, secret=secret)
-        form = ReservationCommentForm(request.POST, instance=reservation)
+        form = self.get_form(request, reservation)
         if form.is_valid():
-            reservation.comment = form.cleaned_data['comment']
-            reservation.save()
-            messages.add_message(self.request, messages.SUCCESS, 'Comment has been updated.')
+            form.save()
+            messages.add_message(self.request, messages.SUCCESS, 'Information has been updated.')
             return redirect('reservationdetail', secret=secret)
         return render(request, self.template_name, {
             'reservation': reservation,
-            'comment_form': form,
+            'comment_form': self.get_form(request, reservation),
         })
 
 
