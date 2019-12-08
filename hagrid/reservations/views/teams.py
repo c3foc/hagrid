@@ -24,7 +24,8 @@ def require_reservation_state(required_state, superuser_bypass=False):
                 return func(self, request, *args, **kwargs)
             if superuser_bypass and request.user.is_superuser:
                 if request.method == "GET":
-                    messages.add_message(request, messages.WARNING, 'You are allowed on this page only because you are a superuser.')
+                    messages.add_message(request, messages.WARNING,
+                            'You are allowed on this page only because you are a superuser.')
                 return func(self, request, *args, **kwargs)
             messages.add_message(request, messages.ERROR, 'This action is forbidden.')
             return redirect('reservationdetail', secret=kwargs['secret'])
@@ -36,10 +37,12 @@ def require_reservation_state(required_state, superuser_bypass=False):
 
 class ReservationCommentForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, editable=False, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['comment'].widget.attrs['rows'] = 1
+        self.fields['comment'].widget.attrs['rows'] = 2
         self.fields['comment'].widget.attrs['style'] = "float: left; margin-right: 10px"
+        if not editable:
+            self.fields['comment'].widget.attrs['readonly'] = "readonly"
 
     class Meta:
         model = Reservation
@@ -49,15 +52,17 @@ class ReservationCommentForm(forms.ModelForm):
 class ReservationDetailView(TemplateView):
     template_name = 'reservationdetail.html'
 
-    @require_reservation_state(Reservation.STATE_EDITABLE)
     def get(self, request, secret):
         reservation = get_object_or_404(Reservation, secret=secret)
         return render(request, self.template_name, {
             'reservation': reservation,
-            'comment_form': ReservationCommentForm(instance=reservation),
+            'comment_form': ReservationCommentForm(
+                instance=reservation,
+                editable=reservation.state==Reservation.STATE_EDITABLE or request.user.is_superuser
+            ),
         })
 
-    @require_reservation_state(Reservation.STATE_EDITABLE)
+    @require_reservation_state(Reservation.STATE_EDITABLE, superuser_bypass=True)
     def post(self, request, secret):
         reservation = get_object_or_404(Reservation, secret=secret)
         form = ReservationCommentForm(request.POST, instance=reservation)
