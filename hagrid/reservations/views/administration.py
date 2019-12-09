@@ -19,6 +19,7 @@ from hagrid.products.views import SizeTable
 
 from ..models import Reservation, ReservationPart, ReservationPosition
 from ..export_pdf import generate_packing_pdf
+from ..export_csv import generate_reservation_csv
 
 
 class StateChangeForm(forms.Form):
@@ -70,6 +71,22 @@ class ReservationPDFDownloadView(LoginRequiredMixin, View):
         data = generate_packing_pdf([reservation], filename, username=request.user.username)
 
         response = HttpResponse(data, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+        return response
+
+
+class ReservationCSVDownloadView(LoginRequiredMixin, View):
+    def get(self, request, reservation_id):
+        reservation = get_object_or_404(Reservation, id=reservation_id)
+        filename = "c3foc-reservation_{number:02d}-{team_name}_{timestamp}.csv".format(
+                number=reservation.id,
+                team_name=slugify(reservation.team_name),
+                timestamp=datetime.datetime.now().strftime("%y-%m-%d_%H%M%S")
+        )
+
+        data = generate_reservation_csv([reservation])
+
+        response = HttpResponse(data, content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
         return response
 
