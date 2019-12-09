@@ -27,12 +27,16 @@ class SizeTable:
 
     def generate_entries(self):
         rows = []
+        all_variations = Variation.objects.all()
+        bool(all_variations)  # cache all variations in queryset
+        sizegroup_sizes = self.sizegroup.sizes.all()
+
         for product in Product.objects.all():
             row = [product.name]
             found_variation = False
-            for size in self.sizegroup.sizes.all():
+            for size in sizegroup_sizes:
                 try:
-                    variation = Variation.objects.get(product=product, size=size)
+                    variation = all_variations.get(product=product, size=size)
                     row.append(self.render_variation(variation))
                     found_variation = True
                 except Variation.DoesNotExist:
