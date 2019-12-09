@@ -1,5 +1,6 @@
 from collections import Counter
 
+from django.http.request import HttpRequest
 from django.urls import reverse
 from django.utils.text import slugify
 from io import BytesIO
@@ -154,7 +155,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
     return groups, titles
 
 
-def render_invoice_header(r: Reservation, d: Document):
+def render_invoice_header(r: Reservation, d: Document, request: HttpRequest):
     # render reservation header
     d.canvas.setFillColor(black)
     d.canvas.setFont("Helvetica", 14)
@@ -173,7 +174,7 @@ def render_invoice_header(r: Reservation, d: Document):
     d.cursor_y -= textheight + 20
 
     # Render QR Code next to the comment
-    i = generate_qr_code(reverse('actionsetpacked', args=[r.secret, r.action_secret]))
+    i = generate_qr_code(request.build_absolute_uri(reverse('actionsetpacked', args=[r.secret, r.action_secret])))
     d.canvas.drawInlineImage(i, d.w - 150, d.h - 175, 125, 125)
 
     # Render Contact info below comment if short
@@ -308,13 +309,13 @@ def render_invoice_end(l, d: Document):
     d.canvas.drawString(260, d.cursor_y - 10, "Signature of person who checked")
 
 
-def render_reservation(r: Reservation, d: Document):
+def render_reservation(r: Reservation, d: Document, request: HttpRequest):
     if r.state == Reservation.STATE_SUBMITTED:
         d.set_watermark("")
     else:
         d.set_watermark(str(r.state))
     articles, titles = generate_collection_list(r, r.packing_mode == Reservation.PACKING_MODE_SEPERATED_PARTS)
-    render_invoice_header(r, d)
+    render_invoice_header(r, d, request)
     for i in range(len(articles)):
         article_group = articles[i]
         title = titles[i]
@@ -333,7 +334,8 @@ def get_side_stip_text(r: Reservation):
             str(r.state), timestamp(), r.id)
 
 
-def generate_packing_pdf(reservations, filename: str, username = "nobody", title = "C3FOC - Reservations"):
+def generate_packing_pdf(reservations, filename: str, request: HttpRequest,
+            username = "nobody", title = "C3FOC - Reservations"):
     """
     This method turns an array of reservations into a PDF file and returns its bytes.
 
@@ -341,6 +343,10 @@ def generate_packing_pdf(reservations, filename: str, username = "nobody", title
     ----------
     reservations: [Reservation]
         An array containing the reservations that should receive an invoice
+
+    request: HttpRequest
+        The request of the user. This is required in order to build an absolute
+        URL without hard coding the server DNS address somewhere.
 
     filename: str
         The original file name
@@ -372,5 +378,5 @@ def generate_packing_pdf(reservations, filename: str, username = "nobody", title
             d.page = 0
             d.new_page()
         
-        render_reservation(r, d)
+        render_reservation(r, d, request)
     return d.wrap_up()
