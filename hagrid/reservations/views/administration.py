@@ -75,7 +75,14 @@ class ReservationPDFDownloadView(LoginRequiredMixin, View):
 
 
 class ReservationPackedActionForm(forms.Form):
+
+    BEHAVIOUR_CHOICES = [('behaviour__set_packed', 'Only set reservation to packed'),
+            ('behaviour__set_ready_for_pickup', 'Set reservation to packed and ready for pickup')]
+
     i_checked_my_action = forms.BooleanField()
+    requested_behaviour = forms.ChoiceField(label="Desired Action: ",
+            widget=forms.RadioSelect, choices=BEHAVIOUR_CHOICES,
+            initial='behaviour__set_packed')
 
 
 class ReservationPackedAction(LoginRequiredMixin, View):
@@ -105,7 +112,10 @@ class ReservationPackedAction(LoginRequiredMixin, View):
             if f.cleaned_data['i_checked_my_action']:
                 # We need to imply this additional check just in case
                 # someone manipulates the hypertext
-                reservation.state = Reservation.STATE_PACKED
+                if f.cleaned_data['requested_behaviour'] == 'behaviour__set_packed':
+                    reservation.state = Reservation.STATE_PACKED
+                elif f.cleaned_data['requested_behaviour'] == 'behaviour__set_ready_for_pickup':
+                    reservation.state = Reservation.STATE_READY
                 reservation.save()
         return render(request, self.template_name, {
                 'reservation': reservation,
