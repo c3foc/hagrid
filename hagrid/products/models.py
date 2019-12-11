@@ -71,7 +71,7 @@ class Variation(models.Model):
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="variations")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     initial_amount = models.IntegerField(default=100)
-    availability = models.CharField(default=AVAILABILITY_STATES[0], max_length=20, choices=AVAILABILITY_STATES)
+    availability = models.CharField(default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES)
 
     def __str__(self):
         return "{} ({})".format(str(self.product), str(self.size))
@@ -99,7 +99,10 @@ from django.dispatch import receiver
 @receiver(pre_save, sender=Variation, dispatch_uid="my_unique_identifier")
 def variation_availability_change(sender, instance,  **kwargs):
     new_instance = instance
-    old_instance = Variation.objects.get(pk=instance.pk)
+    try:
+        old_instance = Variation.objects.get(pk=instance.pk)
+    except Variation.DoesNotExist:
+        return
     if new_instance.availability != old_instance.availability:
         VariationAvailabilityEvent(
             old_state=old_instance.availability,
