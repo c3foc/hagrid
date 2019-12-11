@@ -67,7 +67,7 @@ class ReservationPDFDownloadView(LoginRequiredMixin, View):
                 timestamp=datetime.datetime.now().strftime("%m-%d_%H%M%S")
         )
 
-        data = generate_packing_pdf([reservation], filename, request, username=request.user.username)
+        data = generate_packing_pdf([reservation], filename, username=request.user.username)
 
         response = HttpResponse(data, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)

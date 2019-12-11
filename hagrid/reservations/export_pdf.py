@@ -1,5 +1,6 @@
 from collections import Counter
 
+from django.conf import settings
 from django.http.request import HttpRequest
 from django.urls import reverse
 from django.utils.text import slugify
@@ -155,7 +156,7 @@ def generate_collection_list(reservation: Reservation, distinct_required = False
     return groups, titles
 
 
-def render_invoice_header(r: Reservation, d: Document, request: HttpRequest):
+def render_invoice_header(r: Reservation, d: Document):
     # render reservation header
     d.canvas.setFillColor(black)
     d.canvas.setFont("Helvetica", 14)
@@ -174,7 +175,14 @@ def render_invoice_header(r: Reservation, d: Document, request: HttpRequest):
     d.cursor_y -= textheight + 20
 
     # Render QR Code next to the comment
-    i = generate_qr_code(request.build_absolute_uri(reverse('actionsetpacked', args=[r.secret, r.action_secret])))
+    url_string = "https://localhost:8000"
+    try:
+        url_string = str(settings.SITE_URL)
+        if url_string.endswith('/'):
+            url_string = url_string[:-1]
+    except AttributeError as e:
+        logger.warn("SITE_URL isn't set in settings. Defaulting to localhost:8000")
+    i = generate_qr_code(str(url_string + "{0}").format(reverse('actionsetpacked', args=[r.secret, r.action_secret])))
     d.canvas.drawInlineImage(i, d.w - 150, d.h - 175, 125, 125)
 
     # Render Contact info below comment if short
@@ -309,13 +317,13 @@ def render_invoice_end(l, d: Document):
     d.canvas.drawString(260, d.cursor_y - 10, "Signature of person who checked")
 
 
-def render_reservation(r: Reservation, d: Document, request: HttpRequest):
+def render_reservation(r: Reservation, d: Document):
     if r.state == Reservation.STATE_SUBMITTED:
         d.set_watermark("")
     else:
         d.set_watermark(str(r.state))
     articles, titles = generate_collection_list(r, r.packing_mode == Reservation.PACKING_MODE_SEPERATED_PARTS)
-    render_invoice_header(r, d, request)
+    render_invoice_header(r, d)
     for i in range(len(articles)):
         article_group = articles[i]
         title = titles[i]
@@ -334,19 +342,17 @@ def get_side_stip_text(r: Reservation):
             str(r.state), timestamp(), r.id)
 
 
-def generate_packing_pdf(reservations, filename: str, request: HttpRequest,
+def generate_packing_pdf(reservations, filename: str,
             username = "nobody", title = "C3FOC - Reservations"):
     """
     This method turns an array of reservations into a PDF file and returns its bytes.
+    This module makes ussage of the SITE_URL setting. If this setting isn't set it
+    defaults to https://localhost:8000
 
     Parameters
     ----------
     reservations: [Reservation]
         An array containing the reservations that should receive an invoice
-
-    request: HttpRequest
-        The request of the user. This is required in order to build an absolute
-        URL without hard coding the server DNS address somewhere.
 
     filename: str
         The original file name
@@ -378,5 +384,5 @@ def generate_packing_pdf(reservations, filename: str, request: HttpRequest,
             d.page = 0
             d.new_page()
         
-        render_reservation(r, d, request)
+        render_reservation(r, d)
     return d.wrap_up()
