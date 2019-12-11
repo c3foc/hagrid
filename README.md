@@ -16,7 +16,28 @@ This is a software for merchandise sale at Chaos Communication Congress.
 
 ### Setup
 
-For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` in a seperate python environment to install the dependencies. Make sure to adjust the `ALLOWED_HOSTS`, `DEBUG`, `SECRET_KEY`, `MEDIA_ROOT` and `DATABASES` settings in a `local_settings.py` for use in production. See the [Django Docs](https://docs.djangoproject.com/en/2.2/ref/settings/) on what these do.
+For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` (in a seperate python environment/virtualenv) to install the dependencies.
+
+#### Development
+
+Setting up hagrid for local development is simple.
+
+1. Run `./manage.py migrate` to setup a test database.
+2. Run `./manage.py createsuperuser` to setup a default admin user.
+3. Run `./manage.py runserver` to start the local development server.
+
+#### Production
+
+Make sure to adjust the following settings in a `local_settings.py` for use in production.
+
+* `ALLOWED_HOSTS`
+* `DEBUG` (should be `False`)
+* `SECRET_KEY` (should be random and secret)
+* `SITE_URL` (URL for building absolute links)
+* `MEDIA_ROOT` (where to put user-uploaded content)
+* `DATABASES`
+
+See the [Django Docs](https://docs.djangoproject.com/en/2.2/ref/settings/) or the comments in `settings.py` on what these do.
 
 Run `python3 manage.py migrate` to initialize the database.
 

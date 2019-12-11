@@ -14,8 +14,6 @@ import os
 
 from django.contrib.messages import constants as messages
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,7 +25,13 @@ SECRET_KEY = '+=n8nd#f*60%g3ohstl)#1+-8mu!ndq*)q#=_z1dsgtzv9izc+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# SITE_URL like "http://hagrid.example.com" that will be used to build absolute URLs (e.q. for qr-codes)
+SITE_URL = "http://localhost:8000"
+
 ALLOWED_HOSTS = []
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if DEBUG:
     CACHES = {
@@ -160,3 +164,6 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+if SITE_URL.endswith('/'):
+    SITE_URL = SITE_URL[:-1]

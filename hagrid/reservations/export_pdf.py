@@ -2,6 +2,7 @@ from collections import Counter
 
 from django.urls import reverse
 from django.utils.text import slugify
+from hagrid import settings
 from io import BytesIO
 
 from reportlab.pdfbase import pdfmetrics
@@ -173,7 +174,10 @@ def render_invoice_header(r: Reservation, d: Document):
     d.cursor_y -= textheight + 20
 
     # Render QR Code next to the comment
-    i = generate_qr_code(reverse('actionsetpacked', args=[r.secret, r.action_secret]))
+    i = generate_qr_code("{}{}".format(
+        settings.SITE_URL,
+        reverse('actionsetpacked', args=[r.secret, r.action_secret])
+    ))
     d.canvas.drawInlineImage(i, d.w - 150, d.h - 175, 125, 125)
 
     # Render Contact info below comment if short
