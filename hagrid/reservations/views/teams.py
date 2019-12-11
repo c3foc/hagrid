@@ -256,7 +256,10 @@ class ReservationPartDetailView(View):
 class ReservationApplicationForm(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = ['team_name', 'contact_name', 'contact_mail', 'contact_dect']
+        fields = ['team_name', 'contact_name', 'contact_mail', 'contact_dect', 'comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows':2}),
+        }
 
 
 class ReservationApplicationView(FormView):
