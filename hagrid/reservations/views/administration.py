@@ -79,8 +79,8 @@ class ReservationPackedActionForm(forms.Form):
     BEHAVIOUR_CHOICES = [('behaviour__set_packed', 'Only set reservation to packed'),
             ('behaviour__set_ready_for_pickup', 'Set reservation to packed and ready for pickup')]
 
-    i_checked_my_action = forms.BooleanField()
-    requested_behaviour = forms.ChoiceField(label="Desired Action: ",
+    i_checked_my_action = forms.BooleanField(label="I know what I'm doing and checked my actions")
+    requested_behaviour = forms.ChoiceField(label="Desired Action",
             widget=forms.RadioSelect, choices=BEHAVIOUR_CHOICES,
             initial='behaviour__set_packed')
 
