@@ -50,7 +50,7 @@ Your reservation has been cancelled.
   </div>
   <div class="card">
     <div class="card-header {% if reservation.state  == reservation.STATE_EDITABLE %}font-weight-bold{% endif %}">
-      2. Edit Reservation {{request.user.is_superuser }}
+      2. Edit Reservation
     </div>
     <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_EDITABLE %}show{% endif %}">
       <div class="card-body">
