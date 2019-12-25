@@ -60,7 +60,7 @@ body {
       <li class="nav-item">
         <a class="nav-link font-weight-bold" href="{% url 'reservationadministration' %}">Reservations</a>
       </li>
-      {% else %}
+      {% elif store_settings.login_link_in_navbar %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'admin:login' %}?next=/">Login</a>
       </li>
