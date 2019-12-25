@@ -35,6 +35,7 @@
           <div class="btn-group">
             <a href="{% url "reservationdetail" secret=reservation.secret %}" class="btn btn-secondary btn-sm" role="button">View</a>
             <a href="{% url "reservationpdf" reservation_id=reservation.id %}" class="btn btn-secondary btn-sm" role="button">PDF</a>
+	    <a href="{% url "reservationcsv" reservation_id=reservation.id %}" class="btn btn-secondary btn-sm" role="button">CSV</a>
           </div>
         </td>
         <td>
