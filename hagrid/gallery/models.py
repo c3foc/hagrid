@@ -25,5 +25,5 @@ class GalleryImage(models.Model):
         while w * h > 2 * 10**6:
             w, h = w // 2, h // 2
         image = image.resize((w, h), Image.ANTIALIAS)
-        image.save(str(self.image.path), 'JPEG', quality=90)
+        image.save(str(self.image.path), 'PNG')
 
