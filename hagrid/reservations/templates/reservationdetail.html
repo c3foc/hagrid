@@ -13,18 +13,28 @@
 
 <p>This is a reservation by {{ reservation.contact_name }} for {{reservation.team_name }}. Make sure to save the URL to access this page later.</p>
 
-  <form method="post" autocomplete="off">
-    {% csrf_token %}
-    <label>While being able to edit the reservation, you can provide a comment with additional information. Also, you can choose wether we should pack each reservation part into an individual bag, so it's easier for you to distribute later, or wether we can aggregate everything to ease packing.</label><br/>
+<div class="card">
+  <div class="card-body">
+    <form method="post" autocomplete="off">
+      {% csrf_token %}
+      <label>While being able to edit the reservation, you can provide a comment with additional information. Also, you can choose wether we should pack each reservation part into an individual bag, so it's easier for you to distribute later, or wether we can aggregate everything to ease packing.</label><br/>
 
-    <table>
-    {{ comment_form.as_table }}
-    </table>
+      <table>
+      {{ comment_form.as_table }}
+      </table>
 
-    {% if request.user.is_superuser or reservation.state == reservation.STATE_EDITABLE %}
-    <input class="btn btn-secondary" type="submit" value="Save"/>
-    {% endif %}
-  </form>
+      {% if request.user.is_superuser or reservation.state == reservation.STATE_EDITABLE %}
+      <input class="btn btn-secondary" type="submit" value="Save"/>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<p></p>
+
+{% if store_settings.reservation_faq_text %}
+{{ store_settings.reservation_faq_text|safe }}
+{% endif %}
 
 <p></p>
 
