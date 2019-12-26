@@ -276,4 +276,5 @@ class ReservationApplicationView(FormView):
             new_reservation.secret = get_random_string(length=16)
         new_reservation.save()
         messages.add_message(self.request, messages.SUCCESS, 'Your application was received.')
+        messages.add_message(self.request, messages.WARNING, 'You must save the URL of this page to access your reservation later.')
         return redirect("reservationdetail", secret=new_reservation.secret)
