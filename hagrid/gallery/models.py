@@ -8,7 +8,7 @@ from hagrid.products.models import Variation
 class GalleryImage(models.Model):
     image = models.ImageField(upload_to="galleryimages/")
     variation = models.ForeignKey(Variation, blank=True, null=True, on_delete=models.SET_NULL)
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, blank=True)
     caption = models.TextField(blank=True)
 
     def __str__(self):

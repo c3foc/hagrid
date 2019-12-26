@@ -17,13 +17,15 @@
     <img src="{{ gallery_item.image.url }}" class="card-img-top" alt="Image of the product described below">
     <div class="card-body">
       {% if gallery_item.variation %}
-      <h5 class="card-title">{{ gallery_item.variation }}
+      <h5 class="card-title">{{ gallery_item.variation.product }}
         <span class="badge badge-secondary float-right">
           {{ gallery_item.variation.product.price|as_currency }}
         </span>
       </h5>
       {% endif %}
+      {% if gallery_item.title %}
       <h6 class="card-subtitle text-muted">{{ gallery_item.title }}</h6>
+      {% endif %}
       {% if gallery_item.caption %}
       <p class="card-text mt-2">{{ gallery_item.caption }}</p>
       {% endif %}
