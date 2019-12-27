@@ -32,13 +32,11 @@ c3foc
     )
 
 
-def send_reservation_state_changed_mail(reservation, old_state, new_state):
+def send_reservation_state_changed_by_admin_mail(reservation, old_state, new_state):
     if old_state == new_state:
         return
     if new_state == Reservation.STATE_EDITABLE:
         send_reservation_editable_mail(reservation)
-    elif new_state == Reservation.STATE_SUBMITTED:
-        send_reservation_submitted_mail(reservation)
     elif new_state == Reservation.STATE_READY:
         send_reservation_ready_mail(reservation)
 

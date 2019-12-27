@@ -97,6 +97,7 @@ class ReservationSubmitView(View):
         if form.is_valid():
             reservation.state = Reservation.STATE_SUBMITTED
             reservation.save()
+            emails.send_reservation_submitted_mail(reservation)
             return redirect('reservationdetail', secret=secret)
         return self.get(request, secret)
 

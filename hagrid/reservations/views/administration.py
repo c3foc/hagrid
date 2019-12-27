@@ -50,7 +50,7 @@ class ReservationAdministrationView(LoginRequiredMixin, View):
             old_state = reservation.state
             reservation.state = form.cleaned_data['new_state']
             reservation.save()
-            emails.send_reservation_state_changed_mail(reservation, old_state, reservation.state)
+            emails.send_reservation_state_changed_by_admin_mail(reservation, old_state, reservation.state)
         else:
             messages.add_message(request, messages.ERROR, 'This action could not be performed.')
         return redirect("reservationadministration")
