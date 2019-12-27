@@ -14,6 +14,7 @@ from hagrid.products.models import Size, SizeGroup, StoreSettings
 from hagrid.products.views import SizeTable
 
 from ..models import Reservation, ReservationPart, ReservationPosition
+from hagrid.reservations import emails
 
 
 def require_reservation_state(required_state, superuser_bypass=False):
@@ -267,6 +268,7 @@ class ReservationApplicationView(FormView):
     form_class = ReservationApplicationForm
 
     def form_valid(self, form):
+        # Create Reservation
         if not StoreSettings.objects.first().reservations_enabled:
             messages.add_message(self.request, messages.ERROR, 'Reservations are disabled.')
             return redirect('reservationapplication')
@@ -275,6 +277,9 @@ class ReservationApplicationView(FormView):
         while Reservation.objects.filter(secret=new_reservation.secret).exists():
             new_reservation.secret = get_random_string(length=16)
         new_reservation.save()
+
+        # Send email and redirect
+        emails.send_new_reservation_mail(new_reservation)
         messages.add_message(self.request, messages.SUCCESS, 'Your application was received.')
         messages.add_message(self.request, messages.WARNING, 'You must save the URL of this page to access your reservation later.')
         return redirect("reservationdetail", secret=new_reservation.secret)

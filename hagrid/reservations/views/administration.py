@@ -18,6 +18,7 @@ from django.utils.text import slugify
 from hagrid.products.views import SizeTable
 
 from ..models import Reservation, ReservationPart, ReservationPosition
+from hagrid.reservations import emails
 from ..export_pdf import generate_packing_pdf
 from ..export_csv import generate_reservation_csv
 
@@ -46,8 +47,10 @@ class ReservationAdministrationView(LoginRequiredMixin, View):
         form = StateChangeForm(request.POST)
         if form.is_valid():
             reservation = get_object_or_404(Reservation, id=form.cleaned_data['reservation_id'])
+            old_state = reservation.state
             reservation.state = form.cleaned_data['new_state']
             reservation.save()
+            emails.send_reservation_state_changed_mail(reservation, old_state, reservation.state)
         else:
             messages.add_message(request, messages.ERROR, 'This action could not be performed.')
         return redirect("reservationadministration")

@@ -25,10 +25,25 @@ SECRET_KEY = '+=n8nd#f*60%g3ohstl)#1+-8mu!ndq*)q#=_z1dsgtzv9izc+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# SITE_URL like "http://hagrid.example.com" that will be used to build absolute URLs (e.q. for qr-codes)
+# SITE_URL like "https://hagrid.example.com" that will be used to build absolute URLs (e.q. for qr-codes)
 SITE_URL = "http://localhost:8000"
 
+# e.g. ["hagrid.example.com"]
 ALLOWED_HOSTS = []
+
+# Email Settings
+ADMINS = [('Admin', 'hagrid-admin@localhost')]
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_FROM = "hagrid@localhost"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+EMAIL_SUBJECT_PREFIX = "[hagrid] "
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
