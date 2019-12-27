@@ -5,9 +5,10 @@ from hagrid.reservations.models import Reservation
 
 
 def send_new_reservation_mail(reservation):
-    send_mail(
-        "New Merchandise Reservation",
-        """
+    if reservation.contact_mail:
+        send_mail(
+            "New Merchandise Reservation",
+            """
 Hello,
 
 you have applied for a new reservation. You can access it using this link:
@@ -17,13 +18,13 @@ you have applied for a new reservation. You can access it using this link:
 Please wait until we approve your reservation.
 
 c3foc
-        """.format(
-            settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
-        ),
-        settings.EMAIL_FROM,
-        [reservation.contact_mail],
-        fail_silently=True,
-    )
+            """.format(
+                settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
+            ),
+            settings.EMAIL_FROM,
+            [reservation.contact_mail],
+            fail_silently=True,
+        )
     mail_admins(
         "New reservation for {}".format(reservation.team_name),
         "Hagrid: {}".format(settings.SITE_URL),
@@ -43,9 +44,10 @@ def send_reservation_state_changed_mail(reservation, old_state, new_state):
 
 
 def send_reservation_editable_mail(reservation):
-    send_mail(
-        "Merchandise Reservation editable",
-        """
+    if reservation.contact_mail:
+        send_mail(
+            "Merchandise Reservation editable",
+            """
 Hello,
 
 your merchandise reservation can now be edited at
@@ -53,13 +55,13 @@ your merchandise reservation can now be edited at
 {}
 
 c3foc
-        """.format(
-            settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
-        ),
-        settings.EMAIL_FROM,
-        [reservation.contact_mail],
-        fail_silently=True,
-    )
+            """.format(
+                settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
+            ),
+            settings.EMAIL_FROM,
+            [reservation.contact_mail],
+            fail_silently=True,
+        )
 
 
 def send_reservation_submitted_mail(reservation):
@@ -71,9 +73,10 @@ def send_reservation_submitted_mail(reservation):
 
 
 def send_reservation_ready_mail(reservation):
-    send_mail(
-        "Merchandise Reservation ready",
-        """
+    if reservation.contact_mail:
+        send_mail(
+            "Merchandise Reservation ready",
+            """
 Hello,
 
 your merchandise reservation can now be picked up.
@@ -81,10 +84,10 @@ your merchandise reservation can now be picked up.
 {}
 
 c3foc
-        """.format(
-            settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
-        ),
-        settings.EMAIL_FROM,
-        [reservation.contact_mail],
-        fail_silently=True,
-    )
+            """.format(
+                settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
+            ),
+            settings.EMAIL_FROM,
+            [reservation.contact_mail],
+            fail_silently=True,
+        )
