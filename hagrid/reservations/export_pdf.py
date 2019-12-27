@@ -102,6 +102,7 @@ class Document:
         self.apply_watermark()
         page_number_text = "Page " + str(self.page)
         self.canvas.drawString(self.w - self.right_inset - self.get_text_width(page_number_text), 50, page_number_text)
+        self.canvas.setFillColorRGB(255, 255, 255, alpha=1.0)
 
     def wrap_up(self):
         self.canvas.showPage()
@@ -198,6 +199,7 @@ def render_invoice_header(r: Reservation, d: Document):
 
 
 def render_collection_table_header(d: Document, title: str):
+    d.canvas.setFillColor(black)
     d.canvas.drawString(d.cursor_x, d.cursor_y - 5, title)
     d.cursor_y -= 15
 
@@ -259,6 +261,7 @@ def render_collection_list(l, d: Document, title: str = "packing list:"):
 
 def render_settlement_head(d: Document):
     d.canvas.setFont("Helvetica", 11)
+    d.canvas.setFillColor(black)
     d.cursor_y -= 30
     if d.cursor_y < (75 + 15):
         d.new_page()
@@ -285,6 +288,7 @@ def render_invoice_end(l, d: Document):
     for request in l:
         if d.cursor_y < (75 + 15):
             d.new_page()
+            render_settlement_head(d)
         amount: int = request[1]
         a: Variation = request[0]
         price = a.product.price
