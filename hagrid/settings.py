@@ -42,9 +42,6 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 EMAIL_SUBJECT_PREFIX = "[hagrid] "
 
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -182,3 +179,5 @@ except ImportError:
 
 if SITE_URL.endswith('/'):
     SITE_URL = SITE_URL[:-1]
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
