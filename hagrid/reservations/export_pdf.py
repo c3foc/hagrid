@@ -67,7 +67,8 @@ class Document:
         self.canvas.bookmarkPage("p" + str(self.page))
 
     def render_page_hint(self):
-        self.canvas.drawString(self.w - 75, self.h - 35, "Page " + str(self.page))
+        page_text = "Page " + str(self.page)
+        self.canvas.drawString(self.w - 15 - self.get_text_width(page_text), self.h - 35, page_text)
 
     def apply_watermark(self):
         self.canvas.setFont("Helvetica", 30)
@@ -82,8 +83,8 @@ class Document:
         self.watermark = str(watermark)
         self.apply_watermark()
 
-    def get_text_width(self, text: str):
-        return pdfmetrics.stringWidth(text, "Helvetica", 14)
+    def get_text_width(self, text: str, text_size = 14):
+        return pdfmetrics.stringWidth(text, "Helvetica", text_size)
 
     def new_page(self, bookmark=None):
         if self.ready:
