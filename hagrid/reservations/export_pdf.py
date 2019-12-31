@@ -72,9 +72,9 @@ class Document:
     def apply_watermark(self):
         self.canvas.setFont("Helvetica", 30)
         self.canvas.rotate(45)
-        self.canvas.setFillColorRGB(225, 225, 225, alpha=0.5)
-        self.canvas.drawString(75, 75, self.watermark)
-        self.canvas.setFillColorRGB(255, 255, 255, alpha=1.0)
+        self.canvas.setFillColorRGB(128, 128, 128, alpha=0.5)
+        self.canvas.drawString(-75, 75, self.watermark)
+        self.canvas.setFillColorRGB(0, 0, 0, alpha=1.0)
         self.canvas.rotate(360 - 45)
         self.canvas.setFont("Helvetica", 14)
 
@@ -102,7 +102,7 @@ class Document:
         self.apply_watermark()
         page_number_text = "Page " + str(self.page)
         self.canvas.drawString(self.w - self.right_inset - self.get_text_width(page_number_text), 50, page_number_text)
-        self.canvas.setFillColorRGB(255, 255, 255, alpha=1.0)
+        self.canvas.setFillColorRGB(128, 128, 128, alpha=1.0)
 
     def wrap_up(self):
         self.canvas.showPage()
@@ -200,6 +200,7 @@ def render_invoice_header(r: Reservation, d: Document):
 
 def render_collection_table_header(d: Document, title: str):
     d.canvas.setFillColor(black)
+    d.canvas.setFont("Helvetica", 11)
     d.canvas.drawString(d.cursor_x, d.cursor_y - 5, title)
     d.cursor_y -= 15
 
@@ -253,6 +254,7 @@ def render_collection_list(l, d: Document, title: str = "packing list:"):
     render_collection_table_header(d, title)
     for request in l:
         if d.cursor_y < (75 + 15):
+            d.canvas.drawString(d.cursor_x, d.cursor_y - 15, "Please continue on next page.")
             d.new_page()
             render_collection_table_header(d, title)
         render_collection_list_entry(request[0], request[1], d)
@@ -287,6 +289,8 @@ def render_invoice_end(l, d: Document):
     total = 0
     for request in l:
         if d.cursor_y < (75 + 15):
+            d.canvas.line(45, d.cursor_y, d.w - 45, d.cursor_y)
+            d.canvas.drawString(d.cursor_x, d.cursor_y - 15, "Please continue on next page.")
             d.new_page()
             render_settlement_head(d)
         amount: int = request[1]
