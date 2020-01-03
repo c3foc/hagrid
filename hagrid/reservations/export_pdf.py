@@ -247,7 +247,7 @@ def render_collection_list_entry(pos: Variation, amount: int, d: Document):
         d.canvas.line((d.w - d.right_inset - 13) - i * 20, d.cursor_y - 13, (d.w - d.right_inset - 2) - i * 20, d.cursor_y - 13)
 
     d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 13, str(pos))
-    d.canvas.drawString(d.cursor_x + 310, d.cursor_y - 10, str(amount))
+    d.canvas.drawString(d.cursor_x + 460 - d.get_text_width(str(amount), text_size=11), d.cursor_y - 10, str(amount))
     d.cursor_y -= 15
 
 
