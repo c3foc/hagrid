@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+
+{% load cache %}
+{% cache 60 gallery %}
+
 {% load reservation %}
 
 {% block content %}
@@ -7,7 +11,7 @@
 
   {% if not store_settings.gallery_is_public %}
   <div class="alert alert-warning" role="alert">
-    The gallery is only visible to superusers.
+    The gallery is only visible to superusers (which you currently are).
   </div>
   {% endif %}
 
@@ -42,3 +46,4 @@
 
 {% endblock %}
 
+{% endcache %}

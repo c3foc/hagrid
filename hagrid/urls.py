@@ -21,7 +21,7 @@ from django.views.decorators.cache import cache_page
 from hagrid.products.views import DashboardView
 
 urlpatterns = [
-    path('', cache_page(10)(DashboardView.as_view()), name='dashboard'),
+    path('', DashboardView.as_view(), name='dashboard'),
     path('admin/', admin.site.urls),
     path('products/', include('hagrid.products.urls')),
     path('reservations/', include('hagrid.reservations.urls')),
