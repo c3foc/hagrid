@@ -6,6 +6,7 @@ from .views import administration, teams
 
 urlpatterns = [
     path('apply/', teams.ReservationApplicationView.as_view(), name='reservationapplication'),
+    path('stats/', administration.ReservationStatisticsView.as_view(), name='reservationstatistics'),
     path('administration/', administration.ReservationAdministrationView.as_view(), name='reservationadministration'),
     path('administration/pdf/<int:reservation_id>/', administration.ReservationPDFDownloadView.as_view(), name='reservationpdf'),
     path('administration/csv/<int:reservation_id>/', administration.ReservationCSVDownloadView.as_view(), name='reservationcsv'),

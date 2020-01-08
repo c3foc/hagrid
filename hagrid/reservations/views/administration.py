@@ -16,11 +16,34 @@ from django.views.generic.edit import FormView
 from django.utils.text import slugify
 
 from hagrid.products.views import SizeTable
+from hagrid.products.models import Variation, SizeGroup
 
 from ..models import Reservation, ReservationPart, ReservationPosition
 from hagrid.reservations import emails
 from ..export_pdf import generate_packing_pdf
 from ..export_csv import generate_reservation_csv
+
+from django.db.models import Q, Sum
+
+
+
+class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
+    template_name = "reservationstatistics.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # variations_counted = Variation.objects.annotate(num_reserved=Sum('reservation_positions__all__amount', filter=Q(reservation_positions__part__reservation__state!=Reservation.STATE_CANCELLED)))
+        amount_reserved_by_variation_id = {l['variation']: l['amount_reserved'] for l in \
+            ReservationPosition.objects.exclude(part__reservation__state=Reservation.STATE_CANCELLED) \
+                .values('variation') \
+                .annotate(amount_reserved=Sum('amount'))
+        }
+
+        def render_variation_count_in_reservations(variation):
+            return '<div class="text-center">{}</span></div>'.format(amount_reserved_by_variation_id.get(variation.id, 0))
+        context['reservation_tables'] = [SizeTable(sg, render_variation=render_variation_count_in_reservations) for sg in SizeGroup.objects.all()]
+        return context
 
 
 class StateChangeForm(forms.Form):

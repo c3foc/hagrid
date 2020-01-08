@@ -69,7 +69,7 @@ class ReservationPart(models.Model):
 
 
 class ReservationPosition(models.Model):
-    variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
+    variation = models.ForeignKey(Variation, related_name='reservation_positions', on_delete=models.CASCADE)
     part = models.ForeignKey(ReservationPart, related_name='positions', on_delete=models.CASCADE)
     amount = models.PositiveSmallIntegerField(default=0)
 
