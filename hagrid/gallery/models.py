@@ -1,3 +1,4 @@
+from PIL.Image import Resampling
 from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image
@@ -24,6 +25,6 @@ class GalleryImage(models.Model):
         w, h = image.size
         while w * h > 2 * 10**6:
             w, h = w // 2, h // 2
-        image = image.resize((w, h), Image.ANTIALIAS)
+        image = image.resize((w, h), Resampling.NEAREST)
         image.save(str(self.image.path), 'PNG')
 
