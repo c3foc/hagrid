@@ -187,11 +187,11 @@ class VariationAvailabilityEventListView(LoginRequiredMixin, TemplateView):
 
 def render_variation_to_colorful_html(variation):
     if variation.availability == Variation.STATE_MANY_AVAILABLE:
-        return '<div class="text-center"><span class="badge badge-success">&#10003;</span></div>'
+        return '<div class="text-center"><span class="badge bg-success">&#10003;</span></div>'
     if variation.availability == Variation.STATE_FEW_AVAILABLE:
-        return '<div class="text-center"><span class="badge badge-warning">&#9888;</span></div>'
+        return '<div class="text-center"><span class="badge bg-warning">&#9888;</span></div>'
     if variation.availability == Variation.STATE_SOLD_OUT:
-        return '<div class="text-center"><span class="badge badge-danger">&#10007;</span></div>'
+        return '<div class="text-center"><span class="badge bg-danger">&#10007;</span></div>'
 
 
 class DashboardView(TemplateView):
