@@ -30,3 +30,6 @@ dependencies = [
     "qrcode==7.4.2",
 ]
 dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "hagrid.VERSION"}

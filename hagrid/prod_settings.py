@@ -1,8 +1,8 @@
-from settings import *
+from .settings import *
 
 DEBUG = False
 
-with open("~/.django-secret") as f:
+with open("/home/hagrid/.django-secret") as f:
     SECRET_KEY = f.read().strip()
 
 ALLOWED_HOSTS = ["c3foc.net"]
