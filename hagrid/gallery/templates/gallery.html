@@ -3,42 +3,46 @@
 
 {% block content %}
 
-{% if store_settings.gallery_is_public or request.user.is_superuser %}
+    {% if store_settings.gallery_is_public or request.user.is_superuser %}
 
-  {% if not store_settings.gallery_is_public %}
-  <div class="alert alert-warning" role="alert">
-    The gallery is only visible to superusers.
-  </div>
-  {% endif %}
+        {% if not store_settings.gallery_is_public %}
+            <div class="alert alert-warning" role="alert">
+                The gallery is only visible to superusers.
+            </div>
+        {% endif %}
 
-<div class="card-columns">
-  {% for gallery_item in gallery_images %}
-  <div class="card">
-    <img src="{{ gallery_item.image.url }}" class="card-img-top" alt="Image of the product described below">
-    <div class="card-body">
-      {% if gallery_item.variation %}
-      <h5 class="card-title">{{ gallery_item.variation.product }}
-        <span class="badge badge-secondary float-right">
+        <div class="card-columns">
+            {% for gallery_item in gallery_images %}
+                <div class="card">
+                    <img src="{{ gallery_item.image.url }}"
+                         class="card-img-top"
+                         alt="{{ gallery_item.alt_text }}"
+                         title="{{ gallery_item.alt_text }}"
+                    >
+                    <div class="card-body">
+                        {% if gallery_item.variation %}
+                            <h5 class="card-title">{{ gallery_item.variation.product }}
+                                <span class="badge badge-secondary float-right">
           {{ gallery_item.variation.product.price|as_currency }}
         </span>
-      </h5>
-      {% endif %}
-      {% if gallery_item.title %}
-      <h6 class="card-subtitle text-muted">{{ gallery_item.title }}</h6>
-      {% endif %}
-      {% if gallery_item.caption %}
-      <p class="card-text mt-2">{{ gallery_item.caption }}</p>
-      {% endif %}
-    </div>
-  </div>
-  {% endfor %}
-</div>
+                            </h5>
+                        {% endif %}
+                        {% if gallery_item.title %}
+                            <h6 class="card-subtitle text-muted">{{ gallery_item.title }}</h6>
+                        {% endif %}
+                        {% if gallery_item.caption %}
+                            <p class="card-text mt-2">{{ gallery_item.caption }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-{% else %}
-<p>
-  The gallery is currently not available.
-</p>
-{% endif %}
+    {% else %}
+        <p>
+            The gallery is currently not available.
+        </p>
+    {% endif %}
 
 {% endblock %}
 
