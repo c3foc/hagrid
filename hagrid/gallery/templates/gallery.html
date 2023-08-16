@@ -45,5 +45,13 @@
         </p>
     {% endif %}
 
+    <script>
+        window.addEventListener('load', function () {
+            const msnry = new Masonry('[data-masonry]', {
+                percentPosition: true
+            });
+            msnry.layout();
+        });
+    </script>
 {% endblock %}
 
