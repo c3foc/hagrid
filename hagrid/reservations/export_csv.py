@@ -9,19 +9,33 @@ logger = logging.getLogger(__name__)
 
 
 def write_reservation(reservation: Reservation, writer):
-    writer.writerow(['Next Reservation', str(reservation.id), str(reservation.team_name),
-        str(reservation.contact_name), str(reservation.contact_mail), str(reservation.contact_dect),
-        str(reservation.state), str(reservation.packing_mode),
-        "total of reservation: [EUR] ", "{:20,.2f}".format(reservation.price),
-        str(reservation.comment)])
+    writer.writerow([
+        'team name',
+        'part name',
+        'position id'
+        'state',
+        "price",
+        'product name',
+        'size group',
+        'size',
+        'full product desciption'
+    ])
     for part in reservation.parts.all():
-        writer.writerow(['Next Part', str(part.title), "total of part: [EUR] ",
-            "{:20,.2f}".format(part.price)])
         for position in part.positions.all():
             variation: Variation = position.variation
-            writer.writerow(['Next position', 'Item:', str(variation), 'Amount: ', str(position.amount),
-                'Single price: [EUR] ', "{:20,.2f}".format(variation.product.price), 'aggregated price: [EUR]',
-                "{:20,.2f}".format(position.price)])
+            for i in range(position.amount):
+                writer.writerow([
+                    str(reservation.team_name),
+                    str(part.title),
+                    str(position.id) + "-" + str(i),
+                    str(reservation.contact_name),
+                    str(reservation.state),
+                    str(variation.product.price),
+                    str(variation.product.name),
+                    str(variation.size.group.name),
+                    str(variation.size.name),
+                    str(variation.product.name) + " " + str(variation.size.group.name) + " " + str(variation.size.name)
+                ])
     writer.writerow([])
 
 
