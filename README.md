@@ -26,6 +26,20 @@ Setting up hagrid for local development is simple.
 2. Run `./manage.py createsuperuser` to setup a default admin user.
 3. Run `./manage.py runserver` to start the local development server.
 
+
+#### Development with Docker
+
+To use the `docker` setup for hagrid you need `docker` or `podman` and
+`docker-compose` or `podman-compose` installed on your machine.
+
+1. Run `docker-compose up` to start the local development server.
+2. Run `docker-compose exec web python ./manage.py migrate` to setup a test database.
+3. Run `docker-compose exec web python ./manage.py createsuperuser` to setup a default admin user.
+
+The first time `docker-compose up` is run it will build a docker image with all
+dependencies installed. If you change the dependencies you need to rebuild the image
+with `docker-compose build`.
+
 #### Production
 
 Make sure to adjust the following settings in a `local_settings.py` for use in production.
