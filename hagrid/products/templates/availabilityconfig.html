@@ -47,7 +47,7 @@ input[type=radio]:checked + .btn-outline-danger {
   {% include "variation_table.html" with table=table %}
   {% endfor %}
   <input class="btn btn-lg btn-primary" type="submit" value="Save Availability"/>
-  <a class="btn btn-lg btn-secondary" type="button" href="{% url "productconfig" %}">Edit Variations</a>
+  <a class="btn btn-lg btn-secondary" type="button" href="{% url "variationconfig" %}">Edit Variations</a>
 </form>
 
 <p style="margin-top: 2rem;">See <a href="{% url 'variationavailabilityeventlist' %}">here</a> for history of availability changes.</p>

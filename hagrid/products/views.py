@@ -114,7 +114,7 @@ class VariationConfigView(LoginRequiredMixin, View):
                 'products': Product.objects.all(),
                 'variation_tables': variation_tables,
         }
-        return render(request, "productconfig.html", context)
+        return render(request, "variationconfig.html", context)
 
 
 
@@ -206,3 +206,32 @@ class DashboardView(TemplateView):
         context['variations'] = Variation.objects.all()
         context['availability_tables'] = [SizeTable(sg, render_variation=render_variation_to_colorful_html) for sg in SizeGroup.objects.all()]
         return context
+
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        exclude = ['position']
+
+class ProductConfigView(LoginRequiredMixin, View):
+    template = "productconfig.html"
+
+    def post(self, request):
+        return self.get(request)
+
+    def get(self, request):
+        ProductFormSet = forms.modelformset_factory(Product, exclude=tuple(), can_order=False, can_delete=True)
+
+        product_formset = ProductFormSet(request.POST or None, prefix='product')
+
+        if product_formset.is_valid():
+            product_formset.save()
+            for form in product_formset.forms:
+                print(form.cleaned_data)
+            return redirect('variationconfig')
+
+        context = {
+            'product_formset': product_formset,
+        }
+        return render(request, self.template, context)

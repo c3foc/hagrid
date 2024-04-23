@@ -1,47 +1,16 @@
 
 {% extends "base.html" %}
 
-{% block head %}
-<style>
-.remove-check {
-  display: none;
-}
-input[type=checkbox]:checked ~ .remove-check {
-  display: block;
-}
-input[type=checkbox]:checked + .mark-check {
-  background-color: #17a2b8;
-  border-color: #17a2b8;
-}
-
-input[type=radio]:checked + .btn-outline-success {
-  background-color: #28a745;
-}
-input[type=radio]:checked + .btn-outline-warning {
-  background-color: #ffc107;
-}
-input[type=radio]:checked + .btn-outline-danger {
-  background-color: #dc3545;
-}
-
-.btn-availability {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-</style>
-{% endblock %}
-
 {% block content %}
 
-<h1>Configure which Variations are available</h1>
+<h1>Configure which Products, Size groups and sizes are available</h1>
 
-<form method="post">
+<form method="post" autocomplete="off">
   {% csrf_token %}
-  {% for table in variation_tables %}
-  {% include "variation_table.html" with table=table %}
-  {% endfor %}
-  <input class="btn btn-lg btn-primary" type="submit" value="Save Variations"/>
+  <table>
+    {{ product_formset.as_p }}
+  </table>
+  <input class="btn btn-lg btn-primary" type="submit" value="Save"/>
 </form>
 
 
