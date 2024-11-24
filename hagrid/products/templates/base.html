@@ -4,6 +4,12 @@
 <head>
     <title>{% block thetitle %}{% endblock %}</title>
     <link href="{% static "/bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+
+    {% load compress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "/hagrid.scss" %}" />
+    {% endcompress %}
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <style>
