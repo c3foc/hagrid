@@ -1,8 +1,229 @@
-/* custom CSS here */
+// theme colors
+$primary: #FF5053;
+$highlight: #F3F2FF;
+$accent1: #B2AAFF;
+$accent2: #6A5FDB;
+$accent3: #261A66;
+$accent4: #29114C;
+$accent5: #190B2F;
+$background: #0F000A;
 
-html {
-  body {
-    background: #190B2F;
-    color: #FEF2FF;
+$green: #5FDD6E;
+$yellow: #FFEB50;
+$red: $primary;
+
+$gridSize: 60px;
+$gridBorderWidth: 1px;
+$gridBorderColor: $accent4;
+$gridBorder: $gridBorderWidth solid $gridBorderColor;
+
+// $textColor: $highlight;
+
+@font-face {
+    font-family: 'pilowlava';
+    src: URL('fonts/pilowlava/Fonts/webfonts/Pilowlava-Regular.woff2')  format('woff2');
+}
+@font-face {
+    font-family: 'spacegrotesk';
+    src: URL('fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'space-mono';
+    src: URL('fonts/space-mono/SpaceMono-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'uncut-sans';
+    src: URL('fonts/uncut-sans/Webfonts/UncutSans-Regular.woff2') format('woff2');
+}
+
+$fontTitle: "Pilowlava", sans-serif;
+$fontH1: "Space Grotesk", "spacegrotesk", sans-serif;
+$fontH2: "Uncut Sans", "uncut-sans", $fontH1;
+$fontMono: "Space Mono", "space-mono", monospace;
+
+body {
+  background: $background;
+  color: $accent1;
+}
+a {
+  color: $highlight;
+  &:hover {
+    color: $accent2;
+  }
+}
+
+h1.title {
+  font-family: $fontTitle;
+  color: $primary;
+  margin-block-start: 1em;
+  font-size: 4rem;
+  text-align: center;
+}
+
+h1 {
+  font-family: $fontH1;
+  color: $primary;
+}
+.center {
+  text-align: center;
+}
+
+h2 {
+  font-family: $fontH1;
+  color: $highlight;
+  margin-block-start: 1em;
+}
+
+h3 {
+  font-weight: 500;
+  font-family: $fontH2;
+  margin-block-start: 1em;
+}
+
+h4 {
+  font-weight: 500;
+  font-family: $fontH2;
+  margin-block-start: 1em;
+}
+
+.grid-background {
+  margin-inline: auto;
+  margin-block: $gridSize;
+  padding: $gridSize;
+  padding-bottom: $gridSize + $gridBorderWidth;
+  width: $gridSize * 20 + $gridBorderWidth;
+
+  // now for something ugly, let's build an inline SVG as a data-url so we can
+  $s: str-slice(#{$gridSize}, 0, -3);
+  $o: str-slice(#{$gridBorderWidth/2}, 0, -3);
+  $o2: str-slice(#{$gridBorderWidth}, 0, -3);
+  background-image: url(
+    "data:image/svg+xml;utf8,"
+    + "<svg xmlns='http://www.w3.org/2000/svg' width='#{$s}' height='#{$s}' viewBox='0 0 #{$s} #{$s}'>"
+    + "<path fill='none' stroke-width='#{$o2}' stroke='%23#{str-slice(#{$gridBorderColor},2)}' "
+    + "d='M #{$s} #{$o} L#{$o} #{$o} L#{$o} #{$s}'/></svg>"
+  );
+}
+@mixin box($width, $height) {
+display: inline-block;
+  margin: 0;
+  margin-bottom: -$gridBorderWidth;
+  margin-right: -$gridBorderWidth;
+  padding: 0;
+  width: $width * $gridSize + $gridBorderWidth;
+  height: $height * $gridSize + $gridBorderWidth;
+  border: $gridBorder;
+  background: $background;
+}
+
+.product-availabilities {
+  margin: 0;
+  padding: 0;
+
+  > h3 {
+    @include box(3, 1);
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 1rem;
+    font-size: 1.2rem;
+    vertical-align: top;
+    color: $highlight;
+  }
+}
+.product-availability-tags {
+  list-style: none;
+  display: inline-block;
+  @include box(10, 1);
+  margin: 0;
+  padding: 0;
+  margin-right: -$gridBorderWidth;
+  margin-bottom: -$gridBorderWidth;
+
+  > li {
+    @include box(1, 1);
+    vertical-align: top;
+    margin: -$gridBorderWidth;
+    margin-left: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:first-child {
+      margin-left: -$gridBorderWidth;
+    }
+  }
+}
+.product-availability-tag {
+  // background: $primary;
+  display: inline-flex;
+  width: 3rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+  font-family: $fontMono;
+  font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  color: $background;
+  // font-weight: bold;
+  border: 1px solid currentcolor;
+
+  &.small {
+    font-size: 0.9rem;
+  }
+
+  // color variations:
+  &.red  {
+    color: $red;
+  }
+  &.green {
+    color: $green;
+  }
+  &.yellow  {
+    color: $yellow;
+  }
+  &.gray  {
+    color: $accent4;
+  }
+}
+
+.product {
+  margin-bottom: $gridSize;
+
+  display: grid;
+  grid-template-areas:
+    "heading image"
+    "content image";
+  grid-template-columns: auto auto;
+
+  > h2 {
+    @include box(13, 2);
+    padding-inline: 1rem;
+    display: flex;
+    grid-area: heading;
+    align-items: center;
+    color: $primary;
+  }
+
+  .product-image {
+    @include box(5, 4);
+    height: calc(100% + #{$gridBorderWidth});
+    position: relative;
+    left: -$gridBorderWidth;
+    grid-area: image;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+
+  .product-availabilities {
+    grid-area: content;
   }
 }

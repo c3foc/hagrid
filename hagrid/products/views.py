@@ -5,7 +5,9 @@ from django.template.loader import render_to_string
 from django.views import View
 from django.views.generic import TemplateView
 
-from .models import Product, Size, SizeGroup, Variation, VariationAvailabilityEvent
+from hagrid.gallery.models import GalleryImage
+
+from .models import Product, ProductGroup, Size, SizeGroup, Variation, VariationAvailabilityEvent
 
 
 class SizeTable:
@@ -193,6 +195,49 @@ def render_variation_to_colorful_html(variation):
     if variation.availability == Variation.STATE_SOLD_OUT:
         return '<div class="text-center"><span class="badge bg-danger">&#10007;</span></div>'
 
+class ProductAvailabilityView:
+    def __init__(self):
+        self.entries = self.generate_entries()
+
+    def generate_entries(self):
+        product_groups = ProductGroup.objects.filter(display_in_dashboard=True)
+
+        all_products = Product.objects.all()
+        all_variations = Variation.objects.all()
+        all_sizegroups = SizeGroup.objects.all()
+        all_sizes = Size.objects.all()
+        bool(all_products)
+        bool(all_variations)
+        bool(all_sizegroups)
+        bool(all_sizes)
+
+        def _transform_sizegroup(sizegroup, product_variations):
+            variations = product_variations.filter(size__group=sizegroup).distinct()
+
+            return {
+                "sizegroup": sizegroup,
+                "variations": variations,
+            }
+
+        def _transform_product(product):
+            variations = all_variations.filter(product=product)
+            sizegroups = all_sizegroups.filter(sizes__variations__product=product).distinct()
+            images = GalleryImage.objects.filter(variation__product=product)[:1]
+            return {
+                "product": product,
+                "sizegroups": [_transform_sizegroup(sizegroup, variations) for sizegroup in sizegroups],
+                "image": images[0] if images else None,
+            }
+
+        def _transform_product_group(product_group):
+            products = all_products.filter(product_group=product_group)
+
+            return {
+                "product_group": product_group,
+                "products": list(_transform_product(p) for p in products)
+            }
+
+        return list(_transform_product_group(pg) for pg in product_groups)
 
 class DashboardView(TemplateView):
 
@@ -205,4 +250,19 @@ class DashboardView(TemplateView):
         context['sizegroups'] = SizeGroup.objects.all()
         context['variations'] = Variation.objects.all()
         context['availability_tables'] = [SizeTable(sg, render_variation=render_variation_to_colorful_html) for sg in SizeGroup.objects.all()]
+        context['product_availabilities'] = ProductAvailabilityView()
+        return context
+
+class DashboardTableView(TemplateView):
+
+    template_name = "dashboard_table.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.all()
+        context['sizes'] = Size.objects.all()
+        context['sizegroups'] = SizeGroup.objects.all()
+        context['variations'] = Variation.objects.all()
+        context['availability_tables'] = [SizeTable(sg, render_variation=render_variation_to_colorful_html) for sg in SizeGroup.objects.all()]
+        context['product_availabilities'] = ProductAvailabilityView()
         return context

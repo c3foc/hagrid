@@ -14,12 +14,17 @@
   </div>
   {% endif %}
 
-  {% include 'product_availability.html' with product_availabilities=product_availabilities %}
+  {% for table in availability_tables %}
+    {% include 'variation_table.html' with table=table %}
+  {% endfor %}
+
+  {% include 'dashboard_legend.html' %}
 
 {% elif not store_settings.dashboard_text %}
 <p>
   The dashboard is currently not available.
 </p>
 {% endif %}
+
 
 {% endblock %}
