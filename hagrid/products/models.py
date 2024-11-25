@@ -25,11 +25,11 @@ class StoreSettings(models.Model):
     def delete(self, *args, **kwargs):
         pass
 
-
-class Product(models.Model):
+class ProductGroup(models.Model):
     name = models.CharField(max_length=30, unique=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(help_text="HTML that will be rendered in the dashboard section", blank=True, default="")
     position = PositionField()
+    display_in_dashboard = models.BooleanField(help_text="Show the group in the dashboard", default=True)
 
     def __str__(self):
         return self.name
@@ -37,6 +37,18 @@ class Product(models.Model):
     class Meta:
         ordering = ['position']
 
+
+class Product(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    position = PositionField()
+    product_group = models.ForeignKey(ProductGroup, related_name='products', on_delete=models.SET_NULL, default=None, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['position']
 
 class SizeGroup(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -71,7 +83,7 @@ class Variation(models.Model):
             (STATE_SOLD_OUT, 'sold out')
     ]
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="variations")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variations")
     initial_amount = models.IntegerField(default=100)
     availability = models.CharField(default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES)
 
