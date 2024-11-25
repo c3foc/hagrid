@@ -14,12 +14,12 @@ Toggle
 <div id="{{ form.exist.id_for_label }}-open" class="remove-check">
   <div class="fieldWrapper">
       {{ form.initial_amount.errors }}
-      <label for="{{ form.initial_amount.id_for_label }}">Initial:
-      {{ form.initial_amount }}</label>
+      <label for="{{ form.initial_amount.id_for_label }}" class="visually-hidden">Initial:</label>
+      {{ form.initial_amount }}
   </div>
   <div class="fieldWrapper">
     {{ form.availability.errors }}
-    Availability:
+    <span class="visually-hidden">Availability:</span>
     <div>
         {{ form.availability.0.tag }}
       <label class="btn btn-outline-success btn-availability" for="{{ form.availability.0.id_for_label }}">

@@ -52,7 +52,7 @@ class VariationConfigForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['exist'].widget.attrs.update({'style': 'display: none'})
-        self.fields['initial_amount'].widget.attrs.update({'style': 'width: 10ch;'})
+        self.fields['initial_amount'].widget.attrs.update({'style': 'width: 10ch;', 'placeholder': 'Initial'})
         self.fields['availability'].widget = forms.RadioSelect(choices=Variation.AVAILABILITY_STATES, attrs={'style': 'position:fixed;opacity:0;'})
         self.fields['product'].widget = forms.NumberInput()
         self.fields['size'].widget = forms.NumberInput()
