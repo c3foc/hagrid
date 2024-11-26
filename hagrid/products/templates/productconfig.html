@@ -35,11 +35,10 @@ input[type=radio]:checked + .btn-outline-danger {
 {% block content %}
 
 <h1>Configure which Variations are available</h1>
-
 <form method="post">
   {% csrf_token %}
-  {% for table in variation_tables %}
-  {% include "variation_table.html" with table=table %}
+  {% for table in product_tables %}
+  {% include "product_table.html" with table=table %}
   {% endfor %}
   <input class="btn btn-lg btn-primary" type="submit" value="Save Variations"/>
 </form>

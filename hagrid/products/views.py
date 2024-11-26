@@ -9,6 +9,54 @@ from hagrid.gallery.models import GalleryImage
 
 from .models import Product, ProductGroup, Size, SizeGroup, Variation, VariationAvailabilityEvent
 
+class ProductTable:
+    def __init__(self, product, render_variation=None, render_empty=None, show_empty_rows=False):
+        self.product = product
+        self.show_empty_rows = show_empty_rows
+        self.render_variation = render_variation or (lambda v: v.availability)
+        self.render_empty = render_empty or (lambda *_args: "")
+
+        self.entries = list(self.generate_entries())
+        self.column_count = max(len(entry['sizes']) for entry in self.entries) if self.entries else 0
+        for entry in self.entries:
+            entry['fill'] = [''] * (self.column_count - len(entry['sizes']))
+
+    def generate_entries(self):
+        all_variations = Variation.objects.all()
+        bool(all_variations)  # cache all variations in queryset
+        all_sizegroups = SizeGroup.objects.all()
+        bool(all_variations)
+        all_sizes = Size.objects.filter(variations__product=self.product).distinct()
+        bool(all_sizes)
+
+        for sizegroup in all_sizegroups:
+            entry = {"sizegroup": sizegroup, "sizes": []}
+            found_variation = False
+            for size in sizegroup.sizes.all():
+                try:
+                    variation = all_variations.get(product=self.product, size=size)
+                    entry['sizes'].append({
+                        "size": size,
+                        "variation": variation,
+                        "html": self.render_variation(variation)
+                    })
+
+                    found_variation = True
+                except Variation.DoesNotExist:
+                    entry['sizes'].append({
+                        "size": size,
+                        "variation": None,
+                        "html": self.render_empty(self.product, size)
+                    })
+
+            if found_variation or self.show_empty_rows:
+                yield entry
+
+    @property
+    def column_width(self):
+        return "200"
+        # return f"{100/(self.column_count + 1):.1f}%"
+
 
 class SizeTable:
     def __init__(self, sizegroup, render_variation=None, render_empty=None, show_empty_rows=False):
@@ -84,8 +132,9 @@ class VariationConfigView(LoginRequiredMixin, View):
     def get_variation_tables_and_forms(self, request):
         forms = []
 
-        def render_form(form):
+        def render_form(form, variation=None):
             return render_to_string('variation_config_box.html', context={'form': form}, request=request)
+
         def render_variation_form(variation):
             prefix = "existing_{}".format(variation.id)
             if request.POST:
@@ -93,7 +142,7 @@ class VariationConfigView(LoginRequiredMixin, View):
             else:
                 form = VariationConfigForm(prefix=prefix, initial={'exist': True}, instance=variation)
             forms.append(form)
-            return render_form(form)
+            return render_form(form, variation)
         def render_empty_form(product, size):
             prefix = "new_{}_{}".format(product.id, size.id)
             if request.POST:
@@ -102,19 +151,20 @@ class VariationConfigView(LoginRequiredMixin, View):
                 form = VariationConfigForm(prefix=prefix, initial={'product': product, 'size': size, 'exist': False})
             forms.append(form)
             return render_form(form)
-
-        tables = [SizeTable(sizegroup,
+        tables = [
+                ProductTable(product,
                             render_variation=render_variation_form,
                             render_empty=render_empty_form,
                             show_empty_rows=True)
-            for sizegroup in SizeGroup.objects.all()]
+            for product in Product.objects.all()
+          ]
         return tables, forms
 
     def get(self, request):
-        variation_tables, variation_forms = self.get_variation_tables_and_forms(request)
+        product_tables, variation_forms = self.get_variation_tables_and_forms(request)
         context = {
                 'products': Product.objects.all(),
-                'variation_tables': variation_tables,
+                'product_tables': product_tables,
         }
         return render(request, "productconfig.html", context)
 
@@ -143,7 +193,7 @@ class VariationsAvailabilityForm(forms.Form):
 class VariationChangeAvailabilityView(LoginRequiredMixin, View):
 
 
-    def get_variation_tables_and_form(self, request):
+    def get_product_tables_and_forms(self, request):
         form = VariationsAvailabilityForm(request.POST or None)
 
         def render_variation_form(variation):
@@ -152,18 +202,23 @@ class VariationChangeAvailabilityView(LoginRequiredMixin, View):
         def render_empty_form(product, size):
             return ""
 
-        tables = [SizeTable(sizegroup,
-                            render_variation=render_variation_form,
-                            render_empty=render_empty_form,
-                            show_empty_rows=False)
-            for sizegroup in SizeGroup.objects.all()]
+        tables = {
+            product.id: ProductTable(
+                product,
+                render_variation=render_variation_form,
+                render_empty=render_empty_form,
+                show_empty_rows=False,
+            )
+            for product in Product.objects.all()
+        }
+
         return tables, form
 
     def post(self, request):
         return self.get(request)
 
     def get(self, request):
-        variation_tables, form = self.get_variation_tables_and_form(request)
+        product_tables, form = self.get_product_tables_and_forms(request)
 
         if form.is_valid():
             for key, value in form.cleaned_data.items():
@@ -172,10 +227,24 @@ class VariationChangeAvailabilityView(LoginRequiredMixin, View):
                 variation.availability = value
                 variation.save()
 
-        context = {
-                'products': Product.objects.all(),
-                'variation_tables': variation_tables,
-        }
+        product_groups = [
+            {
+                "product_group": product_group,
+                "tables": [
+                    product_tables.get(product.id) for product in product_group.products.all()
+                ]
+            }
+            for product_group in ProductGroup.objects.all()
+        ]
+
+        unassigned = list(Product.objects.filter(product_group=None))
+        if unassigned:
+            product_groups.append({
+                "product_group": None,
+                "tables": [product_tables.get(product.id) for product in unassigned]
+            })
+
+        context = {'product_groups': product_groups}
         return render(request, "availabilityconfig.html", context)
 
 
@@ -249,7 +318,6 @@ class DashboardView(TemplateView):
         context['sizes'] = Size.objects.all()
         context['sizegroups'] = SizeGroup.objects.all()
         context['variations'] = Variation.objects.all()
-        context['availability_tables'] = [SizeTable(sg, render_variation=render_variation_to_colorful_html) for sg in SizeGroup.objects.all()]
         context['product_availabilities'] = ProductAvailabilityView()
         return context
 
@@ -264,5 +332,4 @@ class DashboardTableView(TemplateView):
         context['sizegroups'] = SizeGroup.objects.all()
         context['variations'] = Variation.objects.all()
         context['availability_tables'] = [SizeTable(sg, render_variation=render_variation_to_colorful_html) for sg in SizeGroup.objects.all()]
-        context['product_availabilities'] = ProductAvailabilityView()
         return context

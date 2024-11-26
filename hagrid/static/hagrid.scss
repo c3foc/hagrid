@@ -227,3 +227,40 @@ display: inline-block;
     grid-area: content;
   }
 }
+
+.product-table {
+  background: $accent5;
+  border: $gridBorder;
+  margin-block: 1rem;
+
+  th, td {
+    vertical-align: top;
+    border: $gridBorder;
+    padding: 0.5em;
+    min-width: max-content;
+  }
+
+  small {
+    font-weight: normal;
+    color: $accent2;
+  }
+
+  th:first-child {
+    color: $highlight;
+    font-weight: bold;
+    font-family: $fontH2;
+    font-size: 1.2rem;
+  }
+
+  td {
+    background: $background;
+
+    input[type="number"] {
+      background: transparent;
+      border: 1px solid $accent2;
+      color: $highlight;
+      width: 4em;
+      display: inline-block;
+    }
+  }
+}
