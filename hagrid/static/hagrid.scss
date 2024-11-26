@@ -21,21 +21,48 @@ $gridBorder: $gridBorderWidth solid $gridBorderColor;
 
 @font-face {
     font-family: 'pilowlava';
-    src: URL('fonts/pilowlava/Fonts/webfonts/Pilowlava-Regular.woff2')  format('woff2');
+    src: URL(static('/fonts/pilowlava/Fonts/webfonts/Pilowlava-Regular.woff2')) format('woff2');
+}
+
+@font-face {
+    font-family: 'spacegrotesk';
+    src: URL(static('/fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-Regular.woff2')) format('woff2');
 }
 @font-face {
     font-family: 'spacegrotesk';
-    src: URL('fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-Regular.woff2') format('woff2');
+    font-weight: 500;
+    src: URL(static('/fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-SemiBold.woff2')) format('woff2');
+}
+@font-face {
+    font-family: 'spacegrotesk';
+    font-weight: bold;
+    src: URL(static('/fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-Bold.woff2')) format('woff2');
 }
 
 @font-face {
     font-family: 'space-mono';
-    src: URL('fonts/space-mono/SpaceMono-Regular.ttf') format('truetype');
+    src: URL(static('/fonts/space-mono/SpaceMono-Regular.ttf')) format('truetype');
 }
+@font-face {
+    font-family: 'space-mono';
+    font-weight: bold;
+    src: URL(static('/fonts/space-mono/SpaceMono-Bold.ttf')) format('truetype');
+}
+
 
 @font-face {
     font-family: 'uncut-sans';
-    src: URL('fonts/uncut-sans/Webfonts/UncutSans-Regular.woff2') format('woff2');
+    src: URL(static('/fonts/uncut-sans/Webfonts/UncutSans-Regular.woff2')) format('woff2');
+}
+@font-face {
+    font-family: 'uncut-sans';
+    font-weight: bold;
+    src: URL(static('/fonts/uncut-sans/Webfonts/UncutSans-Bold.woff2')) format('woff2');
+}
+@font-face {
+    font-family: 'uncut-sans';
+    font-weight: 500;
+    src: URL(static('/fonts/uncut-sans/Webfonts/UncutSans-Semibold.woff2')) format('woff2');
 }
 
 $fontTitle: "Pilowlava", sans-serif;
@@ -168,7 +195,6 @@ display: inline-block;
   justify-content: center;
   height: 2rem;
   color: $background;
-  // font-weight: bold;
   border: 1px solid currentcolor;
 
   &.small {
