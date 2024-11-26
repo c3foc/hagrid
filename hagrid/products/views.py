@@ -281,7 +281,11 @@ class ProductAvailabilityView:
         bool(all_sizes)
 
         def _transform_sizegroup(sizegroup, product_variations):
-            variations = product_variations.filter(size__group=sizegroup).distinct()
+            variations = (
+                product_variations.filter(size__group=sizegroup)
+                .order_by("size__position")
+                .distinct()
+            )
 
             return {
                 "sizegroup": sizegroup,
