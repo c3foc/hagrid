@@ -180,7 +180,10 @@ display: inline-block;
     color: $red;
   }
   &.green {
-    color: $green;
+    // color: $green;
+    background: $green;
+    border-color: $green;
+    color: $background;
   }
   &.yellow  {
     color: $yellow;

@@ -26,10 +26,10 @@
             <ul class="product-availability-tags">
             {% for variation in group.variations %}
                 <li title="{{ entry.product.name }} in {{ group.sizegroup.name }} size {{ variation.size.name }} is {{ variation.availability }}">
-                    <span class="product-availability-tag {{variation.availability|availability_class}}{% if variation.size.name|length >= 4 or "/" in variation.size.name %} small{% endif %}">
+                    <{% if variation.availability == "sold out" %}del{% else %}span{% endif %} class="product-availability-tag {{variation.availability|availability_class}}{% if variation.size.name|length >= 4 or "/" in variation.size.name %} small{% endif %}">
                         {{variation.size.name}}
                         <span class="visually-hidden">{{variation.availability}}</span>
-                    </span>
+                    </{% if variation.availability == "sold out" %}del{% else %}span{% endif %}>
                 </li>
             {% endfor %}
             </ul>
