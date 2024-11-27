@@ -67,12 +67,13 @@ $gridBorder: $gridBorderWidth solid $gridBorderColor;
 
 $fontTitle: "Pilowlava", sans-serif;
 $fontH1: "Space Grotesk", "spacegrotesk", sans-serif;
-$fontH2: "Uncut Sans", "uncut-sans", $fontH1;
+$fontBase: "Uncut Sans", "uncut-sans", $fontH1;
 $fontMono: "Space Mono", "space-mono", monospace;
 
 body {
   background: $background;
   color: $accent1;
+  font-family: $fontBase;
 }
 a {
   color: $highlight;
@@ -105,13 +106,13 @@ h2 {
 
 h3 {
   font-weight: 500;
-  font-family: $fontH2;
+  font-family: $fontBase;
   margin-block-start: 1em;
 }
 
 h4 {
   font-weight: 500;
-  font-family: $fontH2;
+  font-family: $fontBase;
   margin-block-start: 1em;
 }
 
@@ -290,22 +291,29 @@ h4 {
   th:first-child {
     color: $highlight;
     font-weight: bold;
-    font-family: $fontH2;
+    font-family: $fontBase;
     font-size: 1.2rem;
   }
 
   td {
     background: $background;
 
-    input[type="number"] {
-      background: transparent;
-      border: 1px solid $accent2;
-      color: $highlight;
+    input {
       width: 4em;
       display: inline-block;
     }
   }
 }
+
+  input, textarea {
+    background: transparent;
+    border: 1px solid $accent2;
+    border-radius: 4px;
+    color: $highlight;
+  }
+  .form-group {
+    margin-block: 1rem;
+  }
 
 dl.legend {
   font-family: $fontMono;
@@ -326,8 +334,28 @@ dl.legend {
   }
 }
 
+.navbar {
+  border: none;
+  background: $accent5;
+  font-family: $fontH1;
+
+  .navbar-brand {
+    font-family: $fontTitle;
+    color: $accent1;
+  }
+  .navbar-nav.admin {
+    .nav-link {
+      color: $primary;
+    }
+  }
+}
+
 // mobile!
 @media (max-width: 1023px) {
+  h1.title {
+    font-size: 3rem;
+  }
+
   .grid-background {
     background-position-x: -$gridSize/2;
     padding-inline: $gridSize/2;
@@ -353,7 +381,6 @@ dl.legend {
       .product-availability-tags {
         grid-column-start: 3;
       }
-
     }
   }
   dl.legend {
@@ -369,6 +396,5 @@ dl.legend {
       margin: 0;
     }
   }
-
 }
 
