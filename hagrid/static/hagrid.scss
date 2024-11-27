@@ -117,11 +117,11 @@ h4 {
 
 // The grid-sizer makes sure its content has an exact multiple of gridSize in width
 .grid-sizer {
-  display: grid;
-  grid-template-columns: [start] repeat(auto-fit, $gridSize) [end];
+  // display: grid;
+  // grid-template-columns: [start] repeat(auto-fit, $gridSize) [end];
 }
 .grid-sizer > * {
-  grid-column: start / end;
+  // grid-column: start / end;
 }
 
 .grid-background {
@@ -130,6 +130,9 @@ h4 {
   padding-right: $gridSize + $gridBorderWidth;
   padding-bottom: $gridSize + $gridBorderWidth;
   margin-right: -$gridBorderWidth;
+
+  max-width: $gridSize * 18 + $gridBorderWidth;
+  margin-inline: auto;
 
   // now for something ugly, let's build an inline SVG as a data-url so we can
   $s: str-slice(#{$gridSize}, 0, -3);
@@ -146,12 +149,9 @@ h4 {
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, $gridSize - $gridBorderWidth);
-  // grid-auto-rows: $gridSize - $gridBorderWidth;
   gap: $gridBorderWidth;
   padding-left: $gridBorderWidth;
   padding-top: $gridBorderWidth;
-
-  // * {outline: 1px solid $accent2;}
 }
 
 .grid-box {
@@ -218,7 +218,7 @@ h4 {
 }
 
 .product {
-  grid-template-rows: ($gridSize*2) - $gridBorderWidth auto;
+  grid-template-rows: ($gridSize * 2) - $gridBorderWidth auto;
   gap: $gridBorderWidth;
   margin-bottom: $gridSize;
   min-height: $gridSize * 3;
@@ -246,7 +246,6 @@ h4 {
     }
   }
 
-
   .product-availabilities {
     margin: 0;
     padding: 0;
@@ -264,12 +263,12 @@ h4 {
       align-items: center;
       padding-inline: 1rem;
       font-size: 1.2rem;
-      vertical-align: top;
       color: $highlight;
       margin: 0;
     }
   }
 }
+
 
 .product-table {
   background: $accent5;
@@ -326,3 +325,50 @@ dl.legend {
     }
   }
 }
+
+// mobile!
+@media (max-width: 1023px) {
+  .grid-background {
+    background-position-x: -$gridSize/2;
+    padding-inline: $gridSize/2;
+  }
+  .product {
+    grid-template-rows: $gridSize - $gridBorderWidth auto;
+    min-height: $gridSize * 2;
+
+    > h2 {
+      grid-column-end: -1;
+    }
+
+    .product-image {
+      display: none;
+    }
+
+    .product-availabilities {
+      grid-column-end: -1;
+
+      > h3 {
+        grid-column: span 2;
+      }
+      .product-availability-tags {
+        grid-column-start: 3;
+      }
+
+    }
+  }
+  dl.legend {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 0.2rem;
+    text-align: left;
+    width: max-content;
+    margin-inline: auto;
+    align-items: baseline;
+
+    > * {
+      margin: 0;
+    }
+  }
+
+}
+

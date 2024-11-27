@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
-{% block content %}
-
 {% if store_settings.dashboard_text %}
-{{ store_settings.dashboard_text|safe }}
+    {{ store_settings.dashboard_text|safe }}
 {% endif %}
 
-{% if store_settings.dashboard_is_public or request.user.is_superuser %}
+{% block content %}
+    {% if store_settings.dashboard_is_public or request.user.is_superuser %}
+        {% if not store_settings.dashboard_is_public %}
+            <div class="alert alert-warning" role="alert">
+                The dashboard is only visible to superusers.
+            </div>
+        {% endif %}
+    {% elif not store_settings.dashboard_text %}
+            <p>The dashboard is currently not available.</p>
+    {% endif %}
+{% endblock %}
 
-  {% if not store_settings.dashboard_is_public %}
-  <div class="alert alert-warning" role="alert">
-    The dashboard is only visible to superusers.
-  </div>
-  {% endif %}
 
-  {% include 'product_availability.html' with product_availabilities=product_availabilities %}
 
-{% elif not store_settings.dashboard_text %}
-<p>
-  The dashboard is currently not available.
-</p>
-{% endif %}
-
+{% block content2 %}
+    {% if store_settings.dashboard_is_public or request.user.is_superuser %}
+        {% include 'product_availability.html' with product_availabilities=product_availabilities %}
+    {% endif %}
 {% endblock %}
