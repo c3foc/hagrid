@@ -115,11 +115,21 @@ h4 {
   margin-block-start: 1em;
 }
 
+// The grid-sizer makes sure its content has an exact multiple of gridSize in width
+.grid-sizer {
+  display: grid;
+  grid-template-columns: [start] repeat(auto-fit, $gridSize) [end];
+}
+.grid-sizer > * {
+  grid-column: start / end;
+}
+
 .grid-background {
-  margin-inline: auto;
-  padding: $gridSize;
+  padding-left: $gridSize;
+  padding-top: $gridSize;
+  padding-right: $gridSize + $gridBorderWidth;
   padding-bottom: $gridSize + $gridBorderWidth;
-  width: $gridSize * 20 + $gridBorderWidth;
+  margin-right: -$gridBorderWidth;
 
   // now for something ugly, let's build an inline SVG as a data-url so we can
   $s: str-slice(#{$gridSize}, 0, -3);
@@ -132,53 +142,41 @@ h4 {
     + "d='M #{$s} #{$o} L#{$o} #{$o} L#{$o} #{$s}'/></svg>"
   );
 }
-@mixin box($width, $height) {
-display: inline-block;
-  margin: 0;
-  margin-bottom: -$gridBorderWidth;
-  margin-right: -$gridBorderWidth;
-  padding: 0;
-  width: $width * $gridSize + $gridBorderWidth;
-  height: $height * $gridSize + $gridBorderWidth;
-  border: $gridBorder;
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, $gridSize - $gridBorderWidth);
+  // grid-auto-rows: $gridSize - $gridBorderWidth;
+  gap: $gridBorderWidth;
+  padding-left: $gridBorderWidth;
+  padding-top: $gridBorderWidth;
+
+  // * {outline: 1px solid $accent2;}
+}
+
+.grid-box {
   background: $background;
 }
 
-.product-availabilities {
-  margin: 0;
-  padding: 0;
-
-  > h3 {
-    @include box(3, 1);
-    display: inline-flex;
-    align-items: center;
-    padding-inline: 1rem;
-    font-size: 1.2rem;
-    vertical-align: top;
-    color: $highlight;
-  }
-}
 .product-availability-tags {
   list-style: none;
-  display: inline-block;
-  @include box(10, 1);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, $gridSize - $gridBorderWidth);
+  grid-template-rows: repeat(auto-fit, $gridSize - $gridBorderWidth);
+  gap: $gridBorderWidth;
+  grid-column: 4 / -1;
   margin: 0;
   padding: 0;
-  margin-right: -$gridBorderWidth;
-  margin-bottom: -$gridBorderWidth;
 
   > li {
-    @include box(1, 1);
+    background: $background;
     vertical-align: top;
-    margin: -$gridBorderWidth;
-    margin-left: 0;
+    height: $gridSize - $gridBorderWidth;
+    width: $gridSize - $gridBorderWidth;
+    margin: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    &:first-child {
-      margin-left: -$gridBorderWidth;
-    }
   }
 }
 .product-availability-tag {
@@ -220,29 +218,26 @@ display: inline-block;
 }
 
 .product {
+  grid-template-rows: ($gridSize*2) - $gridBorderWidth auto;
+  gap: $gridBorderWidth;
   margin-bottom: $gridSize;
-
-  display: grid;
-  grid-template-areas:
-    "heading image"
-    "content image";
-  grid-template-columns: auto auto;
+  min-height: $gridSize * 3;
 
   > h2 {
-    @include box(13, 2);
+    background: $background;
+    grid-column: 1 / -6;
+    margin: 0;
+
     padding-inline: 1rem;
     display: flex;
-    grid-area: heading;
     align-items: center;
     color: $primary;
   }
 
   .product-image {
-    @include box(5, 4);
-    height: calc(100% + #{$gridBorderWidth});
-    position: relative;
-    left: -$gridBorderWidth;
-    grid-area: image;
+    background: $background;
+    grid-column: -6 / -1;
+    grid-row: 1 / -1;
 
     img {
       width: 100%;
@@ -253,7 +248,26 @@ display: inline-block;
 
 
   .product-availabilities {
-    grid-area: content;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-column: 1 / -6;
+    grid-template-columns: [start] repeat(auto-fit, $gridSize - $gridBorderWidth) [end];
+    grid-gap: $gridBorderWidth;
+
+    // for sizegroup: fitted/straight or color
+    > h3 {
+      background: $background;
+      grid-column: span 3;
+
+      display: inline-flex;
+      align-items: center;
+      padding-inline: 1rem;
+      font-size: 1.2rem;
+      vertical-align: top;
+      color: $highlight;
+      margin: 0;
+    }
   }
 }
 

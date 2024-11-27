@@ -12,33 +12,35 @@
 
     {% include 'dashboard_legend.html' %}
 
-    <div class="grid-background">
-    {% for entry in groupentry.products %}
-    <div class="product">
-        <h2>{{ entry.product.name }}</h2>
-        <div class="product-image">
-        {% if entry.image %}
-            <img src="{{ entry.image.image.url  }}" width="200"  />
-        {% endif %}
-        </div>
+    <div class="grid-sizer">
+        <div class="grid-background">
+            {% for entry in groupentry.products %}
+                <div class="grid-container product">
+                    <h2>{{ entry.product.name }}</h2>
+                    <div class="product-image">
+                    {% if entry.image %}
+                        <img src="{{ entry.image.image.url  }}" width="200"  />
+                    {% endif %}
+                    </div>
 
-        <div class="product-availabilities">
-        {% for group in entry.sizegroups %}
-            <h3>{{ group.sizegroup.name }}</h3>
-            <ul class="product-availability-tags">
-            {% for variation in group.variations %}
-                <li title="{{ entry.product.name }} in {{ group.sizegroup.name }} size {{ variation.size.name }} is {{ variation.availability }}">
-                    <{% if variation.availability == "sold out" %}del{% else %}span{% endif %} class="product-availability-tag {{variation.availability|availability_class}}{% if variation.size.name|length >= 4 or "/" in variation.size.name %} small{% endif %}">
-                        {{variation.size.name}}
-                        <span class="visually-hidden">{{variation.availability}}</span>
-                    </{% if variation.availability == "sold out" %}del{% else %}span{% endif %}>
-                </li>
+                    <div class="product-availabilities">
+                    {% for group in entry.sizegroups %}
+                        <h3>{{ group.sizegroup.name }}</h3>
+                        <ul class="product-availability-tags">
+                        {% for variation in group.variations %}
+                            <li title="{{ entry.product.name }} in {{ group.sizegroup.name }} size {{ variation.size.name }} is {{ variation.availability }}">
+                                <{% if variation.availability == "sold out" %}del{% else %}span{% endif %} class="product-availability-tag {{variation.availability|availability_class}}{% if variation.size.name|length >= 4 or "/" in variation.size.name %} small{% endif %}">
+                                    {{variation.size.name}}
+                                    <span class="visually-hidden">{{variation.availability}}</span>
+                                </{% if variation.availability == "sold out" %}del{% else %}span{% endif %}>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endfor %}
+                    </div>
+                </div>
             {% endfor %}
-            </ul>
-        {% endfor %}
         </div>
     </div>
-    {% endfor %}
-</div>
 {% endfor %}
 {% endspaceless %}
