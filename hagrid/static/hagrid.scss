@@ -117,7 +117,6 @@ h4 {
 
 .grid-background {
   margin-inline: auto;
-  margin-block: $gridSize;
   padding: $gridSize;
   padding-bottom: $gridSize + $gridBorderWidth;
   width: $gridSize * 20 + $gridBorderWidth;
@@ -196,6 +195,7 @@ display: inline-block;
   height: 2rem;
   color: $background;
   border: 1px solid currentcolor;
+  font-weight: normal;
 
   &.small {
     font-size: 0.9rem;
@@ -290,6 +290,25 @@ display: inline-block;
       color: $highlight;
       width: 4em;
       display: inline-block;
+    }
+  }
+}
+
+dl.legend {
+  font-family: $fontMono;
+  color: $highlight;
+  padding: 1rem;
+  margin-block: 1rem;
+  text-align: center;
+
+  dt, dd {
+    display: inline-block;
+  }
+  dd {
+    padding-inline: 1rem 2rem;
+
+    &:last-child {
+      padding-inline-end: 0;
     }
   }
 }
