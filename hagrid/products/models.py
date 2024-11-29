@@ -13,6 +13,7 @@ class StoreSettings(models.Model):
     login_link_in_navbar = models.BooleanField(help_text="Show the link to the login page in the navbar", default=True)
     dashboard_text = models.TextField(help_text="HTML that will be rendered on the top of the dashboard", blank=True, default="")
     reservation_faq_text = models.TextField(help_text="HTML that will be rendered reservation detail pages", blank=True, default="")
+    counting_enabled = models.BooleanField(help_text="Allow people with 'secret' URLs for counting items to record changes", default=False)
 
     def __str__(self):
         return "The Store Settings"

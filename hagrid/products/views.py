@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.template.loader import render_to_string
@@ -15,6 +16,7 @@ from .models import (
     ProductGroup,
     Size,
     SizeGroup,
+    StoreSettings,
     Variation,
     VariationAvailabilityEvent,
     VariationCountAccessCode,
@@ -502,6 +504,10 @@ class VariationCountView(View):
         )
 
     def get(self, request, code):
+        if not StoreSettings.objects.first().counting_enabled:
+            messages.add_message(self.request, messages.ERROR, 'We are not counting items at the moment.')
+            return redirect('dashboard')
+
         access_code, items, ctx = self.get_content(request, code)
         common_form = VariationCountCommonForm()
 
@@ -517,6 +523,10 @@ class VariationCountView(View):
         )
 
     def post(self, request, code):
+        if not StoreSettings.objects.first().counting_enabled:
+            messages.add_message(self.request, messages.ERROR, 'We are not counting items at the moment.')
+            return redirect('dashboard')
+
         access_code, items, ctx = self.get_content(request, code)
         common_form = VariationCountCommonForm(request.POST)
 
