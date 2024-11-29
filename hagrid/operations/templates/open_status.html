@@ -1,0 +1,12 @@
+{% if open_status %}
+    {% if open_status.open  %}
+        NOW OPEN
+        {% if open_status.stop %}
+            until {{ open_status.stop }}
+        {% endif %}
+    {% elif status.status == 'closed' and status.stop %}
+        soon open! at {{ status.stop }}
+    {% else %}
+        closed
+    {% endif %}
+{% endif %}

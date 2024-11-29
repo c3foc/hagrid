@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'hagrid.reservations',
     'hagrid.gallery',
     'hagrid.api',
+    'hagrid.operations',
 ]
 
 LOGIN_URL = "admin:login"

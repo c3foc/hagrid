@@ -10,6 +10,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from hagrid.gallery.models import GalleryImage
+from hagrid.operations.models import OpenStatus
 
 from .models import (
     Product,
@@ -383,6 +384,7 @@ class DashboardView(TemplateView):
         context["sizegroups"] = SizeGroup.objects.all()
         context["variations"] = Variation.objects.all()
         context["product_availabilities"] = ProductAvailabilityView()
+        context["open_status"] = OpenStatus.get_status()
         return context
 
 
