@@ -1,5 +1,7 @@
-from django.db import models
 from datetime import datetime
+
+import numpy
+from django.db import models
 
 
 class OpenStatus(models.Model):
@@ -44,3 +46,25 @@ class OpenStatus(models.Model):
             if open
             else (next_status.public_info if next_status else None),
         }
+
+    @classmethod
+    def make_datetime_to_event_time(cls):
+        statuses = cls.objects.order_by("datetime").all()
+        times = numpy.array([int(status.datetime.timestamp()) for status in statuses])
+        opens = numpy.array([int(status.open) for status in statuses])
+        timediffs = numpy.diff(times, prepend=[times[0]])
+        opendiffs = numpy.where(opens, 0, timediffs)
+        openings = numpy.cumsum(opendiffs)
+
+        def result(dt: datetime | int | float):
+            if isinstance(dt, datetime):
+                dt = dt.timestamp()
+
+            idx = numpy.searchsorted(times, dt) - 1
+            prev_time = times[idx]
+            eventhour = openings[idx]
+            if opens[idx]:
+                eventhour += dt - prev_time
+            return eventhour
+
+        return result
