@@ -23,7 +23,9 @@
     {% endif %}
 
     <div class="count"{% if variation.counted_at %} title="Counted {{ variation.counted_at|timesince_short }}"{% endif %}>
-        {% if variation.count != None %}{{ variation.count }}{% else %}?{% endif %}{% if variation.counted_at and not variation.counted_at|is_soon:-6 %}*{% endif %}
+        {% with new=variation.counted_at|is_soon:-6 %}
+        {% if not new %}({% endif %}{% if variation.count != None %}{{ variation.count }}{% else %}?{% endif %}{% if not new %}){% endif %}
+    {% endwith %}
     </div>
 
     <div class="initial">{{ variation.initial_amount }}</div>

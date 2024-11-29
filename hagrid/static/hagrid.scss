@@ -496,15 +496,15 @@ dl.legend {
   label {
     display: none;
     height: 32px;
+    line-height: 32px;
     border-radius: 4px;
     margin: 8px;
-    font-size: 1.3rem;
     color: $background;
-    font-family: $fontMono;
+    font-family: $fontBase;
     font-weight: bold;
     text-align: center;
-
-
+    user-select: none;
+    cursor: pointer;
 
     &.red { background: $red; }
     &.yellow { background: $yellow; }
@@ -519,7 +519,8 @@ dl.legend {
   position: relative;
   height: 20px;
   font-size: 0.8rem;
-  font-family: $fontMono;
+  font-family: $fontBase;
+  font-weight: 500;
   border-top: 1px solid $accent4;
 
   .fill {

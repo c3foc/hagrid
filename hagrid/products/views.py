@@ -27,7 +27,12 @@ from .models import (
 
 class ProductTable:
     def __init__(
-        self, product, render_variation=None, render_empty=None, show_empty_rows=False, table_class:str=""
+        self,
+        product,
+        render_variation=None,
+        render_empty=None,
+        show_empty_rows=False,
+        table_class: str = "",
     ):
         self.product = product
         self.table_class = table_class
@@ -130,17 +135,21 @@ class VariationConfigForm(forms.ModelForm):
         self.fields["initial_amount"].blank = True
         self.fields["initial_amount"].initial = None
         self.fields["initial_amount"].required = False
-        self.fields["product"].widget = forms.NumberInput()
-        self.fields["size"].widget = forms.NumberInput()
+        self.fields["product"].widget = forms.HiddenInput()
+        self.fields["size"].widget = forms.HiddenInput()
 
     class Meta:
         model = Variation
-        fields = ['initial_amount', 'product', 'size']
+        fields = ["initial_amount", "product", "size"]
 
 
 class VariationConfigView(LoginRequiredMixin, View):
     def get_content(self, request, product_id=None):
-        products = list(Product.objects.all() if product_id is None else Product.objects.filter(id=product_id))
+        products = list(
+            Product.objects.all()
+            if product_id is None
+            else Product.objects.filter(id=product_id)
+        )
 
         forms = []
 
@@ -150,24 +159,22 @@ class VariationConfigView(LoginRequiredMixin, View):
             )
 
         def render_variation_form(variation):
-            prefix = "existing_{}".format(variation.id)
+            prefix = f"variation-{variation.product.id}-{variation.size.id}"
             if request.POST:
                 form = VariationConfigForm(request.POST, prefix=prefix)
             else:
-                form = VariationConfigForm(
-                    prefix=prefix, initial={"exist": True}, instance=variation
-                )
+                form = VariationConfigForm(prefix=prefix, instance=variation)
             forms.append(form)
             return render_form(form, variation)
 
         def render_empty_form(product, size):
-            prefix = "new_{}_{}".format(product.id, size.id)
+            prefix = f"variation-{product.id}-{size.id}"
             if request.POST:
                 form = VariationConfigForm(request.POST, prefix=prefix)
             else:
                 form = VariationConfigForm(
                     prefix=prefix,
-                    initial={"product": product, "size": size, "exist": False},
+                    initial={"product": product, "size": size},
                 )
             forms.append(form)
             return render_form(form)
@@ -184,7 +191,9 @@ class VariationConfigView(LoginRequiredMixin, View):
         return products, tables, forms
 
     def get(self, request, product_id=None):
-        products, product_tables, variation_forms = self.get_content(request, product_id)
+        products, product_tables, variation_forms = self.get_content(
+            request, product_id
+        )
         context = {
             "products": products,
             "product_tables": product_tables,
@@ -193,24 +202,46 @@ class VariationConfigView(LoginRequiredMixin, View):
 
     def post(self, request, product_id=None):
         _, _, forms = self.get_content(request, product_id)
+        changed_count = 0
+        created_count = 0
+        deleted_count = 0
+
+        # somthing not valid -> render the form again
+        if not all(map(lambda f: f.is_valid(), forms)):
+            return self.get(request, product_id)
+
         for form in forms:
-            if form.is_valid():
-                initial_amount = form.cleaned_data["initial_amount"]
-                if initial_amount is not None:
-                    variation, created = Variation.objects.get_or_create(
-                        product=form.cleaned_data["product"],
-                        size=form.cleaned_data["size"],
-                    )
-                    variation.availability = Variation.STATE_MANY_AVAILABLE
+            initial_amount = form.cleaned_data["initial_amount"]
+            if initial_amount is not None:
+                variation, created = Variation.objects.get_or_create(
+                    product=form.cleaned_data["product"],
+                    size=form.cleaned_data["size"],
+                    defaults={
+                        "initial_amount": initial_amount,
+                        "availability": Variation.STATE_MANY_AVAILABLE
+                    },
+                )
+                if not created and variation.initial_amount != initial_amount:
+                    changed_count += 1
                     variation.initial_amount = initial_amount
                     variation.save()
-                else:
-                    Variation.objects.filter(
-                        product=form.cleaned_data["product"],
-                        size=form.cleaned_data["size"],
-                    ).delete()
-        return redirect("products_config_overview")
+                elif created:
+                    created_count += 1
+            else:
+                del_count, _ = Variation.objects.filter(
+                    product=form.cleaned_data["product"],
+                    size=form.cleaned_data["size"],
+                ).delete()
+                deleted_count += del_count
 
+        total_count = changed_count + created_count + deleted_count
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            f"Changed {total_count} variations (created {created_count}, modified {changed_count}, deleted {deleted_count})",
+        )
+
+        return redirect("products_config_overview")
 
 
 class VariationsAvailabilityForm(forms.Form):
@@ -258,7 +289,7 @@ class VariationAvailabilityConfigView(LoginRequiredMixin, View):
                 render_variation=render_variation_form,
                 render_empty=render_empty_form,
                 show_empty_rows=False,
-                table_class="availabilities-table"
+                table_class="availabilities-table",
             )
             for product in products
         }
@@ -280,7 +311,11 @@ class VariationAvailabilityConfigView(LoginRequiredMixin, View):
                     variation.availability = value
                     variation.save()
                     changed_count += 1
-            messages.add_message(self.request, messages.SUCCESS, f'Changed {changed_count} availabilities' )
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                f"Changed {changed_count} availabilities",
+            )
 
         product_groups = [
             {
@@ -300,16 +335,18 @@ class VariationAvailabilityConfigView(LoginRequiredMixin, View):
                 {
                     "product_group": None,
                     "tables": [
-                        product_tables.get(product.id) for product in unassigned
+                        product_tables[product.id] for product in unassigned
+                        if product.id in product_tables
                     ],
                 }
             )
 
         # filter emtpy groups
-        product_groups = [p for p in product_groups if len(p['tables'])]
+        product_groups = [p for p in product_groups if len(p["tables"])]
 
         context = {"product_groups": product_groups}
         return render(request, "variation_availability_config.html", context)
+
 
 class ProductsConfigOverviewView(LoginRequiredMixin, View):
     def get(self, request):
@@ -414,12 +451,14 @@ class DashboardView(TemplateView):
         context["variations"] = Variation.objects.all()
         context["product_availabilities"] = ProductAvailabilityView()
 
-        dashboard_text: str|None = StoreSettings.objects.first().dashboard_text
-        if dashboard_text and '%open_status%' in dashboard_text:
-            open_status = render_to_string('open_status.html', {'open_status': OpenStatus.get_status()})
-            dashboard_text = dashboard_text.replace('%open_status%', open_status)
+        dashboard_text: str | None = StoreSettings.objects.first().dashboard_text
+        if dashboard_text and "%open_status%" in dashboard_text:
+            open_status = render_to_string(
+                "open_status.html", {"open_status": OpenStatus.get_status()}
+            )
+            dashboard_text = dashboard_text.replace("%open_status%", open_status)
 
-        context['dashboard_text'] = dashboard_text
+        context["dashboard_text"] = dashboard_text
 
         return context
 
@@ -474,7 +513,9 @@ class VariationCountView(View):
     template_name = "variation_count.html"
 
     def get_content(self, request, code):
-        access_code = get_object_or_404(VariationCountAccessCode, code=code, disabled=False)
+        access_code = get_object_or_404(
+            VariationCountAccessCode, code=code, disabled=False
+        )
 
         variation_query = Variation.objects
 
@@ -490,7 +531,12 @@ class VariationCountView(View):
         if sizegroups:
             variation_query = variation_query.filter(size__group__in=sizegroups)
 
-        variation_query = variation_query.order_by('product__product_group__position', 'product__position', 'size__group__position', 'size__position')
+        variation_query = variation_query.order_by(
+            "product__product_group__position",
+            "product__position",
+            "size__group__position",
+            "size__position",
+        )
 
         def get_form(variation):
             prefix = "variation_{}".format(variation.id)
@@ -498,7 +544,6 @@ class VariationCountView(View):
                 return VariationCountForm(request.POST, prefix=prefix)
             else:
                 return VariationCountForm(prefix=prefix)
-
 
         variations = list(variation_query.distinct())
         items = [
@@ -543,8 +588,10 @@ class VariationCountView(View):
 
     def get(self, request, code):
         if not StoreSettings.objects.first().counting_enabled:
-            messages.add_message(self.request, messages.ERROR, 'We are not counting items at the moment.')
-            return redirect('dashboard')
+            messages.add_message(
+                self.request, messages.ERROR, "We are not counting items at the moment."
+            )
+            return redirect("dashboard")
 
         access_code, items, ctx = self.get_content(request, code)
         common_form = VariationCountCommonForm()
@@ -562,8 +609,10 @@ class VariationCountView(View):
 
     def post(self, request, code):
         if not StoreSettings.objects.first().counting_enabled:
-            messages.add_message(self.request, messages.ERROR, 'We are not counting items at the moment.')
-            return redirect('dashboard')
+            messages.add_message(
+                self.request, messages.ERROR, "We are not counting items at the moment."
+            )
+            return redirect("dashboard")
 
         access_code, items, ctx = self.get_content(request, code)
         common_form = VariationCountCommonForm(request.POST)

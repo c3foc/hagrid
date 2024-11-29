@@ -51,6 +51,7 @@ def timesince_short(dt, shorter=False):
 register.filter('timesince_short', timesince_short)
 
 def is_soon(dt, hours=1):
+    if not dt: return False
     now = timezone.now()
     if hours < 0:
         delta = now - dt

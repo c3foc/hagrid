@@ -1,11 +1,9 @@
-<div hidden>
-  {{ form.product }}
-  {{ form.size }}
-</div>
-{{ form.non_field_errors }}
+{{ form.product }}
+{{ form.size }}
 
-  <div class="fieldWrapper">
-      {{ form.initial_amount.errors }}
-      <label for="{{ form.initial_amount.id_for_label }}" class="visually-hidden">Initial:</label>
-      {{ form.initial_amount }}
+{{ form.errors }}
+
+<div class="fieldWrapper">
+    <label for="{{ form.initial_amount.id_for_label }}" class="visually-hidden">Initial:</label>
+    {{ form.initial_amount }}
 </div>

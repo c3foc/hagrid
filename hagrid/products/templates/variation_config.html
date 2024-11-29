@@ -42,12 +42,12 @@ input[type=radio]:checked + .btn-outline-danger {
     <li>Do not delete items during the event, as that will mess up statistics later.</li>
 </ul>
 
-<form method="post">
+<form method="post" autocomplete="off">
   {% csrf_token %}
   {% for table in product_tables %}
   {% include "product_table.html" with table=table %}
   {% endfor %}
-  <input class="btn btn-lg btn-primary" type="submit" value="Save Variations"/>
+  <input class="btn btn-success" type="submit" value="Save variations"/>
 </form>
 
 
