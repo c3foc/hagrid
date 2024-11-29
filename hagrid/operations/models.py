@@ -66,6 +66,6 @@ class OpenStatus(models.Model):
             eventhour = openings[idx]
             if opens[idx]:
                 eventhour += dt - prev_time
-            return eventhour
+            return float(eventhour)
 
         return result

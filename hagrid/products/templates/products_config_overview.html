@@ -38,11 +38,11 @@ input[type=radio]:checked + .btn-outline-danger {
           <a class="btn btn-secondary" href="{% url 'admin:products_product_changelist' %}">Products</a>
           <a class="btn btn-secondary" href="{% url 'admin:products_sizegroup_changelist' %}">Sizegroups</a>
           <a class="btn btn-secondary" href="{% url 'admin:products_size_changelist' %}">Sizes</a>
-          <a class="btn btn-secondary" href="{% url 'admin:products_variationcountaccesscode_changelist' %}">Count codes</a>
-        </p>
-        <p>Manage images here:</p>
-        <p>
           <a class="btn btn-secondary" href="{% url 'admin:gallery_galleryimage_changelist' %}">Gallery Images</a>
+        </p>
+        <p>Keep the current item count with these features:</p>
+        <p>
+          <a class="btn btn-secondary" href="{% url 'admin:products_variationcountaccesscode_changelist' %}">Count codes</a>
         </p>
     </div>
     <div class="col-sm-6">

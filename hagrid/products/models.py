@@ -1,4 +1,8 @@
+from datetime import datetime
+from math import log
+import math
 import secrets
+from typing import Iterator
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -115,6 +119,42 @@ class Variation(models.Model):
             return Variation.STATE_MANY_AVAILABLE
 
         return None
+
+    def get_count_priority(self, datetime_to_event_time):
+        scores = {}
+        info = {}
+
+        def count_severity(c):
+            return 1 - log(c + 1, self.initial_amount * 0.8)
+
+        now = datetime_to_event_time(datetime.now())
+        if self.count is not None and self.counted_at is not None:
+            # try to estimate the current count
+            total_sold = self.initial_amount - self.count
+            count_event_time = datetime_to_event_time(self.counted_at)
+            sale_rate = total_sold / count_event_time
+            estimate = self.initial_amount - now * sale_rate
+            estimated_count = min(self.initial_amount, max(0, estimate))
+
+            scores['running_low_estimated'] = count_severity(estimated_count)
+            info['estimated_count'] = estimated_count
+            info['sale_rate'] = sale_rate * 3600
+
+            scores['running_low'] = 0.5 * count_severity(self.count)
+
+            count_age = max(0, now - count_event_time)
+            scores['outdated_count'] = 0.5 * math.pow(count_age / 3600 / 4.0, 0.5)
+            info['count_age'] = count_age
+            print(self, count_age)
+        else:
+            scores['missing_count'] = 0.2
+
+        return {
+            'scores': scores,
+            'info': info,
+            'total': sum(scores.values(), 0),
+            'highest_reason': max(scores.items(), key=lambda s:s[1])[0],
+        }
 
 
 class VariationAvailabilityEvent(models.Model):

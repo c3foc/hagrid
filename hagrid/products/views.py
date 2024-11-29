@@ -675,3 +675,19 @@ class VariationCountSuccessView(View):
                 "items_changed": items_changed,
             },
         )
+
+class VariationCountOverviewView(LoginRequiredMixin, View):
+    def get(self, request):
+        datetime_to_event_time = OpenStatus.make_datetime_to_event_time()
+
+        priorities = []
+        for variation in Variation.objects.all():
+            priorities.append({
+                "variation": variation,
+                **variation.get_count_priority(datetime_to_event_time),
+            })
+
+        priorities = sorted(priorities, key=lambda s: s['total'], reverse=True)
+
+        context = {"priorities": priorities}
+        return render(request, "variation_count_overview.html", context)

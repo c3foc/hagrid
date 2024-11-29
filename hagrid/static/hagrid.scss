@@ -12,7 +12,7 @@ $green: #5FDD6E;
 $yellow: #FFEB50;
 $red: $primary;
 
-$gridSize: 64px;
+$gridSize: 48px;
 $gridBorderWidth: 2px;
 $gridBorderColor: $accent4;
 $gridBorder: $gridBorderWidth solid $gridBorderColor;
@@ -132,7 +132,7 @@ h4 {
   padding-bottom: $gridSize + $gridBorderWidth;
   margin-right: -$gridBorderWidth;
 
-  max-width: $gridSize * 18 + $gridBorderWidth;
+  max-width: $gridSize * 23 + $gridBorderWidth;
   margin-inline: auto;
 
   // now for something ugly, let's build an inline SVG as a data-url so we can
@@ -183,21 +183,21 @@ h4 {
 .product-availability-tag {
   // background: $primary;
   display: inline-flex;
-  width: 3rem;
+  width: 2.5rem;
   overflow: hidden;
   white-space: nowrap;
   text-align: center;
   font-family: $fontMono;
-  font-size: 1.2rem;
+  font-size: 1rem;
   align-items: center;
   justify-content: center;
-  height: 2rem;
+  height: 1.5rem;
   color: $background;
   border: 1px solid currentcolor;
   font-weight: normal;
 
   &.small {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
   }
 
   // color variations:
@@ -389,8 +389,24 @@ dl.legend {
 
   tr:nth-child(2n+1) {
     td, th {
-      background: $accent4;
+      background: $accent5;
     }
+  }
+  thead th {
+      background: $accent4;
+  }
+}
+
+.hagrid-table-bordered {
+  font-family: $fontBase;
+  font-size: 0.8rem;
+  td, th {
+    border: 2px solid $accent3;
+  }
+
+  td.error {
+    color: $red;
+    font-weight: bold;
   }
 }
 

@@ -22,6 +22,8 @@ def availability_class(availability):
 register.filter('availability_class', availability_class)
 
 def timesince_short(dt, shorter=False):
+    if not dt:
+        return ''
     now = timezone.now()
     delta = now - dt
 
@@ -61,3 +63,12 @@ def is_soon(dt, hours=1):
     return delta.days < 0 or (delta.days == 0 and delta.seconds < hours * 3600)
 
 register.filter('is_soon', is_soon)
+
+def seconds_to_duration(s):
+    if not s:
+        return ""
+    if s > 3600:
+        return f"{s/3600:.0f}h {s/60%60:.0f}m"
+    return f"{s/60:.0f}m"
+
+register.filter('seconds_to_duration', seconds_to_duration)
