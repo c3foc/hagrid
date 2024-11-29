@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <style>
+        input[type=radio]:checked + .btn-outline-success {
+          background-color: #28a745;
+        }
+        input[type=radio]:checked + .btn-outline-warning {
+          background-color: #ffc107;
+        }
+        input[type=radio]:checked + .btn-outline-danger {
+          background-color: #dc3545;
+        }
+
+        .btn-availability {
+          padding: 0;
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+<h1>
+    Change availablity
+    {% if product_groups|length == 1 and product_groups.0.tables|length == 1 %}
+        of {{ product_groups.0.tables.0.product.name }}
+    {% endif %}
+</h1>
+
+<form method="post">
+    {{form.errors}}
+
+    {% csrf_token %}
+
+    {% for group in product_groups %}
+        {% if group.product_group %}
+            <h2>{{ group.product_group.name }}</h2>
+        {% else %}
+            <h2>Without product group</h2>
+        {% endif %}
+
+        {% for table in group.tables %}
+            {% if table.entries %}
+            {% include "product_table.html" with table=table %}
+        {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    <input class="btn btn-lg btn-success" type="submit" value="Save availabilities"/>
+</form>
+
+{% endblock %}

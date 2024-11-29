@@ -96,6 +96,26 @@ class Variation(models.Model):
     def __str__(self):
         return "{} ({})".format(str(self.product), str(self.size))
 
+    @property
+    def availability_progress(self):
+        progress = 0
+        if self.count is not None and self.initial_amount:
+            progress = self.count / self.initial_amount * 100
+        return f"{progress:.1f}%"
+
+    @property
+    def computed_availability(self):
+        if self.count is not None and self.initial_amount:
+            if self.count == 0:
+                return Variation.STATE_SOLD_OUT
+
+            if self.count <= 2 or self.count < self.initial_amount * 0.1:
+                return Variation.STATE_FEW_AVAILABLE
+
+            return Variation.STATE_MANY_AVAILABLE
+
+        return None
+
 
 class VariationAvailabilityEvent(models.Model):
     old_state = models.CharField(max_length=20, choices=Variation.AVAILABILITY_STATES)

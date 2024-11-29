@@ -52,7 +52,11 @@ register.filter('timesince_short', timesince_short)
 
 def is_soon(dt, hours=1):
     now = timezone.now()
-    delta = dt - now
+    if hours < 0:
+        delta = now - dt
+        hours = -hours
+    else:
+        delta = dt - now
     return delta.days < 0 or (delta.days == 0 and delta.seconds < hours * 3600)
 
 register.filter('is_soon', is_soon)

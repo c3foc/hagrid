@@ -27,9 +27,10 @@ from .models import (
 
 class ProductTable:
     def __init__(
-        self, product, render_variation=None, render_empty=None, show_empty_rows=False
+        self, product, render_variation=None, render_empty=None, show_empty_rows=False, table_class:str=""
     ):
         self.product = product
+        self.table_class = table_class
         self.show_empty_rows = show_empty_rows
         self.render_variation = render_variation or (lambda v: v.availability)
         self.render_empty = render_empty or (lambda *_args: "")
@@ -124,47 +125,23 @@ class SizeTable:
 
 
 class VariationConfigForm(forms.ModelForm):
-    exist = forms.BooleanField(required=False)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["exist"].widget.attrs.update({"style": "display: none"})
-        self.fields["initial_amount"].widget.attrs.update(
-            {"style": "width: 10ch;", "placeholder": "Initial"}
-        )
-        self.fields["availability"].widget = forms.RadioSelect(
-            choices=Variation.AVAILABILITY_STATES,
-            attrs={"style": "position:fixed;opacity:0;"},
-        )
+        self.fields["initial_amount"].blank = True
+        self.fields["initial_amount"].initial = None
+        self.fields["initial_amount"].required = False
         self.fields["product"].widget = forms.NumberInput()
         self.fields["size"].widget = forms.NumberInput()
 
     class Meta:
         model = Variation
-        exclude = []
+        fields = ['initial_amount', 'product', 'size']
 
 
 class VariationConfigView(LoginRequiredMixin, View):
-    def post(self, request):
-        variation_tables, forms = self.get_variation_tables_and_forms(request)
-        for form in forms:
-            if form.is_valid():
-                if form.cleaned_data["exist"]:
-                    variation, created = Variation.objects.get_or_create(
-                        product=form.cleaned_data["product"],
-                        size=form.cleaned_data["size"],
-                    )
-                    variation.availability = form.cleaned_data["availability"]
-                    variation.initial_amount = form.cleaned_data["initial_amount"]
-                    variation.save()
-                else:
-                    Variation.objects.filter(
-                        product=form.cleaned_data["product"],
-                        size=form.cleaned_data["size"],
-                    ).delete()
-        return redirect("availabilityconfig")
+    def get_content(self, request, product_id=None):
+        products = list(Product.objects.all() if product_id is None else Product.objects.filter(id=product_id))
 
-    def get_variation_tables_and_forms(self, request):
         forms = []
 
         def render_form(form, variation=None):
@@ -202,23 +179,44 @@ class VariationConfigView(LoginRequiredMixin, View):
                 render_empty=render_empty_form,
                 show_empty_rows=True,
             )
-            for product in Product.objects.all()
+            for product in products
         ]
-        return tables, forms
+        return products, tables, forms
 
-    def get(self, request):
-        product_tables, variation_forms = self.get_variation_tables_and_forms(request)
+    def get(self, request, product_id=None):
+        products, product_tables, variation_forms = self.get_content(request, product_id)
         context = {
-            "products": Product.objects.all(),
+            "products": products,
             "product_tables": product_tables,
         }
-        return render(request, "productconfig.html", context)
+        return render(request, "variation_config.html", context)
+
+    def post(self, request, product_id=None):
+        _, _, forms = self.get_content(request, product_id)
+        for form in forms:
+            if form.is_valid():
+                initial_amount = form.cleaned_data["initial_amount"]
+                if initial_amount is not None:
+                    variation, created = Variation.objects.get_or_create(
+                        product=form.cleaned_data["product"],
+                        size=form.cleaned_data["size"],
+                    )
+                    variation.availability = Variation.STATE_MANY_AVAILABLE
+                    variation.initial_amount = initial_amount
+                    variation.save()
+                else:
+                    Variation.objects.filter(
+                        product=form.cleaned_data["product"],
+                        size=form.cleaned_data["size"],
+                    ).delete()
+        return redirect("products_config_overview")
+
 
 
 class VariationsAvailabilityForm(forms.Form):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, variations, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for variation in Variation.objects.all():
+        for variation in variations:
             key = "variation_{}".format(variation.pk)
             self.fields[key] = forms.ChoiceField(
                 choices=Variation.AVAILABILITY_STATES,
@@ -234,15 +232,20 @@ class VariationsAvailabilityForm(forms.Form):
         return self[key]
 
 
-class VariationChangeAvailabilityView(LoginRequiredMixin, View):
-    def get_product_tables_and_forms(self, request):
-        form = VariationsAvailabilityForm(request.POST or None)
+class VariationAvailabilityConfigView(LoginRequiredMixin, View):
+    def get_content(self, request, product_id):
+        products = Product.objects.all()
+        if product_id is not None:
+            products = products.filter(id=product_id)
+        variations = list(Variation.objects.filter(product__in=products).all())
+
+        form = VariationsAvailabilityForm(variations, request.POST or None)
 
         def render_variation_form(variation):
             field = form.field_for_rendering_by_variation(variation)
             return render_to_string(
                 "variation_availability_box.html",
-                context={"field": field},
+                context={"field": field, "variation": variation},
                 request=request,
             )
 
@@ -255,31 +258,37 @@ class VariationChangeAvailabilityView(LoginRequiredMixin, View):
                 render_variation=render_variation_form,
                 render_empty=render_empty_form,
                 show_empty_rows=False,
+                table_class="availabilities-table"
             )
-            for product in Product.objects.all()
+            for product in products
         }
 
         return tables, form
 
-    def post(self, request):
-        return self.get(request)
+    def post(self, request, product_id=None):
+        return self.get(request, product_id)
 
-    def get(self, request):
-        product_tables, form = self.get_product_tables_and_forms(request)
+    def get(self, request, product_id=None):
+        product_tables, form = self.get_content(request, product_id)
 
         if form.is_valid():
+            changed_count = 0
             for key, value in form.cleaned_data.items():
                 variation_id = int(key.rsplit("_", 1)[-1])
                 variation = get_object_or_404(Variation, id=variation_id)
-                variation.availability = value
-                variation.save()
+                if variation.availability != value:
+                    variation.availability = value
+                    variation.save()
+                    changed_count += 1
+            messages.add_message(self.request, messages.SUCCESS, f'Changed {changed_count} availabilities' )
 
         product_groups = [
             {
                 "product_group": product_group,
                 "tables": [
-                    product_tables.get(product.id)
+                    product_tables[product.id]
                     for product in product_group.products.all()
+                    if product.id in product_tables
                 ],
             }
             for product_group in ProductGroup.objects.all()
@@ -296,8 +305,28 @@ class VariationChangeAvailabilityView(LoginRequiredMixin, View):
                 }
             )
 
+        # filter emtpy groups
+        product_groups = [p for p in product_groups if len(p['tables'])]
+
         context = {"product_groups": product_groups}
-        return render(request, "availabilityconfig.html", context)
+        return render(request, "variation_availability_config.html", context)
+
+class ProductsConfigOverviewView(LoginRequiredMixin, View):
+    def get(self, request):
+        product_groups = [
+            {
+                "product_group": product_group,
+                "products": product_group.products.all(),
+            }
+            for product_group in ProductGroup.objects.all()
+        ]
+
+        unassigned = list(Product.objects.filter(product_group=None))
+        if unassigned:
+            product_groups.append({"product_group": None, "products": unassigned})
+
+        context = {"product_groups": product_groups}
+        return render(request, "products_config_overview.html", context)
 
 
 class VariationAvailabilityEventListView(LoginRequiredMixin, TemplateView):

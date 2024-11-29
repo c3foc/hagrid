@@ -34,7 +34,14 @@ input[type=radio]:checked + .btn-outline-danger {
 
 {% block content %}
 
-<h1>Configure which Variations are available</h1>
+<h1>Configure which variations exist{% if products|length == 1 %} for {{ products.0.name }}{% endif %}</h1>
+<ul>
+    <li>Enter the initial amount for each item.</li>
+    <li>If you enter 0, the item will still exist.</li>
+    <li>Leave the box empty or clear it to delete an item.</li>
+    <li>Do not delete items during the event, as that will mess up statistics later.</li>
+</ul>
+
 <form method="post">
   {% csrf_token %}
   {% for table in product_tables %}

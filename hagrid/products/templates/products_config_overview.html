@@ -1,0 +1,81 @@
+
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+input[type=radio]:checked + .btn-outline-success {
+  background-color: #28a745;
+}
+input[type=radio]:checked + .btn-outline-warning {
+  background-color: #ffc107;
+}
+input[type=radio]:checked + .btn-outline-danger {
+  background-color: #dc3545;
+}
+
+.btn-availability {
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>Product configuration</h1>
+
+<div class="row">
+
+    <div class="col-sm-6">
+        <h2>General config</h2>
+        <p>
+          Some models are currently only configurable using Django Admin.
+        </p>
+        <p>
+          <a class="btn btn-secondary" href="{% url 'admin:products_storesettings_changelist' %}1/change/">Store Settings</a>
+          <a class="btn btn-secondary" href="{% url 'admin:products_product_changelist' %}">Products</a>
+          <a class="btn btn-secondary" href="{% url 'admin:products_sizegroup_changelist' %}">Sizegroups</a>
+          <a class="btn btn-secondary" href="{% url 'admin:products_size_changelist' %}">Sizes</a>
+          <a class="btn btn-secondary" href="{% url 'admin:products_variationcountaccesscode_changelist' %}">Count codes</a>
+        </p>
+        <p>Manage images here:</p>
+        <p>
+          <a class="btn btn-secondary" href="{% url 'admin:gallery_galleryimage_changelist' %}">Gallery Images</a>
+        </p>
+    </div>
+    <div class="col-sm-6">
+
+        <h2>All products</h2>
+
+        <p>If you want a big matrix, use these links!</p>
+
+        <p>
+        <a class="btn btn-secondary" href="{% url "variation_config"  %}">Variations</a>
+        <a class="btn btn-secondary" href="{% url "variation_availability_config"  %}">Availability</a>
+        </p>
+
+        <p style="margin-top: 2rem;">See <a href="{% url 'variationavailabilityeventlist' %}">here</a> for history of availability changes.</p>
+    </div>
+</div>
+
+{% for group in product_groups %}
+    {% if group.product_group %}
+        <h2>{{ group.product_group.name }}</h2>
+    {% else %}
+        <h2>Products without a group</h2>
+        <p>These products will not show up in the public dashboard.</p>
+    {% endif %}
+    <table class="hagrid-table">
+        {% for product in group.products %}
+            <tr>
+                <th width="400">{{ product.name }}</th>
+                <td width="200"><a href="{% url "variation_config" product.id %}">Variations</a></td>
+                <td width="200"><a href="{% url "variation_availability_config" product.id %}">Availability</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endfor %}
+
+{% endblock %}
