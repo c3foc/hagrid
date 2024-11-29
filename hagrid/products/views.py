@@ -434,7 +434,7 @@ class VariationCountView(View):
     template_name = "variation_count.html"
 
     def get_content(self, request, code):
-        access_code = get_object_or_404(VariationCountAccessCode, code=code)
+        access_code = get_object_or_404(VariationCountAccessCode, code=code, disabled=False)
 
         variation_query = Variation.objects
 
