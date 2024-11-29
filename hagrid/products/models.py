@@ -1,5 +1,8 @@
+import secrets
+
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from positions import PositionField
 
 class StoreSettings(models.Model):
@@ -13,7 +16,7 @@ class StoreSettings(models.Model):
 
     def __str__(self):
         return "The Store Settings"
-        
+
     class Meta:
         verbose_name = "Store Settings"
         verbose_name_plural = "Store Settings"
@@ -53,7 +56,7 @@ class Product(models.Model):
 class SizeGroup(models.Model):
     name = models.CharField(max_length=30, unique=True)
     position = PositionField()
-    
+
     def __str__(self):
         return self.name
 
@@ -85,6 +88,8 @@ class Variation(models.Model):
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="variations")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variations")
     initial_amount = models.IntegerField(default=100)
+    count = models.IntegerField(blank=True, null=True)
+    counted_at = models.DateTimeField(blank=True, null=True)
     availability = models.CharField(default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES)
 
     def __str__(self):
@@ -105,18 +110,59 @@ class VariationAvailabilityEvent(models.Model):
                 self.new_state
         )
 
+class VariationCountEvent(models.Model):
+    count = models.IntegerField(blank=True, null=True)
+    datetime = models.DateTimeField(auto_now=True)
+    variation = models.ForeignKey(Variation, related_name='count_events', on_delete=models.CASCADE)
+    comment = models.TextField(blank=True, default="")
+    name = models.TextField(blank=True, default="")
+
+    def __str__(self):
+        date = self.datetime.strftime('%Y-%m-%d %H:%M:%S')
+        return f"At {date} {self.variation} changed to {self.count} available"
+
+def generate_access_code():
+    return secrets.token_urlsafe(12)
+
+class VariationCountAccessCode(models.Model):
+    code = models.CharField(max_length=32, unique=True, default=generate_access_code,
+                            help_text="unique URL part, keep this (rather) secret")
+
+    # filters
+    products = models.ManyToManyField(Product, help_text="allow editing only variations these products", blank=True)
+    sizegroups = models.ManyToManyField(SizeGroup, help_text="allow editing only variations these sizegroups", blank=True)
+    sizes = models.ManyToManyField(Size, help_text="allow editing only variations these sizes", blank=True)
+
+    disabled = models.BooleanField(help_text="disable the code so it cannot be used at the moment")
+
+    def __str__(self):
+        filters = []
+        for attr in ['products', 'sizegroups', 'sizes']:
+            items = getattr(self, attr).all()
+
+            if items:
+                filters.append("/".join(str(i) for i in items))
+
+        filters = ", ".join(filters) if filters else "everything"
+
+        return f"Access code for {filters}"
+
+    def get_absolute_url(self):
+        print("CODE", self.code)
+        return reverse('variationcount', kwargs={'code':self.code})
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
-@receiver(pre_save, sender=Variation, dispatch_uid="my_unique_identifier")
+@receiver(pre_save, sender=Variation, dispatch_uid="variation_availability_change")
 def variation_availability_change(sender, instance,  **kwargs):
     new_instance = instance
     try:
         old_instance = Variation.objects.get(pk=instance.pk)
     except Variation.DoesNotExist:
         return
+
     if new_instance.availability != old_instance.availability:
         VariationAvailabilityEvent(
             old_state=old_instance.availability,

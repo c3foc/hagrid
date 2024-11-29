@@ -29,7 +29,7 @@ DEBUG = True
 SITE_URL = "http://localhost:8000"
 
 # e.g. ["hagrid.example.com"]
-ALLOWED_HOSTS = ["local.rindt.me", "localhost"]
+ALLOWED_HOSTS = ["local.rindt.me", "localhost", "yeast"]
 
 # Email Settings
 ADMINS = [('Admin', 'hagrid-admin@localhost')]

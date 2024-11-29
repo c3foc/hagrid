@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% load product %}
+
+{% block content %}
+<style>@media (max-width: 1023px) { body { padding-bottom: 0} }</style>
+
+<form method="post" autocomplete="off" class="reset-on-navigation">
+    {% csrf_token %}
+    <label for="show-tutorial" class="btn btn-secondary btn-sm"  role="button" style="float: right;">
+        Toggle tutorial
+    </label>
+
+    <h1>Count {% if common_name %}{{common_name}}{% else %}items{% endif %}</h1>
+
+    <input type="checkbox" id="show-tutorial" class="toggle-visibility-checkbox" />
+    <ul>
+        <li>Thank you for counting remaining stock of some of our merch items.</li>
+        <li>You can leave any row empty if you haven't counted it, can't find it, or are not supposed to count it.</li>
+        <li>Please enter 0 if an item is out of stock.</li>
+        <li>You can enter a comment for the reason of the new count. Only
+            fill that in for irregularities (such as when we find previous missed stock (yes that's happened)).</li>
+        <li>You can enter your nickname for when we need to clarify stuff, but you don't have to.
+            If you enter something, your browser remembers it for a while so you don't have to type again.
+            We store it for the rest of the event and delete it from the database afterwards.</li>
+    </ul>
+
+    <article class="count-page">
+        <main>
+            <table class="count-table">
+                <thead>
+                    <tr>
+                        <th colspan="3">Item</th>
+                        <th>Old</th>
+                        <th>New</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{item.variation.product.name}}</td>
+                            <td>{{item.variation.size.group.name}}</td>
+                            <td>{{item.variation.size.name}}</td>
+                            <td>
+                                <code class="color-{{ item.variation.availability|availability_class }}">{{item.variation.count|default:'-' }}</code>
+                                {% if item.variation.counted_at %}
+                                    <small>{{ item.variation.counted_at|timesince_short }}</smalL>
+                                {% endif %}
+                            </td>
+                            <td>{{item.form.count }}</td>
+                        </tr>
+                        {% if item.form.errors %}
+                            <tr class="error">
+                                <td colspan="3">
+                                    {{ item.form.errors }}
+                                </td>
+                            </tr>
+                            {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+
+        <footer>
+            {{ common_form.name.label }}
+            {{ common_form.name }}
+
+            {{ common_form.comment.label }}
+            {{ common_form.comment }}
+
+            <button type="submit" class="btn btn-success">Submit</button>
+
+            {% if common_form.errors %}
+                <div style="grid-column: span 2">
+                    {{ common_form.errors }}
+                </div>
+            {% endif %}
+        </footer>
+    </article>
+</form>
+{% endblock %}

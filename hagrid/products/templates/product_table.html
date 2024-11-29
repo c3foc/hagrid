@@ -1,3 +1,5 @@
+{% load product %}
+
 <h2>{{ table.product.name}}</h2>
 <div class="overflow-auto">
     <table class="product-table">
@@ -21,7 +23,12 @@
                 {% for size in entry.sizes %}
                     <td>
                         {{ size.html|safe }}
-                        <small>/ {{ size.variation.initial_amount }}</small>
+                        <small>
+                            {{ size.variation.initial_amount }}&rarr;{% if size.variation.count != None %}{{ size.variation.count }}{% else %}??{% endif %}
+                            {% if size.variation.counted_at %}
+                                ({{ size.variation.counted_at|timesince_short:True }})
+                            {% endif %}
+                        </small>
                     </td>
                 {% endfor %}
                 {% for _ in entry.fill %}
