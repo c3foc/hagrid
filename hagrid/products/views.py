@@ -384,7 +384,14 @@ class DashboardView(TemplateView):
         context["sizegroups"] = SizeGroup.objects.all()
         context["variations"] = Variation.objects.all()
         context["product_availabilities"] = ProductAvailabilityView()
-        context["open_status"] = OpenStatus.get_status()
+
+        dashboard_text: str|None = StoreSettings.objects.first().dashboard_text
+        if dashboard_text and '%open_status%' in dashboard_text:
+            open_status = render_to_string('open_status.html', {'open_status': OpenStatus.get_status()})
+            dashboard_text = dashboard_text.replace('%open_status%', open_status)
+
+        context['dashboard_text'] = dashboard_text
+
         return context
 
 

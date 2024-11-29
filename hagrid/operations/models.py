@@ -20,6 +20,7 @@ class OpenStatus(models.Model):
 
     class Meta:
         verbose_name_plural = "open statuses"
+        ordering = ['datetime']
 
     def __str__(self):
         date = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
@@ -40,10 +41,10 @@ class OpenStatus(models.Model):
             "start": prev_status.datetime if prev_status else None,
             "stop": next_status.datetime if next_status else None,
             "closed_info": prev_status.public_info
-            if not open
+            if not is_open
             else (next_status.public_info if next_status else None),
             "open_info": prev_status.public_info
-            if open
+            if is_open
             else (next_status.public_info if next_status else None),
         }
 

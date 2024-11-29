@@ -30,21 +30,29 @@ def timesince_short(dt, shorter=False):
     hours = seconds / 3600
     minutes = seconds / 60
 
+    suffix = " ago" if days >= 0 else ""
+    prefix = "in " if days < 0 else ""
+
     if days > 0:
         if shorter:
             return f"{days:.1f}d"
-        return f"{days:.0f}d {hours:.0f}h ago"
+        return f"{prefix}{days:.0f}d {hours:.0f}h{suffix}"
     elif hours >= 2:
         if shorter:
             return f"{hours:.0f}h"
-        return f"{hours:.0f}h ago"
+        return f"{prefix}{hours:.0f}h{suffix}"
     elif minutes > 1:
         if shorter:
             return f"{minutes:.0f}m"
-        return f"{minutes:.0f} min ago"
+        return f"{prefix}{minutes:.0f} min{suffix}"
     else:
         return 'now'
 
-
-
 register.filter('timesince_short', timesince_short)
+
+def is_soon(dt, hours=1):
+    now = timezone.now()
+    delta = dt - now
+    return delta.days < 0 or (delta.days == 0 and delta.seconds < hours * 3600)
+
+register.filter('is_soon', is_soon)

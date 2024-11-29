@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% if store_settings.dashboard_text %}
-        {{ store_settings.dashboard_text|safe }}
-    {% endif %}
+    <h1 class="title">Welcome to FOC</h1>
+    <h1 class="center">The 38c3 fashion operating center</h1>
 
-    {% include 'open_status.html' with open_status=open_status %}
+    {% if dashboard_text %}
+        <div class="dashboard-row">
+            {{ dashboard_text|safe }}
+        </div>
+    {% endif %}
 
     {% if store_settings.dashboard_is_public or request.user.is_superuser %}
         {% if not store_settings.dashboard_is_public %}
