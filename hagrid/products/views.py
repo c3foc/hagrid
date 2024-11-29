@@ -450,12 +450,15 @@ class VariationCountView(View):
         if sizegroups:
             variation_query = variation_query.filter(size__group__in=sizegroups)
 
+        variation_query = variation_query.order_by('product__product_group__position', 'product__position', 'size__group__position', 'size__position')
+
         def get_form(variation):
             prefix = "variation_{}".format(variation.id)
             if request.POST:
                 return VariationCountForm(request.POST, prefix=prefix)
             else:
                 return VariationCountForm(prefix=prefix)
+
 
         variations = list(variation_query.distinct())
         items = [
