@@ -97,6 +97,7 @@ class Variation(models.Model):
     count = models.IntegerField(blank=True, null=True)
     counted_at = models.DateTimeField(blank=True, null=True)
     count_reserved_until = models.DateTimeField(blank=True, null=True)
+    count_prio_bumped = models.BooleanField(default=False)
     availability = models.CharField(default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES)
 
     def __str__(self):
@@ -154,6 +155,10 @@ class Variation(models.Model):
             print(self, count_age)
         else:
             scores['missing_count'] = 0.2
+
+
+        if self.count_prio_bumped:
+            scores['bumped'] = 1.0
 
         return {
             'scores': scores,

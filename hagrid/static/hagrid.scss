@@ -431,6 +431,16 @@ dl.legend {
   color: $yellow;
 }
 
+.table-buttons button {
+  background: $accent3;
+  border: 1px solid $accent2;
+  color: $highlight;
+  border-radius: 4px;
+  height: 1.4rem;
+  width: 1.4rem;
+  font-weight: bold;
+}
+
 .count-table-old-count code,
 .count-table-new-count input {
   display: inline-block;

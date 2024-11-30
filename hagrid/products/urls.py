@@ -6,7 +6,7 @@ from .views import (
     VariationConfigView,
     VariationAvailabilityConfigView,
     VariationAvailabilityEventListView,
-    VariationCountOverviewView,
+    variation_count_overview_view,
     variation_count_view,
     VariationCountSuccessView,
 )
@@ -35,7 +35,7 @@ urlpatterns = [
         name="variationavailabilityeventlist",
     ),
     path(
-        "count/", VariationCountOverviewView.as_view(), name="variation_count_overview"
+        "count/", variation_count_overview_view, name="variation_count_overview"
     ),
     path(
         "count/success",

@@ -18,6 +18,7 @@
         <th>Sales per hour</th>
         <th>Est. count</th>
         <th></th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -55,8 +56,22 @@
         </td>
         <td>
             {% if priority.variation.is_count_reserved %}
-                <span style="color-green">Assigned</span>
+                <span class="color-green">Assigned</span>
             {% endif %}
+            {% if priority.variation.count_prio_bumped %}
+                <span class="color-yellow">Bumped</span>
+            {% endif %}
+        </td>
+        <td class="table-buttons">
+            <form method="post">
+                {% csrf_token %}
+                {{ priority.form.variation }}
+                {% if priority.variation.count_prio_bumped %}
+                    <button class="color-red" name="{{ priority.form.prefix}}-{{ priority.form.action.name  }}" value="unbump" type="submit">-</button>
+                {% else %}
+                    <button class="color-green" name="{{ priority.form.prefix}}-{{ priority.form.action.name }}" value="bump" type="submit">+</button>
+                {% endif %}
+            </form>
         </td>
     </tr>
 {% endfor %}
