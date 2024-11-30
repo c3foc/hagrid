@@ -368,12 +368,14 @@ dl.legend {
     background: $accent4;
     padding: 24px;
     overflow: hidden;
+    align-items: flex-start;
+
 
     > button {
       grid-column: 2;
     }
 
-    input, textarea {
+    input[type="text"], textarea {
       min-width: 0;
       width: auto;
     }
@@ -417,35 +419,43 @@ dl.legend {
       text-align: center;
     }
   }
+}
 
-  .color-red {
-    color: $red;
-  }
-  .color-green {
-    color: $green;
-  }
-  .color-yellow {
-    color: $yellow;
-  }
+.color-red {
+  color: $red;
+}
+.color-green {
+  color: $green;
+}
+.color-yellow {
+  color: $yellow;
+}
 
-  code, input {
-    display: inline-block;
-    font-size: 1.8rem;
-    width: 2.5em;
-    font-family: $fontMono;
-    text-align: center;
-  }
+.count-table-old-count code,
+.count-table-new-count input {
+  display: inline-block;
+  font-size: 1.8rem;
+  width: 2.5em;
+  font-family: $fontMono;
+  text-align: center;
+  border: 1px solid $accent2;
+  border-radius: 4px;
+  color: $highlight;
+  min-width: 0;
+}
 
-  small {
-    display: block;
-    text-align: center;
-    margin-top: -0.5em;
-    font-size: 0.7rem;
-  }
+.count-table-old-count small {
+  display: block;
+}
 
-  input[type=number] {
-      -moz-appearance:textfield;
-  }
+table .count-table-old-count small {
+  font-size: 0.7rem;
+  margin-top: -0.5em;
+  text-align: center;
+}
+
+.count-table-new-count input[type=number] {
+    -moz-appearance:textfield;
 }
 
 .toggle-visibility-checkbox {

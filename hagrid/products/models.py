@@ -7,6 +7,7 @@ from typing import Iterator
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from positions import PositionField
 
 class StoreSettings(models.Model):
@@ -95,6 +96,7 @@ class Variation(models.Model):
     initial_amount = models.IntegerField(default=100)
     count = models.IntegerField(blank=True, null=True)
     counted_at = models.DateTimeField(blank=True, null=True)
+    count_reserved_until = models.DateTimeField(blank=True, null=True)
     availability = models.CharField(default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES)
 
     def __str__(self):
@@ -106,6 +108,10 @@ class Variation(models.Model):
         if self.count is not None and self.initial_amount:
             progress = self.count / self.initial_amount * 100
         return f"{progress:.1f}%"
+
+    @property
+    def is_count_reserved(self):
+        return self.count_reserved_until and self.count_reserved_until > timezone.now()
 
     @property
     def computed_availability(self):
@@ -124,8 +130,8 @@ class Variation(models.Model):
         scores = {}
         info = {}
 
-        def count_severity(c):
-            return 1 - log(c + 1, self.initial_amount * 0.8)
+        def count_severity(c, threshold = self.initial_amount*0.8):
+            return 1 - log(c + 1, threshold)
 
         now = datetime_to_event_time(datetime.now())
         if self.count is not None and self.counted_at is not None:
@@ -136,7 +142,7 @@ class Variation(models.Model):
             estimate = self.initial_amount - now * sale_rate
             estimated_count = min(self.initial_amount, max(0, estimate))
 
-            scores['running_low_estimated'] = count_severity(estimated_count)
+            scores['running_low_estimated'] = count_severity(estimated_count, self.count)
             info['estimated_count'] = estimated_count
             info['sale_rate'] = sale_rate * 3600
 
@@ -195,6 +201,7 @@ class VariationCountAccessCode(models.Model):
     sizes = models.ManyToManyField(Size, help_text="allow editing only variations these sizes", blank=True)
 
     disabled = models.BooleanField(help_text="disable the code so it cannot be used at the moment")
+    as_queue = models.BooleanField(help_text="use queue mode for this code", default=False)
 
     def __str__(self):
         filters = []
@@ -211,6 +218,31 @@ class VariationCountAccessCode(models.Model):
     def get_absolute_url(self):
         print("CODE", self.code)
         return reverse('variationcount', kwargs={'code':self.code})
+
+    @property
+    def variations(self):
+        queryset = Variation.objects
+
+        products = self.products.all()
+        if products:
+            queryset = queryset.filter(product__in=products)
+
+        sizes = self.sizes.all()
+        if sizes:
+            queryset = queryset.filter(size__in=sizes)
+
+        sizegroups = self.sizegroups.all()
+        if sizegroups:
+            queryset = queryset.filter(size__group__in=sizegroups)
+
+        queryset = queryset.order_by(
+            "product__product_group__position",
+            "product__position",
+            "size__group__position",
+            "size__position",
+        )
+
+        return queryset
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver

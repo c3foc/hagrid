@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django import forms
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.http.response import Http404
@@ -509,114 +510,103 @@ class VariationCountCommonForm(forms.Form):
     )
 
 
-class VariationCountView(View):
-    template_name = "variation_count.html"
-
-    def get_content(self, request, code):
-        access_code = get_object_or_404(
-            VariationCountAccessCode, code=code, disabled=False
+def variation_count_view(request, code, variation_id=None):
+    if not StoreSettings.objects.first().counting_enabled:
+        messages.add_message(
+            self.request, messages.ERROR, "We are not counting items at the moment."
         )
+        return redirect("dashboard")
 
-        variation_query = Variation.objects
 
-        products = access_code.products.all()
-        if products:
-            variation_query = variation_query.filter(product__in=products)
+    access_code = get_object_or_404(
+        VariationCountAccessCode, code=code, disabled=False
+    )
 
-        sizes = access_code.sizes.all()
-        if sizes:
-            variation_query = variation_query.filter(size__in=sizes)
+    if access_code.as_queue:
+        if not variation_id:
+            form = forms.Form(request.POST or None)
 
-        sizegroups = access_code.sizegroups.all()
-        if sizegroups:
-            variation_query = variation_query.filter(size__group__in=sizegroups)
-
-        variation_query = variation_query.order_by(
-            "product__product_group__position",
-            "product__position",
-            "size__group__position",
-            "size__position",
-        )
-
-        def get_form(variation):
-            prefix = "variation_{}".format(variation.id)
-            if request.POST:
-                return VariationCountForm(request.POST, prefix=prefix)
+            datetime_to_event_time = OpenStatus.make_datetime_to_event_time()
+            priorities = []
+            available_variations = access_code.variations.filter(
+                Q(count_reserved_until__isnull=True) | Q(count_reserved_until__lt=datetime.now())
+            )
+            if not available_variations:
+                messages.add_message(
+                    request, messages.INFO, "Nothing to count at the moment, please come back later."
+                )
             else:
-                return VariationCountForm(prefix=prefix)
+                for variation in available_variations:
+                    priorities.append({
+                        "variation": variation,
+                        **variation.get_count_priority(datetime_to_event_time),
+                    })
 
-        variations = list(variation_query.distinct())
-        items = [
-            {"variation": variation, "form": get_form(variation)}
-            for variation in variations
-        ]
+                priorities = sorted(priorities, key=lambda s: s['total'], reverse=True)
 
-        common_name = []
+                if request.POST and form.is_valid():
+                    top_prio = priorities[0]
+                    variation = top_prio['variation']
+                    variation.count_reserved_until  = datetime.now() + timedelta(minutes=5)
+                    variation.save()
 
-        products_used = list(
-            Product.objects.filter(variations__in=variation_query).distinct()
-        )
-        product_column = len(products_used) > 1
-        if not product_column:
-            common_name.append(str(products_used[0]))
+                    # assign a variation and redirect
+                    return redirect('variationcount', code, variation.id)
 
-        sizegroups_used = list(
-            SizeGroup.objects.filter(sizes__variations__in=variation_query).distinct()
-        )
-        sizegroup_column = len(sizegroups_used) > 1
-        if not sizegroup_column:
-            common_name.append(str(sizegroups_used[0]))
+                important = sum(map(lambda p: int(p['total'] >= 0.2), priorities), 0)
 
-        sizes_used = list(
-            Size.objects.filter(variations__in=variation_query).distinct()
-        )
-        size_column = len(sizes_used) > 1
-        if not size_column:
-            common_name.append(str(sizes_used[0]))
+                return render(
+                    request,
+                    "variation_count_queue.html",
+                    {"form": form,
+                     "total_variations": len(priorities),
+                     "high_prio_variations": important,
+                     },
+                )
 
-        return (
-            access_code,
-            items,
-            {
-                "product_column": product_column,
-                "sizegroup_column": sizegroup_column,
-                "size_column": size_column,
-                "column_count": product_column + sizegroup_column + size_column,
-                "common_name": " / ".join(common_name),
-            },
-        )
+        try:
+            variations = [access_code.variations.get(id=variation_id)]
+        except Variation.DoesNotExist:
+            raise Http404()
 
-    def get(self, request, code):
-        if not StoreSettings.objects.first().counting_enabled:
-            messages.add_message(
-                self.request, messages.ERROR, "We are not counting items at the moment."
-            )
-            return redirect("dashboard")
+    elif variation_id:
+        raise Http404()
+    else:
+        variations = list(access_code.variations)
 
-        access_code, items, ctx = self.get_content(request, code)
-        common_form = VariationCountCommonForm()
+    common_form = VariationCountCommonForm(request.POST or None)
+    items = [
+        {
+            "variation": variation,
+            "form": VariationCountForm(request.POST or None, prefix="variation_{}".format(variation.id)),
+        }
+        for variation in variations
+    ]
 
-        return render(
-            request,
-            self.template_name,
-            {
-                **ctx,
-                "access_code": access_code,
-                "items": items,
-                "common_form": common_form,
-            },
-        )
+    common_name = []
+    products_used = list(
+        Product.objects.filter(variations__in=variations).distinct()
+    )
+    product_column = len(products_used) > 1
+    if not product_column:
+        common_name.append(str(products_used[0]))
 
-    def post(self, request, code):
-        if not StoreSettings.objects.first().counting_enabled:
-            messages.add_message(
-                self.request, messages.ERROR, "We are not counting items at the moment."
-            )
-            return redirect("dashboard")
+    sizegroups_used = list(
+        SizeGroup.objects.filter(sizes__variations__in=variations).distinct()
+    )
+    sizegroup_column = len(sizegroups_used) > 1
+    if not sizegroup_column:
+        common_name.append(str(sizegroups_used[0]))
 
-        access_code, items, ctx = self.get_content(request, code)
-        common_form = VariationCountCommonForm(request.POST)
+    sizes_used = list(
+        Size.objects.filter(variations__in=variations).distinct()
+    )
+    size_column = len(sizes_used) > 1
+    if not size_column:
+        common_name.append(str(sizes_used[0]))
 
+
+    if request.POST:
         now = datetime.now()
 
         if common_form.is_valid() and all(map(lambda i: i["form"].is_valid(), items)):
@@ -629,6 +619,7 @@ class VariationCountView(View):
                 count = form.cleaned_data["count"]
                 if count is not None:
                     variation.count = count
+                    variation.count_reserved_until = None
                     variation.counted_at = now
                     variation.save()
                     total += count
@@ -640,21 +631,44 @@ class VariationCountView(View):
                         comment=common_form.cleaned_data["comment"],
                         name=common_form.cleaned_data["name"],
                     ).save()
+
+            if access_code.as_queue:
+                messages.add_message(
+                    request, messages.INFO, "Thank you for counting this item. You can do another if you want!"
+                )
+                return redirect( "variationcount", code)
             return redirect(
                 reverse("variation_count_success")
                 + f"?total={total}&items_changed={items_changed}"
             )
 
+    if variation_id:
         return render(
             request,
-            self.template_name,
+            "variation_count_from_queue.html",
             {
-                **ctx,
                 "access_code": access_code,
-                "items": items,
+                "variation": items[0]["variation"],
+                "form": items[0]["form"],
                 "common_form": common_form,
-            },
+            }
         )
+
+    return render(
+        request,
+        "variation_count.html",
+        {
+            "product_column": product_column,
+            "sizegroup_column": sizegroup_column,
+            "size_column": size_column,
+            "column_count": product_column + sizegroup_column + size_column,
+            "common_name": " / ".join(common_name),
+            "access_code": access_code,
+            "items": items,
+            "common_form": common_form,
+        }
+    )
+
 
 
 class VariationCountSuccessView(View):
@@ -675,6 +689,7 @@ class VariationCountSuccessView(View):
                 "items_changed": items_changed,
             },
         )
+
 
 class VariationCountOverviewView(LoginRequiredMixin, View):
     def get(self, request):

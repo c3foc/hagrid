@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load product %}
+
+{% block content %}
+<article  style="max-width: 40rem;">
+    <h1>Stock counting queue</h1>
+
+    <h2>Are you ready?</h2>
+
+    <p>
+        There are {{ total_variations }} variations accessible to count from
+        this URL, and {{ high_prio_variations }} of them really need to be
+        counted right now.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Oh computer, what do you want me to count?</button>
+    </form>
+
+    <h2>How it works</h2>
+    <ul>
+        <li>Thank you for counting remaining stock of some of our merch items.</li>
+        <li>You will be assigned an item to count.</li>
+        <li>Make sure you find all stock of that item. Leave full boxes closed and multiply by the expected amount.</li>
+        <li>Make sure you count the correct items. Check that product/fit/color/size are all matching.</li>
+        <li>If there are a lot (say, more than 100) of that item left, accurate counting is not that important. Try to be accurate to about 10%.</li>
+        <li>If there are only very few items left, try to get an accurate count.</li>
+        <li>Please count items in storage as well as items on display. Also check the try-on area.</li>
+        <li>If you cannot count something, click the respective button.</li>
+        <li>We try not to give two people the same item to count. Your item may be reassigned after about 5 minutes if you don't respond.</li>
+        <li>Please enter 0 if an item is out of stock.</li>
+        <li>You can enter your nickname for when we need to clarify stuff, but you don't have to.
+            If you enter something, your browser remembers it for a while so you don't have to type again.
+            We store it for the rest of the event and delete it from the database afterwards.</li>
+    </ul>
+</article>
+{% endblock %}

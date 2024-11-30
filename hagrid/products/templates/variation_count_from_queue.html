@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% load product %}
+
+{% block content %}
+<form method="post" autocomplete="off" class="reset-on-navigation">
+    {% csrf_token %}
+    <label for="show-tutorial" class="btn btn-secondary btn-sm"  role="button" style="float: right;">
+        Toggle tutorial
+    </label>
+
+    <h1>Count {{ variation.name }}</h1>
+
+    <input type="checkbox" id="show-tutorial" class="toggle-visibility-checkbox" />
+    <ul>
+        <li>Thank you for counting remaining stock of some of our merch items.</li>
+        <li>You can leave any row empty if you haven't counted it, can't find it, or are not supposed to count it.</li>
+        <li>Please enter 0 if an item is out of stock.</li>
+        <li>You can enter a comment for the reason of the new count. Only
+            fill that in for irregularities (such as when we find previous missed stock (yes that's happened)).</li>
+        <li>You can enter your nickname for when we need to clarify stuff, but you don't have to.
+            If you enter something, your browser remembers it for a while so you don't have to type again.
+            We store it for the rest of the event and delete it from the database afterwards.</li>
+    </ul>
+
+    <article class="count-page">
+        <footer>
+            <b>Product</b>
+            <span>{{variation.product.name}}</span>
+
+            <b>Group</b>
+            <span>{{variation.size.group.name}}</span>
+
+            <b>Size</b>
+            <span>{{variation.size.name}}</span>
+
+            <b>Old count</b>
+            <span class="count-table-old-count">
+                <code class="color-{{ variation.availability|availability_class }}">{{variation.count|default:'-' }}</code>
+                {% if variation.counted_at %}
+                    <small>{{ variation.counted_at|timesince_short }}</smalL>
+                {% endif %}
+            </span>
+
+            <b>Your count</b>
+            <span class="count-table-new-count">
+                {{ form.count }}
+            </span>
+
+            {{ common_form.name.label }}
+            {{ common_form.name }}
+
+            {{ common_form.comment.label }}
+            {{ common_form.comment }}
+
+            <button type="submit" class="btn btn-success">Submit</button>
+
+            <p style="grid-column: span 2;">If you cannot count these items, please click one of these buttons.</p>
+            <button type="submit" value="no" class="btn btn-secondary">Cannot find item</button>
+            <button type="submit" value="no" class="btn btn-secondary">No access</button>
+            <button type="submit" value="no" class="btn btn-secondary">I have to go</button>
+
+            {% if common_form.errors %}
+                <div style="grid-column: span 2">
+                    {{ common_form.errors }}
+                </div>
+            {% endif %}
+        </footer>
+    </article>
+</form>
+{% endblock %}

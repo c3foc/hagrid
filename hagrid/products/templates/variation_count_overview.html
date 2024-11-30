@@ -17,6 +17,7 @@
         <th>Count age</th>
         <th>Sales per hour</th>
         <th>Est. count</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -51,6 +52,11 @@
             {% if priority.scores.running_low_estimated > 0.5 %} class="error"{% endif %}
         >
             {{ priority.info.estimated_count|floatformat:0 }}
+        </td>
+        <td>
+            {% if priority.variation.is_count_reserved %}
+                <span style="color-green">Assigned</span>
+            {% endif %}
         </td>
     </tr>
 {% endfor %}

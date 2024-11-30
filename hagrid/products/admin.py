@@ -72,7 +72,7 @@ class VariationCountEventAdmin(admin.ModelAdmin):
 
 @admin.register(VariationCountAccessCode)
 class VariationCountAccessCodeAdmin(admin.ModelAdmin):
-    list_display = ("code", "description", "code_actions")
+    list_display = ("code", "description", "as_queue", "code_actions")
     actions = ('make_pdf',)
 
     def description(self, obj):
