@@ -399,9 +399,7 @@ dl.legend {
   }
 }
 
-.hagrid-table-bordered {
-  font-family: $fontBase;
-  font-size: 0.8rem;
+.priorities-table {
   td, th {
     border: 2px solid $accent3;
   }
@@ -586,6 +584,30 @@ table .count-table-old-count small {
   &.yellow {
     color: $yellow;
   }
+}
+
+.hagrid-tooltip {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  background: $accent4;
+  border: 2px solid $accent2;
+  padding: 0.5rem 1rem;
+  box-shadow: 0.51rem 0.5rem $background;
+  display: none;
+  z-index: 1;
+  pointer-events: none;
+}
+.hagrid-has-tooltip {
+  position: relative;
+  &:hover .hagrid-tooltip {
+    display: block;
+  }
+}
+.scores-tooltip-table {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.5rem 1rem;
 }
 
 // mobile!

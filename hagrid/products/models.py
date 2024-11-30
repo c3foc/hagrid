@@ -132,14 +132,14 @@ class Variation(models.Model):
         info = {}
 
         def count_severity(c, threshold = self.initial_amount*0.8):
-            return 1 - log(c + 1, threshold)
+            return max(0, 1 - log(c + 1, threshold))
 
         now = datetime_to_event_time(datetime.now())
         if self.count is not None and self.counted_at is not None:
             # try to estimate the current count
             total_sold = self.initial_amount - self.count
             count_event_time = datetime_to_event_time(self.counted_at)
-            sale_rate = total_sold / count_event_time
+            sale_rate = max(0, total_sold / count_event_time)
             estimate = self.initial_amount - now * sale_rate
             estimated_count = min(self.initial_amount, max(0, estimate))
 

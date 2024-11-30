@@ -8,6 +8,7 @@ from hagrid.products.models import Variation
 register = template.Library()
 
 
+@register.filter
 def availability_class(availability):
     if availability == Variation.STATE_MANY_AVAILABLE:
         return 'green'
@@ -19,8 +20,8 @@ def availability_class(availability):
         return 'gray'
 
 
-register.filter('availability_class', availability_class)
 
+@register.filter
 def timesince_short(dt, shorter=False):
     if not dt:
         return ''
@@ -50,8 +51,7 @@ def timesince_short(dt, shorter=False):
     else:
         return 'now'
 
-register.filter('timesince_short', timesince_short)
-
+@register.filter
 def is_soon(dt, hours=1):
     if not dt: return False
     now = timezone.now()
@@ -62,13 +62,18 @@ def is_soon(dt, hours=1):
         delta = dt - now
     return delta.days < 0 or (delta.days == 0 and delta.seconds < hours * 3600)
 
-register.filter('is_soon', is_soon)
-
+@register.filter
 def seconds_to_duration(s):
     if not s:
-        return ""
+        return s
     if s > 3600:
-        return f"{s/3600:.0f}h {s/60%60:.0f}m"
+        return f"{s/3600:.0f}h {s/60%60:02.0f}m"
     return f"{s/60:.0f}m"
 
-register.filter('seconds_to_duration', seconds_to_duration)
+
+@register.filter
+def priority_score(f):
+    if not isinstance(f, (int, float)):
+        return "--"
+    return f"{f*100:.0f}%"
+

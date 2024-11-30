@@ -6,15 +6,15 @@
 
 <h1>Counting items</h1>
 
-<h2>What to count next?</h2>
-<table class="hagrid-table hagrid-table-bordered">
-    <thead style="position: sticky; top: 55px;">
+<table class="hagrid-table priorities-table">
+    <thead style="position: sticky; top: 55px; z-index: 1;">
     <tr height="60">
+        <th>Score</th>
         <th>Product</th>
         <th>Sizegroup</th>
         <th>Size</th>
-        <th>Count</th>
-        <th>Count age</th>
+        <th>Stock</th>
+        <th>Counted</th>
         <th>Sales per hour</th>
         <th>Est. count</th>
         <th></th>
@@ -24,34 +24,38 @@
     <tbody>
 {% for priority in priorities%}
     <tr>
+        <td class="hagrid-has-tooltip">
+            <span class="color-{% if priority.total > 1 %}red{% elif priority.total > 0.5 %}yellow{% else %}green{%endif %}">
+                {{ priority.total|priority_score }}
+            </span>
+            <div class="hagrid-tooltip">
+                <div class="scores-tooltip-table">
+                {% for key, value in priority.scores.items|dictsortreversed:1 %}
+                    <b>{{key}}</b>
+                    <span>{{value|priority_score}}</span>
+                {% endfor %}
+                </div>
+            </div>
+        </td>
         <td>{{ priority.variation.product.name }}</td>
         <td>{{ priority.variation.size.group.name }}</td>
         <td>{{ priority.variation.size.name }}</td>
 
-        <td
-            title="Running low: {{ priority.scores.running_low|floatformat:2 }} / Missing count: {{ priority.scores.missing_count|floatformat:2 }}"
-            {% if priority.scores.running_low > 0.5 or priority.highest_reason == 'missing_count' %} class="error"{% endif %}
-        >
+        <td{% if priority.scores.running_low > 0.5 or priority.highest_reason == 'missing_count' %} class="error"{% endif %}>
             {% if priority.variation.count == None %}
-                never counted
+                n/a
             {% else %}
                 {{ priority.variation.count }}
                 / {{ priority.variation.initial_amount }}
             {% endif %}
         </td>
 
-        <td
-            title="Outdated count: {{ priority.scores.outdated_count|floatformat:2 }}"
-            {% if priority.scores.outdated_count > 0.5 %} class="error"{% endif %}
-        >
+        <td{% if priority.scores.outdated_count > 0.5 %} class="error"{% endif %}>
             {{ priority.info.count_age|seconds_to_duration }}
         </td>
 
         <td>{{ priority.info.sale_rate|floatformat:1 }}</td>
-        <td
-            title="Running low (estimated): {{ priority.scores.running_low_estimated|floatformat:2 }}"
-            {% if priority.scores.running_low_estimated > 0.5 %} class="error"{% endif %}
-        >
+        <td{% if priority.scores.running_low_estimated > 0.5 %} class="error"{% endif %}>
             {{ priority.info.estimated_count|floatformat:0 }}
         </td>
         <td>
