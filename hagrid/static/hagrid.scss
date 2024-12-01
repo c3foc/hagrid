@@ -343,6 +343,9 @@ dl.legend {
     font-family: $fontTitle;
     color: $accent1;
   }
+  .navbar-nav.right {
+    margin-left: auto;
+  }
   .navbar-nav.admin {
     .nav-link {
       color: $primary;

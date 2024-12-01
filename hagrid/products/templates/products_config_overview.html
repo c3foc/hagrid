@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Product config</h1>
+<h1>Operator view</h1>
 
 <div class="row">
 
@@ -16,26 +16,36 @@
           <a class="btn btn-secondary" href="{% url 'admin:products_product_changelist' %}">Products</a>
           <a class="btn btn-secondary" href="{% url 'admin:products_sizegroup_changelist' %}">Sizegroups</a>
           <a class="btn btn-secondary" href="{% url 'admin:products_size_changelist' %}">Sizes</a>
-          <a class="btn btn-secondary" href="{% url 'admin:gallery_galleryimage_changelist' %}">Gallery Images</a>
+          <a class="btn btn-primary" href="{% url 'admin:app_list' 'products' %}">All models</a>
         </p>
+
+        <h2>Item counting</h2>
         <p>Keep the current item count with these features:</p>
         <p>
           <a class="btn btn-secondary" href="{% url 'variation_count_overview' %}">Count queue</a>
           <a class="btn btn-secondary" href="{% url 'admin:products_variationcountaccesscode_changelist' %}">Count codes</a>
         </p>
-    </div>
-    <div class="col-sm-6">
 
         <h2>All products</h2>
-
-        <p>If you want a big matrix, use these links!</p>
-
+        <p>These are the tools for managing <b>all products</b> at once. They are big and slow, the same tools are available per product below.</p>
         <p>
-        <a class="btn btn-secondary" href="{% url "variation_config"  %}">Variations</a>
-        <a class="btn btn-secondary" href="{% url "variation_availability_config"  %}">Availability</a>
+            <a class="btn btn-secondary" href="{% url "variation_config"  %}">All variations</a>
+            <a class="btn btn-secondary" href="{% url "variation_availability_config"  %}">All availabilities</a>
+        </p>
+    </div>
+    <div class="col-sm-6">
+        <h2>Reservations</h2>
+        <p>Go here to manage reservations.</p>
+        <p>
+            <a class="btn btn-secondary" href="{% url "reservationadministration"  %}">Reservations</a>
         </p>
 
-        <p style="margin-top: 2rem;">See <a href="{% url 'variation_availability_event_list' %}">here</a> for history of availability changes.</p>
+        <h2>Statistics</h2>
+        <p>These tools give insights on fashion operations.</p>
+        <p>
+            <a class="btn btn-secondary" href="{% url 'variation_availability_event_list' %}">History of availabilities</a>
+            <a class="btn btn-secondary" href="{% url 'reservationstatistics' %}">Item reservations</a>
+        </p>
     </div>
 </div>
 
