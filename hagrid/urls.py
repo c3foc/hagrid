@@ -17,13 +17,27 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
-from hagrid.products.views import dashboard_view, dashboard_table_view
+from hagrid.products import views
+
+# auto-assign URL lookup name from function name
+def p(pathname, fn):
+    return path(pathname, fn, name=fn.__name__)
 
 urlpatterns = [
-    path('', dashboard_view, name='dashboard'),
-    path('table', dashboard_table_view, name='dashboard_table'),
+    p('', views.dashboard),
+    p('table', views.dashboard_table),
+    p('products/', views.products_config_overview),
+    p("config/availability/", views.variation_availability_config),
+    p("config/availability/<int:product_id>/", views.variation_availability_config),
+    p("config/variations/", views.variation_config),
+    p("config/variations/<int:product_id>/", views.variation_config),
+    p("history/", views.variation_availability_event_list),
+    p("count/", views.variation_count_overview),
+    p("count/success", views.variation_count_success),
+    p("count/<slug:code>/", views.variation_count),
+    p("count/<slug:code>/<int:variation_id>", views.variation_count),
+
     path('admin/', admin.site.urls),
-    path('products/', include('hagrid.products.urls')),
     path('reservations/', include('hagrid.reservations.urls')),
     path('gallery/', include('hagrid.gallery.urls')),
     path('api/', include('hagrid.api.urls')),

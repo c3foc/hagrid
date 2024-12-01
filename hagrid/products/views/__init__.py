@@ -1,12 +1,12 @@
 from .config import (
-    products_config_overview_view,
-    variation_availability_config_view,
-    variation_availability_event_list_view,
-    variation_config_view,
+    products_config_overview,
+    variation_availability_config,
+    variation_availability_event_list,
+    variation_config,
 )
-from .dashboard import dashboard_table_view, dashboard_view
+from .dashboard import dashboard_table, dashboard
 from .variation_count import (
-    variation_count_overview_view,
-    variation_count_success_view,
-    variation_count_view,
+    variation_count_overview,
+    variation_count_success,
+    variation_count,
 )

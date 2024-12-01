@@ -31,7 +31,7 @@ class VariationConfigForm(forms.ModelForm):
 
 @login_required()
 @require_http_methods(["GET", "POST"])
-def variation_config_view(request, product_id=None):
+def variation_config(request, product_id=None):
     products = list(
         Product.objects.all()
         if product_id is None
@@ -144,7 +144,7 @@ class VariationsAvailabilityForm(forms.Form):
 
 
 @login_required()
-def variation_availability_config_view(request, product_id=None):
+def variation_availability_config(request, product_id=None):
     products = Product.objects.all()
     if product_id is not None:
         products = products.filter(id=product_id)
@@ -223,7 +223,7 @@ def variation_availability_config_view(request, product_id=None):
 
 @login_required()
 @require_GET
-def products_config_overview_view(request):
+def products_config_overview(request):
     product_groups = [
         {
             "product_group": product_group,
@@ -242,10 +242,10 @@ def products_config_overview_view(request):
 
 @login_required()
 @require_GET
-def variation_availability_event_list_view(request):
+def variation_availability_event_list(request):
     return render(
         request,
-        "variationavailabilityeventlist.html",
+        "variation_availability_event_list.html",
         {"change_events": VariationAvailabilityEvent.objects.order_by("-datetime")},
     )
 

@@ -1,54 +1,19 @@
-
 {% extends "base.html" %}
 
-{% block head %}
-<style>
-.remove-check {
-  display: none;
-}
-input[type=checkbox]:checked ~ .remove-check {
-  display: block;
-}
-input[type=checkbox]:checked + .mark-check {
-  background-color: #17a2b8;
-  border-color: #17a2b8;
-}
-
-input[type=radio]:checked + .btn-outline-success {
-  background-color: #28a745;
-}
-input[type=radio]:checked + .btn-outline-warning {
-  background-color: #ffc107;
-}
-input[type=radio]:checked + .btn-outline-danger {
-  background-color: #dc3545;
-}
-
-.btn-availability {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-</style>
-{% endblock %}
-
 {% block content %}
+    <h1>Configure which variations exist{% if products|length == 1 %} for {{ products.0.name }}{% endif %}</h1>
+    <ul>
+        <li>Enter the initial amount for each item.</li>
+        <li>If you enter 0, the item will still exist.</li>
+        <li>Leave the box empty or clear it to delete an item.</li>
+        <li>Do not delete items during the event, as that will mess up statistics later.</li>
+    </ul>
 
-<h1>Configure which variations exist{% if products|length == 1 %} for {{ products.0.name }}{% endif %}</h1>
-<ul>
-    <li>Enter the initial amount for each item.</li>
-    <li>If you enter 0, the item will still exist.</li>
-    <li>Leave the box empty or clear it to delete an item.</li>
-    <li>Do not delete items during the event, as that will mess up statistics later.</li>
-</ul>
-
-<form method="post" autocomplete="off">
-  {% csrf_token %}
-  {% for table in product_tables %}
-  {% include "product_table.html" with table=table %}
-  {% endfor %}
-  <input class="btn btn-success" type="submit" value="Save variations"/>
-</form>
-
-
+    <form method="post" autocomplete="off">
+      {% csrf_token %}
+      {% for table in product_tables %}
+      {% include "product_table.html" with table=table %}
+      {% endfor %}
+      <input class="btn btn-success" type="submit" value="Save variations"/>
+    </form>
 {% endblock %}

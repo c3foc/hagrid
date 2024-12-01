@@ -52,11 +52,10 @@
                 </ul>
                 <ul class="navbar-nav admin">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'products_config_overview' %}">Product Config</a>
+                        <a class="nav-link" href="{% url 'products_config_overview' %}">Operator view</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                           href="{% url 'reservationadministration' %}">Reservations</a>
+                        <a class="nav-link" href="{% url 'reservationadministration' %}">Reservations</a>
                     </li>
                 {% elif store_settings.login_link_in_navbar %}
                     <li class="nav-item">

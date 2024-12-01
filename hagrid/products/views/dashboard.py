@@ -19,7 +19,7 @@ from ..tables import SizeTable
 
 @cache_page(10)
 @require_GET
-def dashboard_view(request):
+def dashboard(request):
     product_groups = ProductGroup.objects.filter(display_in_dashboard=True)
     all_products = Product.objects.all()
     all_variations = Variation.objects.all()
@@ -89,7 +89,7 @@ def dashboard_view(request):
 
 @cache_page(10)
 @require_GET
-def dashboard_table_view(request):
+def dashboard_table(request):
     def render_variation(variation):
         if variation.availability == Variation.STATE_MANY_AVAILABLE:
             return '<div class="text-center"><span class="badge bg-success">&#10003;</span></div>'

@@ -221,8 +221,7 @@ class VariationCountAccessCode(models.Model):
         return f"Access code for {filters}"
 
     def get_absolute_url(self):
-        print("CODE", self.code)
-        return reverse('variationcount', kwargs={'code':self.code})
+        return reverse('variation_count', kwargs={'code':self.code})
 
     @property
     def variations(self):

@@ -51,7 +51,7 @@ class VariationCountCommonForm(forms.Form):
     )
 
 
-def variation_count_view(request, code, variation_id=None):
+def variation_count(request, code, variation_id=None):
     if not StoreSettings.objects.first().counting_enabled:
         messages.add_message(
             self.request, messages.ERROR, "We are not counting items at the moment."
@@ -96,7 +96,7 @@ def variation_count_view(request, code, variation_id=None):
                     variation.save()
 
                     # assign a variation and redirect
-                    return redirect("variationcount", code, variation.id)
+                    return redirect("variation_count", code, variation.id)
 
                 important = sum(map(lambda p: int(p["total"] >= 0.2), priorities), 0)
 
@@ -182,7 +182,7 @@ def variation_count_view(request, code, variation_id=None):
                     messages.INFO,
                     "Thank you for counting this item. You can do another if you want!",
                 )
-                return redirect("variationcount", code)
+                return redirect("variation_count", code)
             return redirect(
                 reverse("variation_count_success")
                 + f"?total={total}&items_changed={items_changed}"
@@ -216,7 +216,7 @@ def variation_count_view(request, code, variation_id=None):
     )
 
 
-def variation_count_success_view(request):
+def variation_count_success(request):
     try:
         total = int(request.GET.get("total"))
         items_changed = int(request.GET.get("items_changed"))
@@ -244,7 +244,7 @@ class VariationBumpForm(forms.Form):
 
 
 @login_required()
-def variation_count_overview_view(request):
+def variation_count_overview(request):
     datetime_to_event_time = OpenStatus.make_datetime_to_event_time()
 
     priorities = []
