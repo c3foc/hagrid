@@ -2,7 +2,7 @@
 {% load product %}
 
 {% spaceless %}
-{% for groupentry in product_availabilities.entries %}
+{% for groupentry in product_availabilities %}
     <h1 class="title">{{ groupentry.product_group.name}}</h1>
     {% if groupentry.product_group.description %}
         <div class="center">
