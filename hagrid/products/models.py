@@ -152,7 +152,6 @@ class Variation(models.Model):
             count_age = max(0, now - count_event_time)
             scores['outdated_count'] = 0.5 * math.pow(count_age / 3600 / 4.0, 0.5)
             info['count_age'] = count_age
-            print(self, count_age)
         else:
             scores['missing_count'] = 0.2
 

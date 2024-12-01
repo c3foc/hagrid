@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import forms
 from django.views.decorators.http import require_GET, require_http_methods
 from django.contrib.auth.views import login_required
@@ -10,6 +12,7 @@ from ..models import (
     ProductGroup,
     Variation,
     VariationAvailabilityEvent,
+    VariationCountEvent,
 )
 
 from ..tables import ProductTable
@@ -214,11 +217,116 @@ def variation_availability_config(request, product_id=None):
             }
         )
 
-    # filter emtpy groups
+    # filter empty groups
     product_groups = [p for p in product_groups if len(p["tables"])]
 
     context = {"product_groups": product_groups}
     return render(request, "variation_availability_config.html", context)
+
+class VariationsCountForm(forms.Form):
+    def __init__(self, variations, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for variation in variations:
+            key = "variation_{}".format(variation.pk)
+            self.fields[key] = forms.IntegerField(
+                required=False,
+                initial=None,
+                widget=forms.NumberInput(attrs={
+                    'placeholder': variation.count or '',
+                }),
+            )
+
+    def field_for_rendering_by_variation(self, variation):
+        key = "variation_{}".format(variation.pk)
+        return self[key]
+
+
+@login_required()
+def variation_count_config(request, product_id=None):
+    products = Product.objects.all()
+    if product_id is not None:
+        products = products.filter(id=product_id)
+    variations = list(Variation.objects.filter(product__in=products).all())
+
+    form = VariationsCountForm(variations, request.POST or None)
+
+    def render_variation_form(variation):
+        field = form.field_for_rendering_by_variation(variation)
+        return render_to_string(
+            "variation_count_box.html",
+            context={"field": field, "variation": variation},
+            request=request,
+        )
+
+    def render_empty_form(product, size):
+        return ""
+
+    product_tables = {
+        product.id: ProductTable(
+            product,
+            render_variation=render_variation_form,
+            render_empty=render_empty_form,
+            show_empty_rows=False,
+            table_class="count-config-table",
+        )
+        for product in products
+    }
+
+    if request.POST and form.is_valid():
+        now = datetime.now()
+        items_changed = 0
+
+        for key, value in form.cleaned_data.items():
+            variation_id = int(key.rsplit("_", 1)[-1])
+            variation = get_object_or_404(Variation, id=variation_id)
+            if value is not None and variation.count != value:
+                variation.count = value
+                variation.count_reserved_until = None
+                variation.counted_at = now
+                variation.count_prio_bumped = False
+                variation.save()
+
+                VariationCountEvent(
+                    count=value,
+                    variation=variation,
+                    name=request.user.username,
+                ).save()
+
+                items_changed += 1
+
+        messages.info(request, f"Updated {items_changed} item counts.")
+        return redirect('variation_count_config', product_id) if product_id else redirect('variation_count_config')
+
+    product_groups = [
+        {
+            "product_group": product_group,
+            "tables": [
+                product_tables[product.id]
+                for product in product_group.products.all()
+                if product.id in product_tables
+            ],
+        }
+        for product_group in ProductGroup.objects.all()
+    ]
+
+    unassigned = list(Product.objects.filter(product_group=None))
+    if unassigned:
+        product_groups.append(
+            {
+                "product_group": None,
+                "tables": [
+                    product_tables[product.id]
+                    for product in unassigned
+                    if product.id in product_tables
+                ],
+            }
+        )
+
+    # filter empty groups
+    product_groups = [p for p in product_groups if len(p["tables"])]
+
+    context = {"product_groups": product_groups}
+    return render(request, "variation_count_config.html", context)
 
 
 @login_required()

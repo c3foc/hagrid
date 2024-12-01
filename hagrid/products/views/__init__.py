@@ -3,6 +3,7 @@ from .config import (
     variation_availability_config,
     variation_availability_event_list,
     variation_config,
+    variation_count_config,
 )
 from .dashboard import dashboard_table, dashboard
 from .variation_count import (

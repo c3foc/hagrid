@@ -31,6 +31,8 @@ urlpatterns = [
     p("operator/availability/<int:product_id>/", views.variation_availability_config),
     p("operator/variations/", views.variation_config),
     p("operator/variations/<int:product_id>/", views.variation_config),
+    p("operator/count/", views.variation_count_config),
+    p("operator/count/<int:product_id>/", views.variation_count_config),
     p("history/", views.variation_availability_event_list),
     p("count/", views.variation_count_overview),
     p("count/success", views.variation_count_success),

@@ -613,6 +613,25 @@ table .count-table-old-count small {
   gap: 0.5rem 1rem;
 }
 
+td .count-config-field {
+  display: flex;
+  white-space: nowrap;
+  align-items: baseline;
+  gap: 0.2em;
+
+  > input {
+    width: 2.5em;
+    text-align: right;
+    -moz-appearance:textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
 // mobile!
 @media (max-width: 1023px) {
   h1.title {
