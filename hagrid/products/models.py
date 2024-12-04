@@ -131,8 +131,11 @@ class Variation(models.Model):
         scores = {}
         info = {}
 
-        def count_severity(c, threshold = self.initial_amount*0.8):
-            return max(0, 1 - log(c + 1, threshold))
+        def count_severity(count, initial_amount, exp=0.5):
+            try:
+                return max(0, 1 - math.pow(count / initial_amount, exp))
+            except ArithmeticError:
+                return 1
 
         now = datetime_to_event_time(datetime.now())
         if self.count is not None and self.counted_at is not None:
@@ -147,7 +150,7 @@ class Variation(models.Model):
             info['estimated_count'] = estimated_count
             info['sale_rate'] = sale_rate * 3600
 
-            scores['running_low'] = 0.5 * count_severity(self.count)
+            scores['running_low'] = 0.5 * count_severity(self.count, self.initial_amount)
 
             count_age = max(0, now - count_event_time)
             scores['outdated_count'] = 0.5 * math.pow(count_age / 3600 / 4.0, 0.5)

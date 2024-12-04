@@ -98,7 +98,7 @@ def variation_count(request, code, variation_id=None):
                     # assign a variation and redirect
                     return redirect("variation_count", code, variation.id)
 
-                important = sum(map(lambda p: int(p["total"] >= 0.2), priorities), 0)
+                important = sum(map(lambda p: int(p["total"] >= 0.5), priorities), 0)
 
                 return render(
                     request,
