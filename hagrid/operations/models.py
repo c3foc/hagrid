@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from datetime import datetime
 
 import numpy
@@ -5,8 +6,12 @@ from django.db import models
 
 
 class OpenStatus(models.Model):
+    class Mode(models.TextChoices):
+        CLOSED = "closed", _("Closed")
+        OPEN = "open", _("Open")
+        PRESALE_PICKUP = "presale", _("Presale pickup")
+
     datetime = models.DateTimeField(default=datetime.now)
-    open = models.BooleanField(help_text="whether we're open or closed", default=False)
     comment = models.TextField(
         help_text="information about this operating time", blank=True, null=True
     )
@@ -17,6 +22,11 @@ class OpenStatus(models.Model):
         null=True,
         default=None,
     )
+    mode = models.CharField(
+        max_length=7,
+        choices=Mode.choices,
+        default=Mode.CLOSED
+    )
 
     class Meta:
         verbose_name_plural = "open statuses"
@@ -26,6 +36,10 @@ class OpenStatus(models.Model):
         date = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
         status = "open" if self.open else "closed"
         return f"{status} at {date}"
+
+    @property
+    def open(self):
+        return self.mode != OpenStatus.Mode.CLOSED
 
     @classmethod
     def get_status(cls):
@@ -52,7 +66,7 @@ class OpenStatus(models.Model):
     def make_datetime_to_event_time(cls):
         statuses = cls.objects.order_by("datetime").all()
         times = numpy.array([int(status.datetime.timestamp()) for status in statuses])
-        opens = numpy.array([int(status.open) for status in statuses])
+        opens = numpy.array([1 if status.mode == OpenStatus.Mode.OPEN else 0 for status in statuses])
         timediffs = numpy.diff(times, prepend=[times[0]])
         opendiffs = numpy.where(opens, 0, timediffs)
         openings = numpy.cumsum(opendiffs)
