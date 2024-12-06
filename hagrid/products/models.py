@@ -10,6 +10,8 @@ from django.urls import reverse
 from django.utils import timezone
 from positions import PositionField
 
+from hagrid.operations.models import EventTime
+
 class StoreSettings(models.Model):
     dashboard_is_public = models.BooleanField(help_text="Show the dashboard to anonymous users", default=True)
     gallery_is_public = models.BooleanField(help_text="Show the gallery to anonymous users", default=True)
@@ -129,7 +131,7 @@ class Variation(models.Model):
 
         return None
 
-    def get_count_priority(self, datetime_to_event_time):
+    def get_count_priority(self, event_time: EventTime):
         scores = {}
         info = {}
 
@@ -139,11 +141,11 @@ class Variation(models.Model):
             except ArithmeticError:
                 return 1
 
-        now = datetime_to_event_time(datetime.now())
+        now = event_time.datetime_to_event_time(datetime.now())
         if self.count is not None and self.counted_at is not None:
             # try to estimate the current count
             total_sold = self.initial_amount - self.count
-            count_event_time = datetime_to_event_time(self.counted_at)
+            count_event_time = event_time.datetime_to_event_time(self.counted_at)
             sale_rate = max(0, total_sold / count_event_time)
             estimate = self.initial_amount - now * sale_rate
             estimated_count = min(self.initial_amount, max(0, estimate))

@@ -5,6 +5,48 @@ import numpy
 from django.db import models
 
 
+class EventTime:
+    total_event_duration: float
+
+    def __init__(self):
+        # TODO: make this more resilient against partial configuration or misconfiguration
+        statuses = OpenStatus.objects.order_by("datetime").all()
+
+        self.status_change_timestamps = numpy.array([int(status.datetime.timestamp()) for status in statuses])
+        self.open_state_by_index = numpy.array([1 if status.mode == OpenStatus.Mode.OPEN else 0 for status in statuses])
+
+        # time of each timestamp since the previous
+        diffs = numpy.diff(self.status_change_timestamps, prepend=[self.status_change_timestamps[0]])
+
+        # only the time of each timestamp since the previous IF that timespan was open
+        opendiffs = numpy.where(self.open_state_by_index, 0, diffs)
+
+        # cumulative sum adds to the time since the start of the event for open timesapns
+        self.start_event_time_by_index = numpy.cumsum(opendiffs)
+
+        self.total_event_duration = float(self.start_event_time_by_index[-1])
+
+    def datetime_to_event_time(self, dt: datetime | int | float) -> float:
+        if isinstance(dt, datetime):
+            dt = dt.timestamp()
+
+        # Find the index of the previous status change timestamp
+        idx = numpy.searchsorted(self.status_change_timestamps, dt) - 1
+
+        # Find the event time for the previous status change
+        start_event_time = self.start_event_time_by_index[idx]
+
+        # Only add the time since the last change event if that event was an
+        # "open" event, i.e. if the time since then counts as event time.
+        if self.open_state_by_index[idx]:
+            start_timestamp = self.status_change_timestamps[idx]
+            event_time = start_event_time + (dt - start_timestamp)
+        else:
+            event_time = start_event_time
+
+        # convert from numpy.float
+        return float(event_time)
+
 class OpenStatus(models.Model):
     class Mode(models.TextChoices):
         CLOSED = "closed", _("Closed")
@@ -61,25 +103,3 @@ class OpenStatus(models.Model):
             if is_open
             else (next_status.public_info if next_status else None),
         }
-
-    @classmethod
-    def make_datetime_to_event_time(cls):
-        statuses = cls.objects.order_by("datetime").all()
-        times = numpy.array([int(status.datetime.timestamp()) for status in statuses])
-        opens = numpy.array([1 if status.mode == OpenStatus.Mode.OPEN else 0 for status in statuses])
-        timediffs = numpy.diff(times, prepend=[times[0]])
-        opendiffs = numpy.where(opens, 0, timediffs)
-        openings = numpy.cumsum(opendiffs)
-
-        def result(dt: datetime | int | float):
-            if isinstance(dt, datetime):
-                dt = dt.timestamp()
-
-            idx = numpy.searchsorted(times, dt) - 1
-            prev_time = times[idx]
-            eventhour = openings[idx]
-            if opens[idx]:
-                eventhour += dt - prev_time
-            return float(eventhour)
-
-        return result

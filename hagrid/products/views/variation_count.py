@@ -8,7 +8,7 @@ from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404, reverse
 from django.views import View
 
-from hagrid.operations.models import OpenStatus
+from hagrid.operations.models import EventTime, OpenStatus
 
 from ..models import (
     Product,
@@ -64,7 +64,8 @@ def variation_count(request, code, variation_id=None):
         if not variation_id:
             form = forms.Form(request.POST or None)
 
-            datetime_to_event_time = OpenStatus.make_datetime_to_event_time()
+            event_time = EventTime()
+
             priorities = []
             available_variations = access_code.variations.filter(
                 Q(count_reserved_until__isnull=True)
@@ -81,7 +82,7 @@ def variation_count(request, code, variation_id=None):
                     priorities.append(
                         {
                             "variation": variation,
-                            **variation.get_count_priority(datetime_to_event_time),
+                            **variation.get_count_priority(event_time),
                         }
                     )
 
@@ -245,7 +246,7 @@ class VariationBumpForm(forms.Form):
 
 @login_required()
 def variation_count_overview(request):
-    datetime_to_event_time = OpenStatus.make_datetime_to_event_time()
+    event_time = EventTime()
 
     priorities = []
     for variation in Variation.objects.all():
@@ -259,7 +260,7 @@ def variation_count_overview(request):
         priorities.append(
             {
                 "variation": variation,
-                **variation.get_count_priority(datetime_to_event_time),
+                **variation.get_count_priority(event_time),
                 "form": form,
             }
         )
