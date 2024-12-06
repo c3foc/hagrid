@@ -12,7 +12,6 @@ from hagrid.products.pdf_code import generate_access_code_pdf
 from .models import *
 
 admin.site.register(StoreSettings)
-admin.site.register(Variation)
 admin.site.register(SizeGroup)
 admin.site.register(VariationAvailabilityEvent)
 admin.site.register(ProductGroup)
@@ -20,9 +19,16 @@ admin.site.register(ProductGroup)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["name", "price", "position", "product_group"]
-    list_editable = ["price", "position", "product_group"]
+    list_display = ["name", "price", "position", "product_group", "crate_size"]
+    list_editable = ["price", "position", "product_group", "crate_size"]
     list_filter = ["product_group"]
+
+@admin.register(Variation)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "product", "size", "initial_amount", "count", "availability", "crate_size"]
+    list_editable = ["crate_size"]
+    list_filter = ["product__product_group", "product", "size__group", "size"]
+
 
 
 @admin.register(Size)

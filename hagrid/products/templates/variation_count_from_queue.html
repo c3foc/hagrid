@@ -35,7 +35,7 @@
             <span>{{variation.size.name}}</span>
 
             <b>Old count</b>
-            <span class="count-table-old-count">
+            <span class="count-table-count">
                 <code class="color-{{ variation.availability|availability_class }}">{{variation.count|default:'-' }}</code>
                 {% if variation.counted_at %}
                     <small>{{ variation.counted_at|timesince_short }}</smalL>
@@ -43,7 +43,7 @@
             </span>
 
             <b>Your count</b>
-            <span class="count-table-new-count">
+            <span class="count-table-count">
                 {{ form.count }}
             </span>
 

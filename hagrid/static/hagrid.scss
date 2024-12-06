@@ -392,7 +392,7 @@ dl.legend {
     padding: 0.2rem 0.5rem;
   }
 
-  tr:nth-child(2n+1) {
+  tr:nth-child(2n) {
     td, th {
       background: $accent5;
     }
@@ -413,10 +413,34 @@ dl.legend {
   }
 }
 
+table.table-sticky-head {
+  thead {
+    position: sticky;
+    top: 55px;
+    z-index: 1;
+
+    tr {
+      th {
+      height: 60px;
+        vertical-align: middle !important;
+       }
+    }
+  }
+}
+
 .count-table {
   width: 100%;
+
+  thead {
+    position: sticky;
+    top: 55px;
+    z-index: 1;
+  }
+
   td, th {
+    padding-block: 0.5rem;
     &:nth-last-child(-n+2) {
+      vertical-align: top;
       text-align: center;
     }
   }
@@ -442,30 +466,34 @@ dl.legend {
   font-weight: bold;
 }
 
-.count-table-old-count code,
-.count-table-new-count input {
-  display: inline-block;
-  font-size: 1.8rem;
-  width: 2.5em;
-  font-family: $fontMono;
-  text-align: center;
-  border: 1px solid $accent2;
-  border-radius: 4px;
-  color: $highlight;
-  min-width: 0;
+.count-table-count {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  .count-table & {
+    align-items: center;
+  }
+
+  code, input {
+    display: inline-block;
+    font-size: 1.5rem;
+    width: 2.5em;
+    font-family: $fontMono;
+    text-align: center;
+    border: 1px solid $accent2;
+    border-radius: 4px;
+    color: $highlight;
+    min-width: 0;
+  }
+
+  code {
+    color: $accent2;
+  }
 }
 
-.count-table-old-count small {
-  display: block;
-}
-
-table .count-table-old-count small {
-  font-size: 0.7rem;
-  margin-top: -0.5em;
-  text-align: center;
-}
-
-.count-table-new-count input[type=number] {
+.count-table-count input[type=number] {
     -moz-appearance:textfield;
 }
 
@@ -686,5 +714,18 @@ td .count-config-field {
   .dashboard-row {
     flex-direction: column;
     margin-bottom: 8rem;
+  }
+}
+
+.crate-size {
+  font-family: $fontMono;
+  background: url(
+    "data:image/svg+xml;utf8,"
+    + "<svg width='16' height='16' viewBox='0 0 4.233 4.233' xmlns='http://www.w3.org/2000/svg'><path d='M2.315.13A.221.221 0 0 0 2.24.15l-1.77.885a.221.221 0 0 0-.12.2H.347v1.768a.221.221 0 0 0 .098.184l1.328.884.003-.005a.221.221 0 0 0 .22.017l1.77-.884a.221.221 0 0 0 .12-.196v-1.77a.221.221 0 0 0-.098-.186L2.463.167a.221.221 0 0 0-.148-.038zm.007.475l.332.22-1.314.657-.33-.22zm.573.38l.331.22-1.315.66-.331-.222zm.55.606v1.277l-1.329.662V2.257zm-2.654.057l.885.59v1.236l-.885-.59z' fill='%23" + str-slice(#{$accent1}, 2) +"'/></svg>"
+  ) left center no-repeat;
+  padding-left: 16px;
+
+  &::before {
+    content: '=';
   }
 }

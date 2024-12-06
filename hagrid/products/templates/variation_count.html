@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load product %}
+{% load static %}
 
 {% block content %}
 <style>@media (max-width: 1023px) { body { padding-bottom: 0} }</style>
@@ -27,10 +28,10 @@
 
     <article class="count-page">
         <main>
-            <table class="count-table">
+            <table class="hagrid-table count-table table-sticky-head">
                 <thead>
                     <tr>
-                        <th colspan="3">Item</th>
+                        <th>Item</th>
                         <th>Old</th>
                         <th>New</th>
                     </tr>
@@ -38,16 +39,26 @@
                 <tbody>
                     {% for item in items %}
                         <tr>
-                            <td>{{item.variation.product.name}}</td>
-                            <td>{{item.variation.size.group.name}}</td>
-                            <td>{{item.variation.size.name}}</td>
                             <td>
-                                <code class="color-{{ item.variation.availability|availability_class }}">{{item.variation.count|default:'-' }}</code>
+                                {{item.variation.product.name}}<br />
+                                <small>{{item.variation.size.group.name}} {{item.variation.size.name}}</small>
+                                {% if item.variation.has_crate_size %}
+                                    <br /><small class="crate-size">{{ item.variation.crate_size_value }}</small>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <div class="count-table-count">
+                                    <code class="color-{{ item.variation.availability|availability_class }}">{{item.variation.count|default:'-' }}</code>
+                                </div>
                                 {% if item.variation.counted_at %}
                                     <small>{{ item.variation.counted_at|timesince_short }}</smalL>
                                 {% endif %}
                             </td>
-                            <td>{{item.form.count }}</td>
+                            <td>
+                                <div class="count-table-count">
+                                {{item.form.count }}
+                                </div></td>
                         </tr>
                         {% if item.form.errors %}
                             <tr class="error">

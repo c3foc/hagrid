@@ -6,20 +6,20 @@
 
 <h1>Counting items</h1>
 
-<table class="hagrid-table priorities-table">
-    <thead style="position: sticky; top: 55px; z-index: 1;">
-    <tr height="60">
-        <th>Score</th>
-        <th>Product</th>
-        <th>Sizegroup</th>
-        <th>Size</th>
-        <th>Stock</th>
-        <th>Counted</th>
-        <th>Sales per hour</th>
-        <th>Est. count</th>
-        <th></th>
-        <th></th>
-    </tr>
+<table class="hagrid-table priorities-table table-sticky-head">
+    <thead>
+        <tr>
+            <th>Score</th>
+            <th>Product</th>
+            <th>Sizegroup</th>
+            <th>Size</th>
+            <th>Stock</th>
+            <th>Counted</th>
+            <th>Sales per hour</th>
+            <th>Est. count</th>
+            <th></th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
 {% for priority in priorities%}

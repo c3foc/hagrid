@@ -52,6 +52,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     position = PositionField()
     product_group = models.ForeignKey(ProductGroup, related_name='products', on_delete=models.SET_NULL, default=None, blank=True, null=True)
+    crate_size = models.IntegerField(help_text="How many items of this product come in a crate?", blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -99,6 +100,7 @@ class Variation(models.Model):
     count_reserved_until = models.DateTimeField(blank=True, null=True)
     count_prio_bumped = models.BooleanField(default=False)
     availability = models.CharField(default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES)
+    crate_size = models.IntegerField(help_text="How many items of this variation come in a crate (overrides product setting)?", blank=True, null=True)
 
     def __str__(self):
         return "{} ({})".format(str(self.product), str(self.size))
@@ -169,6 +171,14 @@ class Variation(models.Model):
             'highest_reason': max(scores.items(), key=lambda s:s[1])[0],
         }
 
+    @property
+    def has_crate_size(self):
+        return self.product.crate_size is not None if (self.crate_size is None) else (self.crate_size != 0)
+
+
+    @property
+    def crate_size_value(self):
+        return self.product.crate_size if self.crate_size is None else None if self.crate_size == 0 else self.crate_size
 
 class VariationAvailabilityEvent(models.Model):
     old_state = models.CharField(max_length=20, choices=Variation.AVAILABILITY_STATES)
