@@ -11,3 +11,6 @@ from .variation_count import (
     variation_count_success,
     variation_count,
 )
+from .stats import (
+    operator_stats,
+)

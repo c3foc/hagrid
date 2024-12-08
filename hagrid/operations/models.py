@@ -24,6 +24,8 @@ class EventTime:
         # cumulative sum adds to the time since the start of the event for open timesapns
         self.start_event_time_by_index = numpy.cumsum(opendiffs)
 
+        self.downtimes = self.start_event_time_by_index[self.open_state_by_index.astype(numpy.bool)]
+
         self.total_event_duration = float(self.start_event_time_by_index[-1])
 
     def datetime_to_event_time(self, dt: datetime | int | float) -> float:

@@ -146,7 +146,7 @@ class Variation(models.Model):
             # try to estimate the current count
             total_sold = self.initial_amount - self.count
             count_event_time = event_time.datetime_to_event_time(self.counted_at)
-            sale_rate = max(0, total_sold / count_event_time)
+            sale_rate = max(0, total_sold / max(1, count_event_time))
             estimate = self.initial_amount - now * sale_rate
             estimated_count = min(self.initial_amount, max(0, estimate))
 

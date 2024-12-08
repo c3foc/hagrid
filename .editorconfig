@@ -10,7 +10,7 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
-[*.{sass,scss,css}]
+[*.{sass,scss,css,js}]
 indent_size = 2
 
 [*.md]
