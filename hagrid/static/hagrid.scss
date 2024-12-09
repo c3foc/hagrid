@@ -75,6 +75,7 @@ body {
   color: $accent1;
   font-family: $fontBase;
 }
+
 a {
   color: $highlight;
   &:hover {
@@ -114,6 +115,17 @@ h4 {
   font-weight: 500;
   font-family: $fontBase;
   margin-block-start: 1em;
+}
+
+.dashboard-logo {
+  margin-block: 2rem;
+  text-align: center;
+  align-self: center;
+
+  img {
+    width: 100%;
+    max-width: 40ch;
+  }
 }
 
 // The grid-sizer makes sure its content has an exact multiple of gridSize in width
@@ -338,6 +350,8 @@ dl.legend {
   border: none;
   background: $accent5;
   font-family: $fontH1;
+  position: sticky;
+  top: 0;
 
   .navbar-brand {
     font-family: $fontTitle;

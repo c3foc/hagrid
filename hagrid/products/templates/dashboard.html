@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
-    <h1 class="title">Welcome to C3FOC</h1>
-    <h1 class="center">The 38C3 fashion operation center</h1>
+    <div class="dashboard-logo">
+        <img src="{% static "38C3-c3foc-logo.svg" %}" />
+    </div>
 
     {% if dashboard_text %}
         <div class="dashboard-row">
