@@ -76,6 +76,19 @@ body {
   font-family: $fontBase;
 }
 
+#background-tshirt {
+  background: URL(static('/tshirt-large.svg')) no-repeat center center;
+  background-size: 100%;
+  width: 120%;
+  max-width: 1200px;
+  aspect-ratio: 1;
+  position: fixed;
+  left: 50%;
+  top: 20%;
+  z-index: -1;
+  transform: translateX(-50%);
+}
+
 a {
   color: $highlight;
   &:hover {
@@ -151,6 +164,7 @@ h4 {
   $s: str-slice(#{$gridSize}, 0, -3);
   $o: str-slice(#{$gridBorderWidth/2}, 0, -3);
   $o2: str-slice(#{$gridBorderWidth}, 0, -3);
+  background-color: $background;
   background-image: url(
     "data:image/svg+xml;utf8,"
     + "<svg xmlns='http://www.w3.org/2000/svg' width='#{$s}' height='#{$s}' viewBox='0 0 #{$s} #{$s}'>"
@@ -520,6 +534,7 @@ table.table-sticky-head {
 
 .open-status {
   font-family: $fontMono;
+  background: $background;
   // line-height: 1;
   text-align: center;
   display: flex;

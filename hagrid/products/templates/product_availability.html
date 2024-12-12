@@ -1,4 +1,5 @@
 {% load reservation %}
+{% load static %}
 {% load product %}
 
 {% spaceless %}
@@ -20,6 +21,8 @@
                     <div class="product-image">
                     {% if entry.image %}
                         <img src="{{ entry.image.image.url  }}" width="200"  />
+                    {% else %}
+                        <img src="{% static '/tshirt-small.svg' %}" width="200"  />
                     {% endif %}
                     </div>
 
