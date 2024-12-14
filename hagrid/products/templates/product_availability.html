@@ -18,13 +18,18 @@
             {% for entry in groupentry.products %}
                 <div class="grid-container product">
                     <h2>{{ entry.product.name }}</h2>
-                    <div class="product-image">
                     {% if entry.image %}
-                        <img src="{{ entry.image.image.url  }}" width="200"  />
+                        <a class="product-image" href="{% url 'gallery' entry.product.id %}">
+                            <img src="{{ entry.image.image.url  }}" />
+                            {% if entry.image_count_more %}
+                                <div class="product-image-count-more">+{{ entry.image_count_more }}</div>
+                            {% endif %}
+                        </a>
                     {% else %}
-                        <img src="{% static '/tshirt-small.svg' %}" width="200"  />
+                        <div class="product-image">
+                            <img src="{% static '/tshirt-small.svg' %}" />
+                        </div>
                     {% endif %}
-                    </div>
 
                     <div class="product-availabilities">
                     {% for group in entry.sizegroups %}

@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -47,14 +49,15 @@ def dashboard(request):
         sizegroups = all_sizegroups.filter(
             sizes__variations__product=product
         ).distinct()
-        images = GalleryImage.objects.filter(variation__product=product)[:1]
+        images = list(GalleryImage.objects.filter(variation__product=product))
         return {
             "product": product,
             "sizegroups": [
                 _transform_sizegroup(sizegroup, variations)
                 for sizegroup in sizegroups
             ],
-            "image": images[0] if images else None,
+            "image": random.choice(images) if images else None,
+            "image_count_more": len(images)  - 1,
         }
 
     def _transform_product_group(product_group):

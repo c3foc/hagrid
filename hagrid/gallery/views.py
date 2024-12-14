@@ -1,18 +1,20 @@
 
-from django import forms
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
-from django.views import View
-from django.views.generic import TemplateView
+from django.http import Http404
+from django.shortcuts import render
+from django.views.decorators.cache import cache_page
 
 from .models import GalleryImage
 
-class GalleryView(TemplateView):
+@cache_page(10)
+def gallery_view(request, product_id=None):
+    if isinstance(product_id, int):
+        images = GalleryImage.objects.filter(variation__product__id=product_id)
+    else:
+        images = GalleryImage.objects.all()
 
-    template_name = "gallery.html"
+    if not images:
+        raise Http404()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['gallery_images'] = GalleryImage.objects.all()
-        return context
+    return render(request, "gallery.html", {
+        'gallery_images': images,
+    })

@@ -130,6 +130,10 @@ h4 {
   margin-block-start: 1em;
 }
 
+main.container {
+  margin-block: 2rem;
+}
+
 .dashboard-logo {
   margin-block: 2rem;
   text-align: center;
@@ -262,15 +266,50 @@ h4 {
   }
 
   .product-image {
-    background: $background;
+    $space: 8px;
     grid-column: -6 / -1;
     grid-row: 1 / -1;
+    position: relative;
+    background: $background URL(static('/tshirt-large.svg')) repeat center center;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
 
     img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      aspect-ratio: auto;
+      max-width: calc(100% - 2 * #{$space});
+      max-height: calc(100% - 2 * #{$space});
+      transform: translate(-50%, -50%);
+      border-radius: 0.5rem;
+      transition: all 0.5s;
+      background-size: 300%;
     }
+
+    .product-image-count-more {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: $gridSize;
+      height: $gridSize;
+      background: $background;
+      border-top: $gridBorder;
+      border-left: $gridBorder;
+      font-family: $fontMono;
+      font-size: 1.5rem;
+      color: $accent1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  a.product-image:hover img {
+    opacity: 1.0;
+    // transform: scale(1.1);
+    // height: auto;
   }
 
   .product-availabilities {
@@ -366,6 +405,7 @@ dl.legend {
   font-family: $fontH1;
   position: sticky;
   top: 0;
+  z-index: 1;
 
   .navbar-brand {
     font-family: $fontTitle;
@@ -685,6 +725,25 @@ td .count-config-field {
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
+    }
+  }
+}
+
+.gallery {
+  margin-block: 4rem;
+
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  align-tracks: stretch;
+
+  .gallery-item {
+    max-width: 400px;
+    break-inside: avoid;
+
+    img {
+      width: 100%;
+      border-radius: 0.5rem;
     }
   }
 }
