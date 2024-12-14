@@ -282,6 +282,8 @@ def variation_count_config(request, product_id=None):
             if value is not None and variation.count != value:
                 variation.count = value
                 variation.count_reserved_until = None
+                variation.count_disabled_until = None
+                variation.count_disabled_reason = None
                 variation.counted_at = now
                 variation.count_prio_bumped = False
                 variation.save()

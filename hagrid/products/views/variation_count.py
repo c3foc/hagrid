@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.contrib import messages
 from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404, reverse
+from django.utils.ipv6 import is_valid_ipv6_address
 from django.views import View
 
 from hagrid.operations.models import EventTime, OpenStatus
@@ -22,9 +23,11 @@ from ..models import (
 
 
 class VariationCountForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, count_required=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["count"].widget = forms.NumberInput()
+        self.fields["count"].required = count_required
+
 
     class Meta:
         model = VariationCountEvent
@@ -49,7 +52,15 @@ class VariationCountCommonForm(forms.Form):
         required=False,
         widget=forms.Textarea(attrs={"rows": "2"}),
     )
-
+    action = forms.ChoiceField(
+        choices=[
+            ("save", "Save"),
+            ("need_to_go", "Gotta go, sorry!"),
+            ("cannot_find", "Can't find/access it"),
+            ("something_wrong", "Something is not right"),
+            ("other", "Other"),
+        ]
+    )
 
 def variation_count(request, code, variation_id=None):
     if not StoreSettings.objects.first().counting_enabled:
@@ -68,8 +79,8 @@ def variation_count(request, code, variation_id=None):
 
             priorities = []
             available_variations = access_code.variations.filter(
-                Q(count_reserved_until__isnull=True)
-                | Q(count_reserved_until__lt=datetime.now())
+                (Q(count_reserved_until__isnull=True) | Q(count_reserved_until__lt=datetime.now())) &
+                (Q(count_disabled_until__isnull=True) | Q(count_disabled_until__lt=datetime.now()))
             )
             if not available_variations:
                 messages.add_message(
@@ -122,11 +133,13 @@ def variation_count(request, code, variation_id=None):
         variations = list(access_code.variations)
 
     common_form = VariationCountCommonForm(request.POST or None)
+
     items = [
         {
             "variation": variation,
             "form": VariationCountForm(
-                request.POST or None, prefix="variation_{}".format(variation.id)
+                request.POST or None, prefix="variation_{}".format(variation.id),
+                count_required=bool(variation_id)
             ),
         }
         for variation in variations
@@ -153,7 +166,27 @@ def variation_count(request, code, variation_id=None):
     if request.POST:
         now = datetime.now()
 
-        if common_form.is_valid() and all(map(lambda i: i["form"].is_valid(), items)):
+        if common_form.is_valid() and common_form.cleaned_data["action"] != "save":
+            if variation_id:
+                variation = Variation.objects.get(id=variation_id)
+                common_form.cleaned_data["action"]
+                variation.count_disabled_reason = common_form.cleaned_data["action"]
+                if variation.count_disabled_reason in ("cannot_find", "something_wrong", "other"):
+                    # let's skip this for 15 minutes
+                    variation.count_disabled_until = now + timedelta(minutes=15)
+                else:
+                    variation.count_disabled_until = None
+                variation.count_reserved_until = None
+                variation.save()
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    "Thank you for telling us. You can still count something if you want!",
+                )
+                return redirect("variation_count", code)
+
+
+        elif common_form.is_valid() and all(map(lambda i: i["form"].is_valid(), items)):
             total = 0
             items_changed = 0
 
@@ -164,6 +197,8 @@ def variation_count(request, code, variation_id=None):
                 if count is not None:
                     variation.count = count
                     variation.count_reserved_until = None
+                    variation.count_disabled_until = None
+                    variation.count_disabled_reason = None
                     variation.counted_at = now
                     variation.count_prio_bumped = False
                     variation.save()
@@ -240,6 +275,7 @@ class VariationBumpForm(forms.Form):
         choices=[
             ("bump", "Bump"),
             ("unbump", "Unbump"),
+            ("clear_disabled", "Clear disabled"),
         ]
     )
 
@@ -270,7 +306,13 @@ def variation_count_overview(request):
             form = priority["form"]
             variation = priority["variation"]
             if form.is_valid() and variation.id == form.cleaned_data["variation"]:
-                variation.count_prio_bumped = form.cleaned_data["action"] == "bump"
+                if form.cleaned_data["action"] == "bump":
+                    variation.count_prio_bumped = True
+                elif form.cleaned_data["action"] == "unbump":
+                    variation.count_prio_bumped = False
+                elif form.cleaned_data["action"] == "clear_disabled":
+                    variation.count_disabled_reason = None
+                    variation.count_disabled_until = None
                 variation.save()
                 messages.info(
                     request,

@@ -65,15 +65,21 @@
             {% if priority.variation.count_prio_bumped %}
                 <span class="color-yellow">Bumped</span>
             {% endif %}
+            {% if priority.variation.is_count_disabled %}
+                <span class="color-red">{% if priority.variation.count_disabled_reason %}{{ priority.variation.count_disabled_reason }}{% else %}Disabled{% endif %}</span>
+            {% endif %}
         </td>
         <td class="table-buttons">
             <form method="post">
                 {% csrf_token %}
                 {{ priority.form.variation }}
                 {% if priority.variation.count_prio_bumped %}
-                    <button class="color-red" name="{{ priority.form.prefix}}-{{ priority.form.action.name  }}" value="unbump" type="submit">-</button>
+                    <button class="color-red" name="{{ priority.form.action.html_name  }}" value="unbump" type="submit" title="Un-bump counting priority">-</button>
                 {% else %}
-                    <button class="color-green" name="{{ priority.form.prefix}}-{{ priority.form.action.name }}" value="bump" type="submit">+</button>
+                    <button class="color-green" name="{{ priority.form.action.html_name }}" value="bump" type="submit" title="Bump counting priority">+</button>
+                {% endif %}
+                {% if priority.variation.is_count_disabled %}
+                    <button class="color-green" name="{{ priority.form.action.html_name }}" value="clear_disabled" type="submit" title="Remove reason for not counting">Go!</button>
                 {% endif %}
             </form>
         </td>

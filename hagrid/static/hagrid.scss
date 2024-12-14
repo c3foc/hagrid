@@ -452,12 +452,23 @@ dl.legend {
     }
   }
 }
+.count-page-abort-buttons {
+  margin-top: 2rem;
+  grid-column: span 2;
+
+  button {
+    margin: 0;
+    display: inline-block;
+    margin-top: 0.2rem;
+  }
+}
 
 .hagrid-table, .count-table {
   font-family: $fontMono;
 
   td, th {
     padding: 0.2rem 0.5rem;
+    background: $background;
   }
 
   tr:nth-child(2n) {
@@ -527,11 +538,13 @@ table.table-sticky-head {
 .table-buttons button {
   background: $accent3;
   border: 1px solid $accent2;
-  color: $highlight;
+  // color: $highlight;
   border-radius: 4px;
-  height: 1.4rem;
-  width: 1.4rem;
+  height: 1.5rem;
+  min-width: 1.5rem;
   font-weight: bold;
+  font-size: 1rem;
+  padding: 0 0.2rem;
 }
 
 .count-table-count {

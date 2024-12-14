@@ -100,6 +100,8 @@ class Variation(models.Model):
     count = models.IntegerField(blank=True, null=True)
     counted_at = models.DateTimeField(blank=True, null=True)
     count_reserved_until = models.DateTimeField(blank=True, null=True)
+    count_disabled_until = models.DateTimeField(blank=True, null=True)
+    count_disabled_reason = models.CharField(max_length=30, blank=True, null=True)
     count_prio_bumped = models.BooleanField(default=False)
     availability = models.CharField(default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES)
     crate_size = models.IntegerField(help_text="How many items of this variation come in a crate (overrides product setting)?", blank=True, null=True)
@@ -117,6 +119,10 @@ class Variation(models.Model):
     @property
     def is_count_reserved(self):
         return self.count_reserved_until and self.count_reserved_until > timezone.now()
+
+    @property
+    def is_count_disabled(self):
+        return self.count_disabled_until and self.count_disabled_until > timezone.now()
 
     @property
     def computed_availability(self):
