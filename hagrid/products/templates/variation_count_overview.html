@@ -4,7 +4,36 @@
 
 {% block content %}
 
+<label for="show-explanation" class="btn btn-secondary btn-sm"  role="button" style="float: right;">
+    Toggle explanation
+</label>
+
 <h1>Counting items</h1>
+
+<input type="checkbox" id="show-explanation" class="toggle-visibility-checkbox" />
+<div>
+    <p>Each variation is listed here with information that is relevant to keeping count:</p>
+    <ul>
+        <li><b>Product</b>: Click it to go to the operator product count page.</li>
+        <li><b>Stock</b>: How many items were last counted, out of total for sale.</li>
+        <li><b>Counted</b>: When the item was counted, in "event time".</li>
+        <li><b>Sales per hour</b>: Sale rate, based on the initial amount, last item count, and count date.</li>
+        <li><b>Est. count</b>: How many items are there now, based on sale rate. Assumes constant sale rate (linear extrapolation).</li>
+        <li><b>Status</b>: Extra status information.
+        <ul>
+            <li>Item counting prio may be <span class="color-yellow">bumped</span> to count it sooner.</li>
+            <li>Item may be <span class="color-green">assigned</span> to somebody for counting (usually reserved for 5 minutes or until rejected).</li>
+            <li>Item may be <span class="color-red">rejected</span> (with reason) by counter, which removes it from counting queue for 15 minutes.</li>
+        </ul></li>
+    </ul>
+
+    <p>The priority <b>score</b> is computed from several components, which you can see by hovering the score. A higher
+    score means count sooner. A score of 50% or above is recommended for counting, a score of 100% or above is considered urgent.</p>
+
+    <p>The values in the table that most contribute to the score are highlighted in red.</p>
+
+    <p>You can <b>bump</b> item counting priority manually to count it sooner. Click the + button.</p>
+</div>
 
 <table class="hagrid-table priorities-table table-sticky-head">
     <thead>
@@ -17,8 +46,8 @@
             <th>Counted</th>
             <th>Sales per hour</th>
             <th>Est. count</th>
-            <th></th>
-            <th></th>
+            <th>Status</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -37,7 +66,7 @@
                 </div>
             </div>
         </td>
-        <td>{{ priority.variation.product.name }}</td>
+        <td><a href="{% url 'variation_count_config' priority.variation.product.id %}">{{ priority.variation.product.name }}</a></td>
         <td>{{ priority.variation.size.group.name }}</td>
         <td>{{ priority.variation.size.name }}</td>
 
@@ -87,7 +116,5 @@
 {% endfor %}
     </tbody>
 </table>
-
-<h2>Mismatched variations</h2>
 
 {% endblock %}

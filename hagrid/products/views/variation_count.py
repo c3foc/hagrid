@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.contrib import messages
 from django.http.response import Http404
 from django.shortcuts import redirect, render, get_object_or_404, reverse
+from django.utils import timezone
 from django.utils.ipv6 import is_valid_ipv6_address
 from django.views import View
 
@@ -79,6 +80,7 @@ def variation_count(request, code, variation_id=None):
 
             priorities = []
             available_variations = access_code.variations.filter(
+                Q(count__ne=0) &
                 (Q(count_reserved_until__isnull=True) | Q(count_reserved_until__lt=datetime.now())) &
                 (Q(count_disabled_until__isnull=True) | Q(count_disabled_until__lt=datetime.now()))
             )
@@ -325,3 +327,14 @@ def variation_count_overview(request):
 
     context = {"priorities": priorities}
     return render(request, "variation_count_overview.html", context)
+
+@login_required()
+def variation_count_log(request):
+    event_time = EventTime()
+    now = event_time.datetime_to_event_time(timezone.now())
+    events = VariationCountEvent.objects.order_by("-datetime").all()
+    context = {"items": [{
+        "event": event,
+        "age": now - event_time.datetime_to_event_time(event.datetime)
+    } for event in events]}
+    return render(request, "variation_count_log.html", context)
