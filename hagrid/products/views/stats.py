@@ -1,17 +1,20 @@
-from typing import Iterable
-import numpy
 import math
 from datetime import datetime
+from typing import Iterable
 
+import numpy
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.views.decorators.http import require_GET
 
-from hagrid.products.models import Variation, VariationAvailabilityEvent
 from hagrid.operations.models import EventTime
-from hagrid.products.templatetags.product import availability_class
+from hagrid.products.models import Variation
 
 MAX_FIT_DEGREE = 2
 
 
+@login_required()
+@require_GET
 def operator_stats(request):
     event_time = EventTime()
 
@@ -84,7 +87,10 @@ def operator_stats(request):
     )
 
 
-def pairs[T](it: Iterable[T]) -> Iterable[tuple[T, T]]:
+def pairs(it):
+    """Iterate over pairs (tuples of consecutive items, overlapping) from the
+    original iterator.
+    """
     i = iter(it)
     try:
         prev = next(i)

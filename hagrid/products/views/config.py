@@ -147,6 +147,7 @@ class VariationsAvailabilityForm(forms.Form):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def variation_availability_config(request, product_id=None):
     products = Product.objects.all()
     if product_id is not None:
@@ -242,6 +243,7 @@ class VariationsCountForm(forms.Form):
 
 
 @login_required()
+@require_http_methods(["GET", "POST"])
 def variation_count_config(request, product_id=None):
     products = Product.objects.all()
     if product_id is not None:

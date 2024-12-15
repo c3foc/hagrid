@@ -1,16 +1,15 @@
 from datetime import datetime, timedelta
 
 from django import forms
+from django.contrib import messages
 from django.contrib.auth.views import login_required
 from django.db.models import Q
-from django.contrib import messages
 from django.http.response import Http404
-from django.shortcuts import redirect, render, get_object_or_404, reverse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils import timezone
-from django.utils.ipv6 import is_valid_ipv6_address
-from django.views import View
+from django.views.decorators.http import require_GET, require_http_methods
 
-from hagrid.operations.models import EventTime, OpenStatus
+from hagrid.operations.models import EventTime
 
 from ..models import (
     Product,
@@ -63,6 +62,7 @@ class VariationCountCommonForm(forms.Form):
         ]
     )
 
+@require_http_methods(['POST', 'GET'])
 def variation_count(request, code, variation_id=None):
     if not StoreSettings.objects.first().counting_enabled:
         messages.add_message(
@@ -254,6 +254,7 @@ def variation_count(request, code, variation_id=None):
     )
 
 
+@require_GET
 def variation_count_success(request):
     try:
         total = int(request.GET.get("total"))
@@ -283,6 +284,7 @@ class VariationBumpForm(forms.Form):
 
 
 @login_required()
+@require_http_methods(['POST', 'GET'])
 def variation_count_overview(request):
     event_time = EventTime()
 
@@ -329,6 +331,7 @@ def variation_count_overview(request):
     return render(request, "variation_count_overview.html", context)
 
 @login_required()
+@require_GET
 def variation_count_log(request):
     event_time = EventTime()
     now = event_time.datetime_to_event_time(timezone.now())
