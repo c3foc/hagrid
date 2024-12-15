@@ -110,7 +110,7 @@ def variation_config(request, product_id=None):
 
         total_count = changed_count + created_count + deleted_count
         messages.add_message(
-            self.request,
+            request,
             messages.SUCCESS,
             f"Changed {total_count} variations (created {created_count}, modified {changed_count}, deleted {deleted_count})",
         )
