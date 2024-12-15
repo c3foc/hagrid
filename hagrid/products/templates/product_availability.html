@@ -17,7 +17,12 @@
         <div class="grid-background">
             {% for entry in groupentry.products %}
                 <div class="grid-container product">
-                    <h2>{{ entry.product.name }}</h2>
+                    <div class="product-name">
+                        <h2>{{ entry.product.name }}</h2>
+                        <a href="{% url 'gallery' entry.product.id %}" title="Show product images" class="product-image-icon">
+                            <img src="{% static '/image.svg' %}" />
+                        </a>
+                    </div>
                     {% if entry.image %}
                         <a class="product-image" href="{% url 'gallery' entry.product.id %}">
                             <img src="{{ entry.image.image.url  }}" />

@@ -254,15 +254,39 @@ main.container {
   margin-bottom: $gridSize;
   min-height: $gridSize * 3;
 
-  > h2 {
+  > .product-name {
     background: $background;
     grid-column: 1 / -6;
-    margin: 0;
-
     padding-inline: 1rem;
     display: flex;
     align-items: center;
-    color: $primary;
+
+    h2 {
+      color: $primary;
+      margin: 0;
+      margin-right: auto;
+    }
+
+    a, button {
+      background: none;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      margin-left: 0.5rem;
+    }
+
+    img {
+      width: 2rem;
+      opacity: 0.5;
+    }
+
+    *:hover img {
+      opacity: 1;
+    }
+
+    .product-image-icon {
+      display: none;
+    }
   }
 
   .product-image {
@@ -775,12 +799,18 @@ td .count-config-field {
     grid-template-rows: $gridSize - $gridBorderWidth auto;
     min-height: $gridSize * 2;
 
-    > h2 {
+    > .product-name {
       grid-column-end: -1;
     }
 
     .product-image {
       display: none;
+    }
+
+    .product-name {
+      .product-image-icon {
+        display: block;
+      }
     }
 
     .product-availabilities {
