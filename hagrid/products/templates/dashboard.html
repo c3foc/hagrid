@@ -27,6 +27,7 @@
 
 
 {% block content2 %}
+    <a id="sizes" name="sizes"></a>
     {% if store_settings.dashboard_is_public or request.user.is_superuser %}
         {% include 'product_availability.html' with product_availabilities=product_availabilities %}
     {% endif %}
