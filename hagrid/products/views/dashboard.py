@@ -49,7 +49,7 @@ def dashboard(request):
         sizegroups = all_sizegroups.filter(
             sizes__variations__product=product
         ).distinct()
-        images = list(GalleryImage.objects.filter(variation__product=product))
+        images = list(GalleryImage.objects.filter(product=product))
         return {
             "product": product,
             "sizegroups": [

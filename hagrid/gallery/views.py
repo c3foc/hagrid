@@ -8,9 +8,11 @@ from .models import GalleryImage
 @cache_page(10)
 def gallery_view(request, product_id=None):
     if isinstance(product_id, int):
-        images = GalleryImage.objects.filter(variation__product__id=product_id)
+        images = GalleryImage.objects.filter(product__id=product_id)
     else:
-        images = GalleryImage.objects.all()
+        images = GalleryImage.objects.filter(product__product_group__isnull=False)
+
+    images = images.order_by('product__product_group__position', 'product__position', 'sizegroup__position')
 
     if not images:
         raise Http404()

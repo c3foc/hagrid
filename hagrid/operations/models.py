@@ -35,6 +35,11 @@ class EventTime:
         # Find the index of the previous status change timestamp
         idx = numpy.searchsorted(self.status_change_timestamps, dt) - 1
 
+        # If the insert index is 0 then the event is before the first opening
+        # and the event time is clipped to 0.
+        if idx < 0:
+            return 0
+
         # Find the event time for the previous status change
         start_event_time = self.start_event_time_by_index[idx]
 

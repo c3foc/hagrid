@@ -24,8 +24,8 @@
                     <h4>
                         {% if gallery_item.title %}
                             {{ gallery_item.title }}
-                        {% elif gallery_item.variation %}
-                            {{ gallery_item.variation.product }}, {{ gallery_item.variation.size.group }}
+                        {% elif gallery_item.product and gallery_item.sizegroup %}
+                            {{ gallery_item.product }}, {{ gallery_item.sizegroup }}
                         {% endif %}
                     </h4>
                     <a href="{{ gallery_item.image.url }}">

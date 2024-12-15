@@ -3,18 +3,19 @@ from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image
 
-from hagrid.products.models import Variation
+from hagrid.products.models import Product, SizeGroup
 
 
 class GalleryImage(models.Model):
     image = models.ImageField(upload_to="galleryimages/")
-    variation = models.ForeignKey(Variation, blank=True, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.SET_NULL)
+    sizegroup = models.ForeignKey(SizeGroup, blank=True, null=True, on_delete=models.SET_NULL)
     title = models.CharField(max_length=100, blank=True)
     caption = models.TextField(blank=True)
     alt_text = models.TextField(blank=True)
 
     def __str__(self):
-        return "{} {}".format(self.title, str(self.variation))
+        return self.title or f"{self.product} {self.sizegroup}"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
