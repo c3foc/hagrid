@@ -10,13 +10,7 @@
             </div>
         {% endif %}
 
-        <p>
-            Please note that some of our gallery images are mockups and not
-            real photos of the product. Come and meet us at the point of sale to
-            have a look at the actual item. There is a try-on area where you
-            can feel the fabric, check the print and test the fit before heading
-            to the sales desk for purchase.
-        </p>
+        {% include "gallery_disclaimer.html" %}
 
         <div class="gallery">
             {% for gallery_item in gallery_images %}
