@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "Babel==2.12.1",
+    "Babel==2.16.0",
     "Django==4.2.16",
     "Markdown==3.4.4",
     "Pillow==10.3.0",
