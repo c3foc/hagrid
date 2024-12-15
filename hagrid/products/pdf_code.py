@@ -155,6 +155,11 @@ def generate_access_code_pdf(request, access_codes, filename: str):
             html += ", ".join(map(str, sizes))
             html += "<br />"
 
+        if not products and not sizegroups and not sizes:
+            html += "<b>All items</b><br />"
+        if access_code.as_queue:
+            html += "<b>VIA QUEUE</b><br />"
+
         text = Paragraph(html, style=NOTES_STYLE)
         _, text_height = text.wrap(
                 doc.w - qr_code_size - 20 - doc.mr - doc.ml,

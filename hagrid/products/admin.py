@@ -1,10 +1,9 @@
 import csv
 import io
-from os import access
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path
-from django.shortcuts import reverse, get_object_or_404
+from django.shortcuts import redirect, reverse
 from django.utils.html import format_html
 
 from hagrid.products.pdf_code import generate_access_code_pdf
@@ -24,25 +23,27 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ["product_group"]
 
 @admin.register(Variation)
-class ProductAdmin(admin.ModelAdmin):
+class VariationAdmin(admin.ModelAdmin):
     list_display = ["__str__", "product", "size", "initial_amount", "count", "availability", "crate_size"]
     list_editable = ["crate_size"]
     list_filter = ["product__product_group", "product", "size__group", "size"]
 
 
-
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ["name", "group"]
-    list_display_links = ["name"]
+    list_display = ["name", "group", "position"]
     list_filter = ["group"]
 
 @admin.register(VariationCountEvent)
 class VariationCountEventAdmin(admin.ModelAdmin):
-    list_display = ["__str__", "datetime", "variation", "name", "comment", "count"]
+    list_display = ["datetime", "variation", "name", "comment", "count"]
     list_filter = ["variation__product", "variation__size__name", "variation__size__group"]
 
-    actions = ('export_csv',)
+    actions = ('export_csv', 'clear_name',)
+
+    def clear_name(self, request, queryset):
+        queryset.update(name="")
+        return redirect("admin:products_variationcountevent_changelist")
 
     def export_csv(self, request, queryset):
         events = queryset.all()
