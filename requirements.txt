@@ -1,7 +1,7 @@
 Babel==2.16.0
 Django==5.1.4
 Markdown==3.4.4
-Pillow==10.3.0
+Pillow==11.0.0
 django-compressor==4.5.1
 django-filter==24.3
 django-libsass==0.9
