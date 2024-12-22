@@ -17,13 +17,31 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
-from django.views.decorators.cache import cache_page
-from hagrid.products.views import DashboardView
+from hagrid.products import views
+
+# auto-assign URL lookup name from function name
+def p(pathname, fn):
+    return path(pathname, fn, name=fn.__name__)
 
 urlpatterns = [
-    path('', cache_page(10)(DashboardView.as_view()), name='dashboard'),
+    p('', views.dashboard),
+    p('table', views.dashboard_table),
+    p('operator/', views.products_config_overview),
+    p("operator/availability/", views.variation_availability_config),
+    p("operator/availability/<int:product_id>/", views.variation_availability_config),
+    p("operator/variations/", views.variation_config),
+    p("operator/stats", views.operator_stats),
+    p("operator/variations/<int:product_id>/", views.variation_config),
+    p("operator/count/queue", views.variation_count_overview),
+    p("operator/count/edit", views.variation_count_config),
+    p("operator/count/log", views.variation_count_log),
+    p("operator/count/<int:product_id>/", views.variation_count_config),
+    p("history/", views.variation_availability_event_list),
+    p("count/success", views.variation_count_success),
+    p("count/<slug:code>/", views.variation_count),
+    p("count/<slug:code>/<int:variation_id>", views.variation_count),
+
     path('admin/', admin.site.urls),
-    path('products/', include('hagrid.products.urls')),
     path('reservations/', include('hagrid.reservations.urls')),
     path('gallery/', include('hagrid.gallery.urls')),
     path('api/', include('hagrid.api.urls')),

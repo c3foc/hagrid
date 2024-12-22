@@ -11,7 +11,7 @@ from django.views.generic.edit import FormView
 from django.db.models import Sum
 
 from hagrid.products.models import Size, SizeGroup, StoreSettings
-from hagrid.products.views import SizeTable
+from hagrid.products.tables import SizeTable
 
 from ..models import Reservation, ReservationPart, ReservationPosition
 from hagrid.reservations import emails
@@ -41,7 +41,7 @@ class ReservationCommentForm(forms.ModelForm):
         self.fields['comment'].widget.attrs['rows'] = 2
         if not editable:
             for field in self.fields.values():
-                field.disabled = True 
+                field.disabled = True
 
     class Meta:
         model = Reservation

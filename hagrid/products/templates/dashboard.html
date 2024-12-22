@@ -1,29 +1,38 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
+    <div class="dashboard-logo">
+        <img src="{% static "38C3-c3foc-logo.svg" %}" />
+    </div>
 
-{% if store_settings.dashboard_text %}
-{{ store_settings.dashboard_text|safe }}
-{% endif %}
+    {% if dashboard_text %}
+        <div class="dashboard-row">
+            {{ dashboard_text|safe }}
+        </div>
+    {% endif %}
 
-{% if store_settings.dashboard_is_public or request.user.is_superuser %}
+    {% if store_settings.dashboard_is_public or request.user.is_superuser %}
+        {% if not store_settings.dashboard_is_public %}
+            <div class="alert alert-warning" role="alert">
+                The dashboard is only visible to superusers.
+            </div>
+        {% endif %}
+    {% elif not store_settings.dashboard_text %}
+            <p>The dashboard is currently not available.</p>
+    {% endif %}
+{% endblock %}
 
-  {% if not store_settings.dashboard_is_public %}
-  <div class="alert alert-warning" role="alert">
-    The dashboard is only visible to superusers.
-  </div>
-  {% endif %}
 
-  {% for table in availability_tables %}
-    {% include 'variation_table.html' with table=table %}
-  {% endfor %}
 
-  {% include 'dashboard_legend.html' %}
+{% block content2 %}
+    <a id="sizes" name="sizes"></a>
+    {% if store_settings.dashboard_is_public or request.user.is_superuser %}
+        {% include 'product_availability.html' with product_availabilities=product_availabilities %}
+    {% endif %}
 
-{% elif not store_settings.dashboard_text %}
-<p>
-  The dashboard is currently not available.
-</p>
-{% endif %}
-
+    <div class="container" style="margin-block: 4rem">
+    {% include "gallery_disclaimer.html" %}
+    </div>
 {% endblock %}

@@ -29,7 +29,7 @@ DEBUG = True
 SITE_URL = "http://localhost:8000"
 
 # e.g. ["hagrid.example.com"]
-ALLOWED_HOSTS = ["local.rindt.me", "localhost"]
+ALLOWED_HOSTS = ["local.rindt.me", "localhost", "yeast"]
 
 # Email Settings
 ADMINS = [('Admin', 'hagrid-admin@localhost')]
@@ -49,6 +49,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 # Application definition
 INSTALLED_APPS = [
+    'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'hagrid.reservations',
     'hagrid.gallery',
     'hagrid.api',
+    'hagrid.operations',
 ]
 
 LOGIN_URL = "admin:login"
@@ -106,6 +108,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hagrid.wsgi.application'
 
+# SASS compiling
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -166,6 +172,11 @@ STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static.dist')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "hagrid", "static"),
 ]
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
 try:
     from .local_settings import *

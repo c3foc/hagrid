@@ -15,7 +15,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.utils.text import slugify
 
-from hagrid.products.views import SizeTable
+from hagrid.products.tables import SizeTable
 from hagrid.products.models import Variation, SizeGroup
 
 from ..models import Reservation, ReservationPart, ReservationPosition

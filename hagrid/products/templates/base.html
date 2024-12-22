@@ -4,22 +4,23 @@
 <head>
     <title>{% block thetitle %}{% endblock %}</title>
     <link href="{% static "/bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+
+    {% load compress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "/hagrid.scss" %}" />
+    {% endcompress %}
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <style>
-        body {
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-        }
-    </style>
     {% block head %}
 
     {% endblock %}
 </head>
 <body>
 
-<nav class="navbar navbar-expand-md bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
-    <div class="container-fluid">
+<div id="background-tshirt"></div>
+<nav class="navbar navbar-expand-md border-body" data-bs-theme="dark">
+    <div class="container">
         <a class="navbar-brand" href="{% url 'dashboard' %}">c3foc</a>
         <div class="d-flex flex-row">
             <ul class="navbar-nav flex-row">
@@ -35,21 +36,25 @@
             {% endif %}
         </div>
         <div class="collapse navbar-collapse" id="navbarAdditionalItems">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav">
                 {% if request.user.is_superuser or store_settings.reservations_link_in_navbar %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'reservationapplication' %}">Apply for Reservation</a>
                     </li>
                 {% endif %}
-                {% if request.user.is_superuser %}
+
+            {% if request.user.is_superuser %}
+                </ul>
+                <ul class="navbar-nav right admin">
                     <li class="nav-item">
-                        <a class="nav-link fw-bold" href="{% url 'availabilityconfig' %}">Product Config</a>
+                        <a class="nav-link" href="{% url 'products_config_overview' %}">Operator view</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link fw-bold"
-                           href="{% url 'reservationadministration' %}">Reservations</a>
+                        <a class="nav-link" href="{% url 'admin:logout' %}">Logout</a>
                     </li>
                 {% elif store_settings.login_link_in_navbar %}
+                </ul>
+                <ul class="navbar-nav right">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin:login' %}?next=/">Login</a>
                     </li>
@@ -79,7 +84,10 @@
     {% endblock %}
 </main>
 
+{% block content2 %}
+{% endblock %}
+
 <script type="text/javascript" src="{% static "/bootstrap/js/bootstrap.js" %}"></script>
-<script type="text/javascript" src="{% static "/masonry.pkgd.min.js" %}"></script>
+<script type="text/javascript" src="{% static "/hagrid.js" %}"></script>
 </body>
 </html>

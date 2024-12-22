@@ -1,0 +1,14 @@
+{% load product %}
+
+{{ field.errors }}
+
+<div class="count-config-field">
+    {{ field }}
+    <span>/</span>
+    <span>{{ variation.initial_amount }}</span>
+</div>
+
+{% if variation.counted_at %}
+    <small>{{ variation.counted_at|timesince_short }}</small>
+{% endif %}
+

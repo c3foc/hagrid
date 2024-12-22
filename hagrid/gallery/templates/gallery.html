@@ -10,31 +10,24 @@
             </div>
         {% endif %}
 
-        <div class="row mb-3" data-masonry='{"percentPosition": true }'>
+        {% include "gallery_disclaimer.html" %}
+
+        <div class="gallery">
             {% for gallery_item in gallery_images %}
-                <div class="col-sm-6 col-lg-4 mb-4">
-                    <div class="card">
-                        <img src="{{ gallery_item.image.url }}"
-                             class="card-img-top"
-                             alt="{{ gallery_item.alt_text }}"
-                             title="{{ gallery_item.alt_text }}"
-                        >
-                        <div class="card-body">
-                            {% if gallery_item.variation %}
-                                <h5 class="card-title">{{ gallery_item.variation.product }}
-                                    <span class="badge bg-secondary float-right">
-          {{ gallery_item.variation.product.price|as_currency }}
-        </span>
-                                </h5>
-                            {% endif %}
-                            {% if gallery_item.title %}
-                                <h6 class="card-subtitle text-muted">{{ gallery_item.title }}</h6>
-                            {% endif %}
-                            {% if gallery_item.caption %}
-                                <p class="card-text mt-2">{{ gallery_item.caption }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
+                <div class="gallery-item">
+                    <h4>
+                        {% if gallery_item.title %}
+                            {{ gallery_item.title }}
+                        {% elif gallery_item.product and gallery_item.sizegroup %}
+                            {{ gallery_item.product }}, {{ gallery_item.sizegroup }}
+                        {% endif %}
+                    </h4>
+                    <a href="{{ gallery_item.image.url }}">
+                    <img src="{{ gallery_item.image.url }}"
+                         alt="{{ gallery_item.alt_text }}"
+                         title="{{ gallery_item.alt_text }}"
+                    />
+                    </a>
                 </div>
             {% endfor %}
         </div>
@@ -44,14 +37,5 @@
             The gallery is currently not available.
         </p>
     {% endif %}
-
-    <script>
-        window.addEventListener('load', function () {
-            const msnry = new Masonry('[data-masonry]', {
-                percentPosition: true
-            });
-            msnry.layout();
-        });
-    </script>
 {% endblock %}
 
