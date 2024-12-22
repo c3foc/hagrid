@@ -87,7 +87,7 @@
             {{ common_form.comment.label }}
             {{ common_form.comment }}
 
-            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="submit" class="btn btn-success" name="{{ common_form.action.html_name }}" value="save">Submit</button>
 
             {% if common_form.errors %}
                 <div style="grid-column: span 2">
