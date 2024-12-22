@@ -16,7 +16,10 @@ class EventTime:
         self.open_state_by_index = numpy.array([1 if status.mode == OpenStatus.Mode.OPEN else 0 for status in statuses])
 
         # time of each timestamp since the previous
-        diffs = numpy.diff(self.status_change_timestamps, prepend=[self.status_change_timestamps[0]])
+        if len(self.status_change_timestamps):
+            diffs = numpy.diff(self.status_change_timestamps, prepend=[self.status_change_timestamps[0]])
+        else:
+            diffs = numpy.array([])
 
         # only the time of each timestamp since the previous IF that timespan was open
         opendiffs = numpy.where(self.open_state_by_index, 0, diffs)
@@ -26,7 +29,7 @@ class EventTime:
 
         self.downtimes = self.start_event_time_by_index[self.open_state_by_index.astype(numpy.bool)]
 
-        self.total_event_duration = float(self.start_event_time_by_index[-1])
+        self.total_event_duration = float(self.start_event_time_by_index[-1]) if len(self.start_event_time_by_index) else 0
 
     def datetime_to_event_time(self, dt: datetime | int | float) -> float:
         if isinstance(dt, datetime):
