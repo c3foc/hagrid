@@ -105,7 +105,7 @@ def variation_count(request, code, variation_id=None):
                     top_prio = priorities[0]
                     variation = top_prio["variation"]
                     variation.count_reserved_until = datetime.now() + timedelta(
-                        minutes=5
+                        minutes=15
                     )
                     variation.save()
 
