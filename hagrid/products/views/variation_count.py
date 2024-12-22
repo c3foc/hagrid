@@ -80,7 +80,7 @@ def variation_count(request, code, variation_id=None):
 
             priorities = []
             available_variations = access_code.variations.filter(
-                Q(count__ne=0) &
+                ~Q(count=0) &
                 (Q(count_reserved_until__isnull=True) | Q(count_reserved_until__lt=datetime.now())) &
                 (Q(count_disabled_until__isnull=True) | Q(count_disabled_until__lt=datetime.now()))
             )
@@ -90,6 +90,7 @@ def variation_count(request, code, variation_id=None):
                     messages.INFO,
                     "Nothing to count at the moment, please come back later.",
                 )
+                return redirect("dashboard")
             else:
                 for variation in available_variations:
                     priorities.append(
