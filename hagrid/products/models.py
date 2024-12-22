@@ -147,33 +147,42 @@ class Variation(models.Model):
             except ArithmeticError:
                 return 1
 
+        if self.count_prio_bumped:
+            scores['bumped'] = 1.0
+
         if self.count == 0:
             scores['depleted'] = 0
+        elif not self.initial_amount:
+            scores['invalid'] = 0
         else:
             now = event_time.datetime_to_event_time(datetime.now())
-            if self.count is not None and self.counted_at is not None:
-                # try to estimate the current count
-                total_sold = self.initial_amount - self.count
-                count_event_time = event_time.datetime_to_event_time(self.counted_at)
-                sale_rate = max(0, total_sold / max(1, count_event_time))
-                estimate = self.initial_amount - now * sale_rate
-                estimated_count = min(self.initial_amount, max(0, estimate))
 
-                scores['running_low_estimated'] = count_severity(estimated_count, self.count)
-                info['estimated_count'] = estimated_count
-                info['sale_rate'] = sale_rate * 3600
-
-                scores['running_low'] = 0.5 * count_severity(self.count, self.initial_amount)
-
-                count_age = max(0, now - count_event_time)
-                scores['outdated_count'] = 0.5 * math.pow(count_age / 3600 / 4.0, 0.5)
-                info['count_age'] = count_age
-            else:
+            if self.count is None or self.counted_at is None:
+                # pretend we counted all items at t=0 with their initial_amount
+                count = self.initial_amount
+                count_event_time = 0
+                # add a little score that indicates that don't really know much about this item's count
+                # or sale rate
                 scores['missing_count'] = 0.2
+            else:
+                count = self.count
+                count_event_time = event_time.datetime_to_event_time(self.counted_at)
 
+            # try to estimate the current count
+            total_sold = self.initial_amount - count
+            sale_rate = max(0, total_sold / max(1, count_event_time))
+            estimate = self.initial_amount - now * sale_rate
+            estimated_count = min(self.initial_amount, max(0, estimate))
 
-            if self.count_prio_bumped:
-                scores['bumped'] = 1.0
+            scores['running_low_estimated'] = count_severity(estimated_count, count)
+            info['estimated_count'] = estimated_count
+            info['sale_rate'] = sale_rate * 3600
+
+            scores['running_low'] = 0.5 * count_severity(count, self.initial_amount)
+
+            count_age = max(0, now - count_event_time)
+            scores['outdated_count'] = 0.5 * math.pow(count_age / 3600 / 4.0, 0.5)
+            info['count_age'] = count_age
 
         return {
             'scores': scores,
