@@ -51,7 +51,13 @@
 
                             <td>
                                 <div class="count-table-count">
-                                    <code class="color-{{ item.variation.availability|availability_class }}">{{item.variation.count|default:'-' }}</code>
+                                    <code class="color-{{ item.variation.availability|availability_class }}">
+                                        {% if item.variation.count is not None %}
+                                            {{item.variation.count }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </code>
                                 </div>
                                 {% if item.variation.counted_at %}
                                     <small>{{ item.variation.counted_at|timesince_short }}</smalL>
