@@ -188,7 +188,7 @@ def variation_availability_config(request, product_id=None):
                 variation.save()
                 changed_count += 1
         messages.add_message(
-            self.request,
+            request,
             messages.SUCCESS,
             f"Changed {changed_count} availabilities",
         )
