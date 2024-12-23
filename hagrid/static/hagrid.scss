@@ -102,6 +102,7 @@ h1.title {
   margin-block-start: 1em;
   font-size: 4rem;
   text-align: center;
+  padding-inline: 1rem;
 }
 
 h1 {
@@ -852,7 +853,13 @@ td .count-config-field {
 
   .dashboard-row {
     flex-direction: column;
-    margin-bottom: 8rem;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .open-status {
+    marign-block: 4rem;
+    margin-inline: auto;
   }
 }
 
