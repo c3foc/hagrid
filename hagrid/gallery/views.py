@@ -14,9 +14,6 @@ def gallery_view(request, product_id=None):
 
     images = images.order_by('product__product_group__position', 'product__position', 'sizegroup__position')
 
-    if not images:
-        raise Http404()
-
     return render(request, "gallery.html", {
         'gallery_images': images,
     })
