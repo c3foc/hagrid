@@ -809,6 +809,7 @@ td .count-config-field {
     min-height: $gridSize * 2;
 
     > .product-name {
+        padding-inline: 0.5rem;
       grid-column-end: -1;
     }
 
@@ -827,6 +828,7 @@ td .count-config-field {
 
       > h3 {
         grid-column: span 2;
+        padding-inline: 0.5rem;
       }
       .product-availability-tags {
         grid-column-start: 3;
