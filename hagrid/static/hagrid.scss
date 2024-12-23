@@ -284,6 +284,13 @@ main.container {
       opacity: 1;
     }
 
+    .product-price {
+      font-family: $fontMono;
+      font-size: 1.2rem;
+      align-self: center;
+      margin-left: 0.5em;
+      color: $accent2;
+    }
     .product-image-icon {
       display: none;
     }
