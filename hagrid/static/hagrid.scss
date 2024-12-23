@@ -287,7 +287,8 @@ main.container {
     .product-price {
       font-family: $fontMono;
       font-size: 1.2rem;
-      align-self: center;
+      position: relative;
+      top: 4px; // align with h2, hacky but works
       margin-left: 0.5em;
       color: $accent2;
     }
