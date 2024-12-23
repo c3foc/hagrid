@@ -18,11 +18,10 @@
             {% for entry in groupentry.products %}
                 <div class="grid-container product">
                     <div class="product-name">
-                        <h2>{{ entry.product.name }}
+                        <h2>{{ entry.product.name }}</h2>
                         {% if entry.product.price %}
                             <span class="product-price">{{ entry.product.price|format_price }}</span>
                         {% endif %}
-                        </h2>
                         <a href="{% url 'gallery' entry.product.id %}" title="Show product images" class="product-image-icon">
                             <img src="{% static '/image.svg' %}" />
                         </a>
