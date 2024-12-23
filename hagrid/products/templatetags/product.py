@@ -1,4 +1,5 @@
 from datetime import timedelta, datetime, timezone
+from decimal import Decimal
 from django.utils import timezone
 from django import template
 
@@ -76,4 +77,14 @@ def priority_score(f):
     if not isinstance(f, (int, float)):
         return "--"
     return f"{f*100:.0f}%"
+
+@register.filter
+def format_price(f):
+    if not isinstance(f, (int, float, Decimal)):
+        return f
+
+    if round(f) == f:
+        return f"{f:.0f} €"
+    else:
+        return f"{f:.02f} €"
 
