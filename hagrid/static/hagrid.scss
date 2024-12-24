@@ -780,15 +780,15 @@ td .count-config-field {
 
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   align-tracks: stretch;
 
   .gallery-item {
-    max-width: 400px;
     break-inside: avoid;
 
     img {
       width: 100%;
+      max-width: 100%;
       border-radius: 0.5rem;
     }
   }
