@@ -232,6 +232,9 @@ class VariationCountAccessCode(models.Model):
     code = models.CharField(max_length=32, unique=True, default=generate_access_code,
                             help_text="unique URL part, keep this (rather) secret")
 
+    name = models.CharField(max_length=32, unique=False, blank=True, null=True,
+                            help_text="A name to identify or describe this code to admins (only shown there)")
+
     # filters
     products = models.ManyToManyField(Product, help_text="allow editing only variations these products", blank=True)
     sizegroups = models.ManyToManyField(SizeGroup, help_text="allow editing only variations these sizegroups", blank=True)
