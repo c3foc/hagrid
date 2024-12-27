@@ -145,7 +145,7 @@ class ReservationPositionForm(forms.ModelForm):
         self.fields['variation'].widget = forms.NumberInput()
         variation = self.initial['variation']
         old_amount = self.initial['amount']
-        self.max_amount = variation.initial_amount - amount_reserved(variation) + old_amount
+        self.max_amount = max(0, variation.initial_amount - amount_reserved(variation) + old_amount)
         self.fields['amount'].widget.attrs.update({
             'style': 'width: 7ch;',
             'class': 'variationcounthighlight',
@@ -158,8 +158,8 @@ class ReservationPositionForm(forms.ModelForm):
         cleaned_data = super().clean()
         variation = cleaned_data['variation']
         old_amount = self.initial['amount']
-        new_amount = cleaned_data.get('amount', 0)
-        max_amount = variation.initial_amount - amount_reserved(variation) + old_amount
+        new_amount = max(0, cleaned_data.get('amount', 0))
+        max_amount = max(0, variation.initial_amount - amount_reserved(variation) + old_amount)
         if variation and new_amount:
             if new_amount > max_amount:
                 msg = "No {variation} available." if max_amount == 0 else "Only {amount} {variation} available."
