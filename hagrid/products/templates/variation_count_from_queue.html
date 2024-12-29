@@ -38,7 +38,7 @@
             <b>Old count</b>
             <span class="count-table-count">
                 <code class="color-{{ variation.availability|availability_class }}">
-                    {% if variation.count is not None %}{{variation.count }}{% else %}-{% endif %}
+                    {% if variation.count is not None %}{{variation.count }}{% else %}{{ variation.initial_amount|default_if_none:"-" }}{% endif %}
                 </code>
                 {% if variation.counted_at %}
                     <small>{{ variation.counted_at|timesince_short }}</smalL>
