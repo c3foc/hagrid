@@ -126,16 +126,16 @@ class Variation(models.Model):
 
     @property
     def computed_availability(self):
-        if self.count is not None and self.initial_amount:
-            if self.count == 0:
-                return Variation.STATE_SOLD_OUT
+        if self.count is None:
+            return None
 
-            if self.count <= 2 or self.count < self.initial_amount * 0.1:
-                return Variation.STATE_FEW_AVAILABLE
+        if self.count == 0:
+            return Variation.STATE_SOLD_OUT
 
-            return Variation.STATE_MANY_AVAILABLE
+        if self.count <= 2 or (self.initial_amount is not None and self.count < self.initial_amount * 0.1):
+            return Variation.STATE_FEW_AVAILABLE
 
-        return None
+        return Variation.STATE_MANY_AVAILABLE
 
     def get_count_priority(self, event_time: EventTime):
         scores = {}
