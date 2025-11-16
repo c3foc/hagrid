@@ -67,14 +67,15 @@ class Document:
         self.canvas.bookmarkPage("p" + str(self.page))
 
     def render_page_hint(self):
-        self.canvas.drawString(self.w - 75, self.h - 35, "Page " + str(self.page))
+        page_text = "Page " + str(self.page)
+        self.canvas.drawString(self.w - 15 - self.get_text_width(page_text), self.h - 35, page_text)
 
     def apply_watermark(self):
         self.canvas.setFont("Helvetica", 30)
         self.canvas.rotate(45)
-        self.canvas.setFillColorRGB(225, 225, 225, alpha=0.5)
-        self.canvas.drawString(75, 75, self.watermark)
-        self.canvas.setFillColorRGB(255, 255, 255, alpha=1.0)
+        self.canvas.setFillColorRGB(128, 128, 128, alpha=0.5)
+        self.canvas.drawString(-75, 75, self.watermark)
+        self.canvas.setFillColorRGB(0, 0, 0, alpha=1.0)
         self.canvas.rotate(360 - 45)
         self.canvas.setFont("Helvetica", 14)
 
@@ -82,8 +83,8 @@ class Document:
         self.watermark = str(watermark)
         self.apply_watermark()
 
-    def get_text_width(self, text: str):
-        return pdfmetrics.stringWidth(text, "Helvetica", 14)
+    def get_text_width(self, text: str, text_size = 14):
+        return pdfmetrics.stringWidth(text, "Helvetica", text_size)
 
     def new_page(self, bookmark=None):
         if self.ready:
@@ -102,7 +103,7 @@ class Document:
         self.apply_watermark()
         page_number_text = "Page " + str(self.page)
         self.canvas.drawString(self.w - self.right_inset - self.get_text_width(page_number_text), 50, page_number_text)
-        self.canvas.setFillColorRGB(255, 255, 255, alpha=1.0)
+        self.canvas.setFillColorRGB(128, 128, 128, alpha=1.0)
 
     def wrap_up(self):
         self.canvas.showPage()
@@ -200,6 +201,7 @@ def render_invoice_header(r: Reservation, d: Document):
 
 def render_collection_table_header(d: Document, title: str):
     d.canvas.setFillColor(black)
+    d.canvas.setFont("Helvetica", 11)
     d.canvas.drawString(d.cursor_x, d.cursor_y - 5, title)
     d.cursor_y -= 15
 
@@ -245,7 +247,7 @@ def render_collection_list_entry(pos: Variation, amount: int, d: Document):
         d.canvas.line((d.w - d.right_inset - 13) - i * 20, d.cursor_y - 13, (d.w - d.right_inset - 2) - i * 20, d.cursor_y - 13)
 
     d.canvas.drawString(d.cursor_x + 10, d.cursor_y - 13, str(pos))
-    d.canvas.drawString(d.cursor_x + 310, d.cursor_y - 10, str(amount))
+    d.canvas.drawString(d.cursor_x + 460 - d.get_text_width(str(amount), text_size=11), d.cursor_y - 10, str(amount))
     d.cursor_y -= 15
 
 
@@ -253,6 +255,7 @@ def render_collection_list(l, d: Document, title: str = "packing list:"):
     render_collection_table_header(d, title)
     for request in l:
         if d.cursor_y < (75 + 15):
+            d.canvas.drawString(d.cursor_x, d.cursor_y - 15, "Please continue on next page.")
             d.new_page()
             render_collection_table_header(d, title)
         render_collection_list_entry(request[0], request[1], d)
@@ -287,6 +290,8 @@ def render_invoice_end(l, d: Document):
     total = 0
     for request in l:
         if d.cursor_y < (75 + 15):
+            d.canvas.line(45, d.cursor_y, d.w - 45, d.cursor_y)
+            d.canvas.drawString(d.cursor_x, d.cursor_y - 15, "Please continue on next page.")
             d.new_page()
             render_settlement_head(d)
         amount: int = request[1]
