@@ -82,7 +82,7 @@ class ProductGroup(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=250, unique=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     position = PositionField()
     product_group = models.ForeignKey(
