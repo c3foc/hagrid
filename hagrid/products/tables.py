@@ -8,7 +8,7 @@ from .models import (
 
 class SizeTable:
     def __init__(
-        self, sizegroup, render_variation=None, render_empty=None, show_empty_rows=False
+        self, sizegroup, render_variation=None, render_empty=None, show_empty_rows=False, products_queryset=None,
     ):
         self.sizegroup = sizegroup
         self.show_empty_rows = show_empty_rows
@@ -18,6 +18,7 @@ class SizeTable:
         if not render_empty:
             render_empty = lambda p, s: ""
         self.render_empty = render_empty
+        self.products_queryset = products_queryset if products_queryset is not None else Product.objects.all()
         self.entries = self.generate_entries()
 
     @property
@@ -32,7 +33,7 @@ class SizeTable:
         bool(all_variations)  # cache all variations in queryset
         sizegroup_sizes = self.sizegroup.sizes.all()
 
-        for product in Product.objects.all():
+        for product in self.products_queryset:
             row = [product.name]
             found_variation = False
             for size in sizegroup_sizes:
@@ -45,6 +46,7 @@ class SizeTable:
             if found_variation or self.show_empty_rows:
                 rows.append(row)
         return rows
+
 
 class ProductTable:
     def __init__(
@@ -107,5 +109,3 @@ class ProductTable:
     def column_width(self):
         return "200"
         # return f"{100/(self.column_count + 1):.1f}%"
-
-

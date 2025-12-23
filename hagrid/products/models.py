@@ -41,6 +41,7 @@ class ProductGroup(models.Model):
     description = models.TextField(help_text="HTML that will be rendered in the dashboard section", blank=True, default="")
     position = PositionField()
     display_in_dashboard = models.BooleanField(help_text="Show the group in the dashboard", default=True)
+    offer_in_reservations = models.BooleanField(help_text="Offer products of this group in reservations", default=False)
 
     def __str__(self):
         return self.name
