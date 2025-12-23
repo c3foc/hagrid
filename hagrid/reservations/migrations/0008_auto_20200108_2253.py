@@ -5,16 +5,19 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0009_storesettings_reservation_faq_text'),
-        ('reservations', '0007_auto_20191208_1258'),
+        ("products", "0009_storesettings_reservation_faq_text"),
+        ("reservations", "0007_auto_20191208_1258"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reservationposition',
-            name='variation',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reservation_positions', to='products.Variation'),
+            model_name="reservationposition",
+            name="variation",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="reservation_positions",
+                to="products.Variation",
+            ),
         ),
     ]

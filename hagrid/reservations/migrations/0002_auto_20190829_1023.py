@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('reservations', '0001_initial_squashed_0009_auto_20190829_0926'),
+        ("reservations", "0001_initial_squashed_0009_auto_20190829_0926"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reservationpart',
-            name='title',
+            model_name="reservationpart",
+            name="title",
             field=models.CharField(max_length=100),
         ),
     ]

@@ -28,7 +28,6 @@ class VariationCountForm(forms.ModelForm):
         self.fields["count"].widget = forms.NumberInput()
         self.fields["count"].required = count_required
 
-
     class Meta:
         model = VariationCountEvent
         exclude = ["datetime", "variation", "comment", "name"]
@@ -62,7 +61,8 @@ class VariationCountCommonForm(forms.Form):
         ]
     )
 
-@require_http_methods(['POST', 'GET'])
+
+@require_http_methods(["POST", "GET"])
 def variation_count(request, code, variation_id=None):
     if not StoreSettings.objects.first().counting_enabled:
         messages.add_message(
@@ -80,9 +80,15 @@ def variation_count(request, code, variation_id=None):
 
             priorities = []
             available_variations = access_code.variations.filter(
-                ~Q(count=0) &
-                (Q(count_reserved_until__isnull=True) | Q(count_reserved_until__lt=datetime.now())) &
-                (Q(count_disabled_until__isnull=True) | Q(count_disabled_until__lt=datetime.now()))
+                ~Q(count=0)
+                & (
+                    Q(count_reserved_until__isnull=True)
+                    | Q(count_reserved_until__lt=datetime.now())
+                )
+                & (
+                    Q(count_disabled_until__isnull=True)
+                    | Q(count_disabled_until__lt=datetime.now())
+                )
             )
             if not available_variations:
                 messages.add_message(
@@ -141,8 +147,9 @@ def variation_count(request, code, variation_id=None):
         {
             "variation": variation,
             "form": VariationCountForm(
-                request.POST or None, prefix="variation_{}".format(variation.id),
-                count_required=bool(variation_id)
+                request.POST or None,
+                prefix="variation_{}".format(variation.id),
+                count_required=bool(variation_id),
             ),
         }
         for variation in variations
@@ -174,7 +181,11 @@ def variation_count(request, code, variation_id=None):
                 variation = Variation.objects.get(id=variation_id)
                 common_form.cleaned_data["action"]
                 variation.count_disabled_reason = common_form.cleaned_data["action"]
-                if variation.count_disabled_reason in ("cannot_find", "something_wrong", "other"):
+                if variation.count_disabled_reason in (
+                    "cannot_find",
+                    "something_wrong",
+                    "other",
+                ):
                     # let's skip this for 15 minutes
                     variation.count_disabled_until = now + timedelta(minutes=15)
                 else:
@@ -187,7 +198,6 @@ def variation_count(request, code, variation_id=None):
                     "Thank you for telling us. You can still count something if you want!",
                 )
                 return redirect("variation_count", code)
-
 
         elif common_form.is_valid() and all(map(lambda i: i["form"].is_valid(), items)):
             total = 0
@@ -285,7 +295,7 @@ class VariationBumpForm(forms.Form):
 
 
 @login_required()
-@require_http_methods(['POST', 'GET'])
+@require_http_methods(["POST", "GET"])
 def variation_count_overview(request):
     event_time = EventTime()
 
@@ -324,12 +334,13 @@ def variation_count_overview(request):
                     str(variation)
                     + (" bumped" if variation.count_prio_bumped else " unbumped"),
                 )
-                return redirect('variation_count_overview')
+                return redirect("variation_count_overview")
 
     priorities = sorted(priorities, key=lambda s: s["total"], reverse=True)
 
     context = {"priorities": priorities}
     return render(request, "variation_count_overview.html", context)
+
 
 @login_required()
 @require_GET
@@ -337,8 +348,13 @@ def variation_count_log(request):
     event_time = EventTime()
     now = event_time.datetime_to_event_time(timezone.now())
     events = VariationCountEvent.objects.order_by("-datetime").all()
-    context = {"items": [{
-        "event": event,
-        "age": now - event_time.datetime_to_event_time(event.datetime)
-    } for event in events]}
+    context = {
+        "items": [
+            {
+                "event": event,
+                "age": now - event_time.datetime_to_event_time(event.datetime),
+            }
+            for event in events
+        ]
+    }
     return render(request, "variation_count_log.html", context)

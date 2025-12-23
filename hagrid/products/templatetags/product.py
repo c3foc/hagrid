@@ -12,20 +12,19 @@ register = template.Library()
 @register.filter
 def availability_class(availability):
     if availability == Variation.STATE_MANY_AVAILABLE:
-        return 'green'
+        return "green"
     elif availability == Variation.STATE_FEW_AVAILABLE:
-        return 'yellow'
+        return "yellow"
     elif availability == Variation.STATE_SOLD_OUT:
-        return 'red'
+        return "red"
     else:
-        return 'gray'
-
+        return "gray"
 
 
 @register.filter
 def timesince_short(dt, shorter=False):
     if not dt:
-        return ''
+        return ""
     now = timezone.now()
     delta = now - dt
 
@@ -50,11 +49,13 @@ def timesince_short(dt, shorter=False):
             return f"{minutes:.0f}m"
         return f"{prefix}{minutes:.0f} min{suffix}"
     else:
-        return 'now'
+        return "now"
+
 
 @register.filter
 def is_soon(dt, hours=1):
-    if not dt: return False
+    if not dt:
+        return False
     now = timezone.now()
     if hours < 0:
         delta = now - dt
@@ -63,20 +64,22 @@ def is_soon(dt, hours=1):
         delta = dt - now
     return delta.days < 0 or (delta.days == 0 and delta.seconds < hours * 3600)
 
+
 @register.filter
 def seconds_to_duration(s):
     if not s:
         return s
     if s > 3600:
-        return f"{s/3600:.0f}h {s/60%60:02.0f}m"
-    return f"{s/60:.0f}m"
+        return f"{s / 3600:.0f}h {s / 60 % 60:02.0f}m"
+    return f"{s / 60:.0f}m"
 
 
 @register.filter
 def priority_score(f):
     if not isinstance(f, (int, float)):
         return "--"
-    return f"{f*100:.0f}%"
+    return f"{f * 100:.0f}%"
+
 
 @register.filter
 def format_price(f):
@@ -87,4 +90,3 @@ def format_price(f):
         return f"{f:.0f} €"
     else:
         return f"{f:.02f} €"
-

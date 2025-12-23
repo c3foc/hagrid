@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0008_auto_20191225_2134'),
+        ("products", "0008_auto_20191225_2134"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='storesettings',
-            name='reservation_faq_text',
-            field=models.TextField(blank=True, default='', help_text='HTML that will be rendered reservation detail pages'),
+            model_name="storesettings",
+            name="reservation_faq_text",
+            field=models.TextField(
+                blank=True,
+                default="",
+                help_text="HTML that will be rendered reservation detail pages",
+            ),
         ),
     ]

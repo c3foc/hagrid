@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("operations", "0002_alter_openstatus_options"),
     ]
@@ -25,7 +24,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             "UPDATE operations_openstatus SET mode = CASE open WHEN true THEN 'open' ELSE 'closed' END;",
-            "UPDATE operations_openstatus SET open = CASE mode WHEN 'closed' THEN false ELSE true END;"
+            "UPDATE operations_openstatus SET open = CASE mode WHEN 'closed' THEN false ELSE true END;",
         ),
         migrations.RemoveField(
             model_name="openstatus",

@@ -162,8 +162,8 @@ def generate_access_code_pdf(request, access_codes, filename: str):
 
         text = Paragraph(html, style=NOTES_STYLE)
         _, text_height = text.wrap(
-                doc.w - qr_code_size - 20 - doc.mr - doc.ml,
-                10000000,
+            doc.w - qr_code_size - 20 - doc.mr - doc.ml,
+            10000000,
         )
         text.drawOn(doc.canvas, doc.x + qr_code_size + 20, doc.y - text_height)
 

@@ -1,9 +1,9 @@
-
 from django.http import Http404
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
 from .models import GalleryImage
+
 
 @cache_page(10)
 def gallery_view(request, product_id=None):
@@ -12,8 +12,14 @@ def gallery_view(request, product_id=None):
     else:
         images = GalleryImage.objects.filter(product__product_group__isnull=False)
 
-    images = images.order_by('product__product_group__position', 'product__position', 'sizegroup__position')
+    images = images.order_by(
+        "product__product_group__position", "product__position", "sizegroup__position"
+    )
 
-    return render(request, "gallery.html", {
-        'gallery_images': images,
-    })
+    return render(
+        request,
+        "gallery.html",
+        {
+            "gallery_images": images,
+        },
+    )

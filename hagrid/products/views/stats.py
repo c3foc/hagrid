@@ -71,7 +71,6 @@ def operator_stats(request):
 
         availabilities.append({"variation": str(variation), "timeline": timeline})
 
-
     return render(
         request,
         "stats.html",

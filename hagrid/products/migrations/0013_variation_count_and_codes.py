@@ -6,7 +6,6 @@ import hagrid.products.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("products", "0012_productgroup_remove_product_previous_events_and_more"),
     ]

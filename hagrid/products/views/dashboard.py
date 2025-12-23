@@ -53,11 +53,10 @@ def dashboard(request):
         return {
             "product": product,
             "sizegroups": [
-                _transform_sizegroup(sizegroup, variations)
-                for sizegroup in sizegroups
+                _transform_sizegroup(sizegroup, variations) for sizegroup in sizegroups
             ],
             "image": random.choice(images) if images else None,
-            "image_count_more": len(images)  - 1,
+            "image_count_more": len(images) - 1,
         }
 
     def _transform_product_group(product_group):
@@ -87,7 +86,6 @@ def dashboard(request):
     }
 
     return render(request, "dashboard.html", context)
-
 
 
 @cache_page(10)

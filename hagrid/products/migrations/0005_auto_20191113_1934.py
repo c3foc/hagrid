@@ -5,25 +5,24 @@ import positions.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0004_auto_20191113_1926'),
+        ("products", "0004_auto_20191113_1926"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='product',
-            name='position',
+            model_name="product",
+            name="position",
             field=positions.fields.PositionField(default=None),
         ),
         migrations.AlterField(
-            model_name='size',
-            name='position',
+            model_name="size",
+            name="position",
             field=positions.fields.PositionField(default=None),
         ),
         migrations.AlterField(
-            model_name='sizegroup',
-            name='position',
+            model_name="sizegroup",
+            name="position",
             field=positions.fields.PositionField(default=None),
         ),
     ]

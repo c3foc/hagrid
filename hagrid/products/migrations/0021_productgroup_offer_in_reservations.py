@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0020_variationcountaccesscode_name'),
+        ("products", "0020_variationcountaccesscode_name"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='productgroup',
-            name='offer_in_reservations',
-            field=models.BooleanField(default=False, help_text='Offer products of this group in reservations'),
+            model_name="productgroup",
+            name="offer_in_reservations",
+            field=models.BooleanField(
+                default=False, help_text="Offer products of this group in reservations"
+            ),
         ),
     ]

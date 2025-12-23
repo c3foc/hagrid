@@ -224,6 +224,7 @@ def variation_availability_config(request, product_id=None):
     context = {"product_groups": product_groups}
     return render(request, "variation_availability_config.html", context)
 
+
 class VariationsCountForm(forms.Form):
     def __init__(self, variations, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -232,9 +233,11 @@ class VariationsCountForm(forms.Form):
             self.fields[key] = forms.IntegerField(
                 required=False,
                 initial=None,
-                widget=forms.NumberInput(attrs={
-                    'placeholder': variation.count or '',
-                }),
+                widget=forms.NumberInput(
+                    attrs={
+                        "placeholder": variation.count or "",
+                    }
+                ),
             )
 
     def field_for_rendering_by_variation(self, variation):
@@ -299,7 +302,11 @@ def variation_count_config(request, product_id=None):
                 items_changed += 1
 
         messages.info(request, f"Updated {items_changed} item counts.")
-        return redirect('variation_count_config', product_id) if product_id else redirect('variation_count_config')
+        return (
+            redirect("variation_count_config", product_id)
+            if product_id
+            else redirect("variation_count_config")
+        )
 
     product_groups = [
         {
@@ -360,4 +367,3 @@ def variation_availability_event_list(request):
         "variation_availability_event_list.html",
         {"change_events": VariationAvailabilityEvent.objects.order_by("-datetime")},
     )
-

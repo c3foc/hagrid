@@ -12,12 +12,19 @@ class EventTime:
         # TODO: make this more resilient against partial configuration or misconfiguration
         statuses = OpenStatus.objects.order_by("datetime").all()
 
-        self.status_change_timestamps = numpy.array([int(status.datetime.timestamp()) for status in statuses])
-        self.open_state_by_index = numpy.array([1 if status.mode == OpenStatus.Mode.OPEN else 0 for status in statuses])
+        self.status_change_timestamps = numpy.array(
+            [int(status.datetime.timestamp()) for status in statuses]
+        )
+        self.open_state_by_index = numpy.array(
+            [1 if status.mode == OpenStatus.Mode.OPEN else 0 for status in statuses]
+        )
 
         # time of each timestamp since the previous
         if len(self.status_change_timestamps):
-            diffs = numpy.diff(self.status_change_timestamps, prepend=[self.status_change_timestamps[0]])
+            diffs = numpy.diff(
+                self.status_change_timestamps,
+                prepend=[self.status_change_timestamps[0]],
+            )
         else:
             diffs = numpy.array([])
 
@@ -27,9 +34,15 @@ class EventTime:
         # cumulative sum adds to the time since the start of the event for open timesapns
         self.start_event_time_by_index = numpy.cumsum(opendiffs)
 
-        self.downtimes = self.start_event_time_by_index[self.open_state_by_index.astype(numpy.bool)]
+        self.downtimes = self.start_event_time_by_index[
+            self.open_state_by_index.astype(numpy.bool)
+        ]
 
-        self.total_event_duration = float(self.start_event_time_by_index[-1]) if len(self.start_event_time_by_index) else 0
+        self.total_event_duration = (
+            float(self.start_event_time_by_index[-1])
+            if len(self.start_event_time_by_index)
+            else 0
+        )
 
     def datetime_to_event_time(self, dt: datetime | int | float) -> float:
         if isinstance(dt, datetime):
@@ -57,6 +70,7 @@ class EventTime:
         # convert from numpy.float
         return float(event_time)
 
+
 class OpenStatus(models.Model):
     class Mode(models.TextChoices):
         CLOSED = "closed", _("Closed")
@@ -74,15 +88,11 @@ class OpenStatus(models.Model):
         null=True,
         default=None,
     )
-    mode = models.CharField(
-        max_length=7,
-        choices=Mode.choices,
-        default=Mode.CLOSED
-    )
+    mode = models.CharField(max_length=7, choices=Mode.choices, default=Mode.CLOSED)
 
     class Meta:
         verbose_name_plural = "open statuses"
-        ordering = ['datetime']
+        ordering = ["datetime"]
 
     def __str__(self):
         date = self.datetime.strftime("%Y-%m-%d %H:%M:%S")

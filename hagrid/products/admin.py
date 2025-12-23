@@ -22,9 +22,18 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ["price", "position", "product_group", "crate_size"]
     list_filter = ["product_group"]
 
+
 @admin.register(Variation)
 class VariationAdmin(admin.ModelAdmin):
-    list_display = ["__str__", "product", "size", "initial_amount", "count", "availability", "crate_size"]
+    list_display = [
+        "__str__",
+        "product",
+        "size",
+        "initial_amount",
+        "count",
+        "availability",
+        "crate_size",
+    ]
     list_editable = ["crate_size"]
     list_filter = ["product__product_group", "product", "size__group", "size"]
 
@@ -34,12 +43,20 @@ class SizeAdmin(admin.ModelAdmin):
     list_display = ["name", "group", "position"]
     list_filter = ["group"]
 
+
 @admin.register(VariationCountEvent)
 class VariationCountEventAdmin(admin.ModelAdmin):
     list_display = ["datetime", "variation", "name", "comment", "count"]
-    list_filter = ["variation__product", "variation__size__name", "variation__size__group"]
+    list_filter = [
+        "variation__product",
+        "variation__size__name",
+        "variation__size__group",
+    ]
 
-    actions = ('export_csv', 'clear_name',)
+    actions = (
+        "export_csv",
+        "clear_name",
+    )
 
     def clear_name(self, request, queryset):
         queryset.update(name="")
@@ -52,35 +69,38 @@ class VariationCountEventAdmin(admin.ModelAdmin):
 
         with io.StringIO() as buffer:
             writer = csv.writer(buffer)
-            writer.writerow([
-                'datetime',
-                'product',
-                'sizegroup'
-                'size',
-                'comment',
-                'count',
-            ])
+            writer.writerow(
+                [
+                    "datetime",
+                    "product",
+                    "sizegroupsize",
+                    "comment",
+                    "count",
+                ]
+            )
             for event in events:
                 variation = event.variation
-                writer.writerow([
-                    event.datetime.strftime('%Y-%m-%d %H:%M:%S'),
-                    str(variation.product),
-                    str(variation.size.group),
-                    str(variation.size.name),
-                    str(event.comment),
-                    str(event.count),
-                ])
+                writer.writerow(
+                    [
+                        event.datetime.strftime("%Y-%m-%d %H:%M:%S"),
+                        str(variation.product),
+                        str(variation.size.group),
+                        str(variation.size.name),
+                        str(event.comment),
+                        str(event.count),
+                    ]
+                )
             data = buffer.getvalue()
 
-
-        response = HttpResponse(data, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+        response = HttpResponse(data, content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="{}"'.format(filename)
         return response
+
 
 @admin.register(VariationCountAccessCode)
 class VariationCountAccessCodeAdmin(admin.ModelAdmin):
     list_display = ("code", "name", "description", "as_queue", "code_actions")
-    actions = ('make_pdf',)
+    actions = ("make_pdf",)
 
     def description(self, obj):
         return str(obj)  # here you can do whatever you want
@@ -105,7 +125,9 @@ class VariationCountAccessCodeAdmin(admin.ModelAdmin):
         ]
 
     def process_pdf(self, request, object_id):
-        return self.make_pdf(request, VariationCountAccessCode.objects.filter(pk=object_id))
+        return self.make_pdf(
+            request, VariationCountAccessCode.objects.filter(pk=object_id)
+        )
 
     def make_pdf(self, request, queryset):
         access_codes = queryset.all()
@@ -116,6 +138,6 @@ class VariationCountAccessCodeAdmin(admin.ModelAdmin):
             filename = f"c3foc-{len(access_codes)}-counting-codes.pdf"
         data = generate_access_code_pdf(request, access_codes, filename)
 
-        response = HttpResponse(data, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="{}"'.format(filename)
+        response = HttpResponse(data, content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="{}"'.format(filename)
         return response

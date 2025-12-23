@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0006_remove_availabilityevent_user'),
+        ("products", "0006_remove_availabilityevent_user"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='AvailabilityEvent',
-            new_name='VariationAvailabilityEvent',
+            old_name="AvailabilityEvent",
+            new_name="VariationAvailabilityEvent",
         ),
     ]

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("products", "0010_alter_product_id_alter_size_id_alter_sizegroup_id_and_more"),
     ]

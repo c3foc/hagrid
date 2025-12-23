@@ -284,7 +284,9 @@ class ReservationPartDetailView(View):
             {
                 "variation_tables": variation_tables,
                 "part_form": ReservationPartTitleForm(instance=reservation_part),
-                "unoffered_product_groups": ProductGroup.objects.all().filter(offer_in_reservations=False),
+                "unoffered_product_groups": ProductGroup.objects.all().filter(
+                    offer_in_reservations=False
+                ),
             },
         )
 

@@ -6,7 +6,6 @@ import positions.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("products", "0011_product_alter_variation_product"),
     ]
@@ -34,7 +33,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("position", positions.fields.PositionField(default=-1)),
-                ("display_in_dashboard", models.BooleanField(help_text="Show the group in the dashboard", default=True)),
+                (
+                    "display_in_dashboard",
+                    models.BooleanField(
+                        help_text="Show the group in the dashboard", default=True
+                    ),
+                ),
             ],
             options={
                 "ordering": ["position"],

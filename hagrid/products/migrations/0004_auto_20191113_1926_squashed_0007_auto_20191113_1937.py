@@ -5,39 +5,43 @@ import positions.fields
 
 
 class Migration(migrations.Migration):
-
-    replaces = [('products', '0004_auto_20191113_1926'), ('products', '0005_auto_20191113_1934'), ('products', '0006_auto_20191113_1934'), ('products', '0007_auto_20191113_1937')]
+    replaces = [
+        ("products", "0004_auto_20191113_1926"),
+        ("products", "0005_auto_20191113_1934"),
+        ("products", "0006_auto_20191113_1934"),
+        ("products", "0007_auto_20191113_1937"),
+    ]
 
     dependencies = [
-        ('products', '0003_storesettings_dashboard_text'),
+        ("products", "0003_storesettings_dashboard_text"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='product',
-            options={'ordering': ['position']},
+            name="product",
+            options={"ordering": ["position"]},
         ),
         migrations.AlterModelOptions(
-            name='size',
-            options={'ordering': ['position']},
+            name="size",
+            options={"ordering": ["position"]},
         ),
         migrations.AlterModelOptions(
-            name='sizegroup',
-            options={'ordering': ['position']},
+            name="sizegroup",
+            options={"ordering": ["position"]},
         ),
         migrations.AddField(
-            model_name='product',
-            name='position',
+            model_name="product",
+            name="position",
             field=positions.fields.PositionField(default=None),
         ),
         migrations.AddField(
-            model_name='size',
-            name='position',
+            model_name="size",
+            name="position",
             field=positions.fields.PositionField(default=None),
         ),
         migrations.AddField(
-            model_name='sizegroup',
-            name='position',
+            model_name="sizegroup",
+            name="position",
             field=positions.fields.PositionField(default=-1),
         ),
     ]

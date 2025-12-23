@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("products", "0019_variation_count_disabled_reason_and_more"),
         ("gallery", "0004_galleryimage_alt_text_alter_galleryimage_id"),
