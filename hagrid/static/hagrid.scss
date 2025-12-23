@@ -1,42 +1,43 @@
 // theme colors
-$primary: #FF5053;
-$highlight: #F3F2FF;
-$accent1: #B2AAFF;
-$accent2: #6A5FDB;
-$accent3: #261A66;
-$accent4: #29114C;
-$accent5: #190B2F;
-$background: #0F000A;
+$primary: #9673ff;
+$highlight: #00ff00;
+$accent1: #faf5f5;
+$accent2: #7952fe;
+$accent3: #b69dfe;
+$accent4: #d4c4fe;
+$accent5: #141414;
+$background: #141414;
 
-$green: #5FDD6E;
-$yellow: #FFEB50;
-$red: $primary;
+$green: #00ff00;
+$yellow: #FFFF00;
+$red: #ff3719;
 
 $gridSize: 48px;
-$gridBorderWidth: 2px;
-$gridBorderColor: $accent4;
+$gridBorderWidth: 1px;
+$gridBorderColor: $accent1;
 $gridBorder: $gridBorderWidth solid $gridBorderColor;
 
 // $textColor: $highlight;
 
 @font-face {
-    font-family: 'pilowlava';
-    src: URL(static('/fonts/pilowlava/Fonts/webfonts/Pilowlava-Regular.woff2')) format('woff2');
+    font-family: 'Kario';
+    font-weight: 880;
+    src: URL(static('/fonts/Kario/Kario39C3VarWEB-Roman.woff2')) format('woff2');
 }
 
 @font-face {
-    font-family: 'spacegrotesk';
-    src: URL(static('/fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-Regular.woff2')) format('woff2');
+    font-family: 'Officer';
+    src: URL(static('/fonts/Officer/OfficerSansWeb-Regular.woff2')) format('woff2');
 }
 @font-face {
-    font-family: 'spacegrotesk';
+    font-family: 'Officer';
     font-weight: 500;
-    src: URL(static('/fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-SemiBold.woff2')) format('woff2');
+    src: URL(static('/fonts/Officer/OfficerSansCondWeb-Bold.woff2')) format('woff2');
 }
 @font-face {
-    font-family: 'spacegrotesk';
+    font-family: 'Officer';
     font-weight: bold;
-    src: URL(static('/fonts/space-grotesk-1.1.4/webfont/SpaceGrotesk-Bold.woff2')) format('woff2');
+    src: URL(static('/fonts/Officer/OfficerSansWeb-Bold.woff2')) format('woff2');
 }
 
 @font-face {
@@ -49,25 +50,9 @@ $gridBorder: $gridBorderWidth solid $gridBorderColor;
     src: URL(static('/fonts/space-mono/SpaceMono-Bold.ttf')) format('truetype');
 }
 
-
-@font-face {
-    font-family: 'uncut-sans';
-    src: URL(static('/fonts/uncut-sans/Webfonts/UncutSans-Regular.woff2')) format('woff2');
-}
-@font-face {
-    font-family: 'uncut-sans';
-    font-weight: bold;
-    src: URL(static('/fonts/uncut-sans/Webfonts/UncutSans-Bold.woff2')) format('woff2');
-}
-@font-face {
-    font-family: 'uncut-sans';
-    font-weight: 500;
-    src: URL(static('/fonts/uncut-sans/Webfonts/UncutSans-Semibold.woff2')) format('woff2');
-}
-
-$fontTitle: "Pilowlava", sans-serif;
-$fontH1: "Space Grotesk", "spacegrotesk", sans-serif;
-$fontBase: "Uncut Sans", "uncut-sans", $fontH1;
+$fontTitle: "Kario", sans-serif;
+$fontH1: "Kario", sans-serif;
+$fontBase: "Officer";
 $fontMono: "Space Mono", "space-mono", monospace;
 
 body {
@@ -90,7 +75,7 @@ body {
 }
 
 a {
-  color: $highlight;
+  color: $accent4;
   &:hover {
     color: $accent2;
   }
@@ -102,7 +87,8 @@ h1.title {
   margin-block-start: 1em;
   font-size: 4rem;
   text-align: center;
-  padding-inline: 1rem;
+  text-transform: uppercase;
+
 }
 
 h1 {
@@ -114,13 +100,14 @@ h1 {
 }
 
 h2 {
-  font-family: $fontH1;
-  color: $highlight;
+  font-family: $fontBase;
+  color: $accent1;
   margin-block-start: 1em;
 }
 
 h3 {
   font-weight: 500;
+  color: $accent1;
   font-family: $fontBase;
   margin-block-start: 1em;
 }
@@ -142,7 +129,7 @@ main.container {
 
   img {
     width: 100%;
-    max-width: 40ch;
+    max-width: 80ch;
   }
 }
 
@@ -263,7 +250,7 @@ main.container {
     align-items: center;
 
     h2 {
-      color: $primary;
+      color: $accent1;
       margin: 0;
       margin-right: auto;
     }
@@ -285,14 +272,6 @@ main.container {
       opacity: 1;
     }
 
-    .product-price {
-      font-family: $fontMono;
-      font-size: 1.2rem;
-      position: relative;
-      top: 4px; // align with h2, hacky but works
-      margin-left: 0.5em;
-      color: $accent2;
-    }
     .product-image-icon {
       display: none;
     }
@@ -303,7 +282,7 @@ main.container {
     grid-column: -6 / -1;
     grid-row: 1 / -1;
     position: relative;
-    background: $background URL(static('/tshirt-large.svg')) repeat center center;
+    background: $background;
     display: flex;
     align-items: stretch;
     justify-content: center;
@@ -362,7 +341,7 @@ main.container {
       align-items: center;
       padding-inline: 1rem;
       font-size: 1.2rem;
-      color: $highlight;
+      color: $accent1;
       margin: 0;
     }
   }
@@ -387,7 +366,7 @@ main.container {
   }
 
   th:first-child {
-    color: $highlight;
+    color: $accent1;
     font-weight: bold;
     font-family: $fontBase;
     font-size: 1.2rem;
@@ -415,7 +394,7 @@ main.container {
 
 dl.legend {
   font-family: $fontMono;
-  color: $highlight;
+  color: $accent1;
   padding: 1rem;
   margin-block: 1rem;
   text-align: center;
@@ -780,15 +759,15 @@ td .count-config-field {
 
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   align-tracks: stretch;
 
   .gallery-item {
+    max-width: 400px;
     break-inside: avoid;
 
     img {
       width: 100%;
-      max-width: 100%;
       border-radius: 0.5rem;
     }
   }
@@ -809,7 +788,6 @@ td .count-config-field {
     min-height: $gridSize * 2;
 
     > .product-name {
-        padding-inline: 0.5rem;
       grid-column-end: -1;
     }
 
@@ -828,7 +806,6 @@ td .count-config-field {
 
       > h3 {
         grid-column: span 2;
-        padding-inline: 0.5rem;
       }
       .product-availability-tags {
         grid-column-start: 3;
@@ -855,13 +832,7 @@ td .count-config-field {
 
   .dashboard-row {
     flex-direction: column;
-    gap: 2rem;
-    margin-bottom: 4rem;
-  }
-
-  .open-status {
-    marign-block: 4rem;
-    margin-inline: auto;
+    margin-bottom: 8rem;
   }
 }
 
