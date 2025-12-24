@@ -14,7 +14,7 @@ class GalleryImage(models.Model):
     sizegroup = models.ForeignKey(
         SizeGroup, blank=True, null=True, on_delete=models.SET_NULL
     )
-    title = models.CharField(max_length=100, blank=True)
+    title = models.CharField(max_length=200, blank=True)
     caption = models.TextField(blank=True)
     alt_text = models.TextField(blank=True)
 

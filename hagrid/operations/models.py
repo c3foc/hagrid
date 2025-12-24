@@ -83,7 +83,7 @@ class OpenStatus(models.Model):
     )
     public_info = models.CharField(
         help_text="shown on dashboard",
-        max_length=100,
+        max_length=1000,
         blank=True,
         null=True,
         default=None,
