@@ -66,7 +66,7 @@ class VariationCountCommonForm(forms.Form):
 def variation_count(request, code, variation_id=None):
     if not StoreSettings.objects.first().counting_enabled:
         messages.add_message(
-            self.request, messages.ERROR, "We are not counting items at the moment."
+            request, messages.ERROR, "We are not counting items at the moment."
         )
         return redirect("dashboard")
 
