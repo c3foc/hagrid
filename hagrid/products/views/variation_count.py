@@ -18,11 +18,15 @@ from ..models import (
     StoreSettings,
     Variation,
     VariationCountAccessCode,
-    VariationCountEvent,
+    VariationCountEvent, VariationAvailabilityEvent,
 )
 
 
 class VariationCountForm(forms.ModelForm):
+    availability = forms.ChoiceField(
+        choices=Variation.AVAILABILITY_STATES,
+    )
+
     def __init__(self, *args, count_required=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["count"].widget = forms.NumberInput()
@@ -150,6 +154,9 @@ def variation_count(request, code, variation_id=None):
                 request.POST or None,
                 prefix="variation_{}".format(variation.id),
                 count_required=bool(variation_id),
+                initial={
+                    "availability": variation.availability,
+                }
             ),
         }
         for variation in variations
@@ -182,9 +189,9 @@ def variation_count(request, code, variation_id=None):
                 common_form.cleaned_data["action"]
                 variation.count_disabled_reason = common_form.cleaned_data["action"]
                 if variation.count_disabled_reason in (
-                    "cannot_find",
-                    "something_wrong",
-                    "other",
+                        "cannot_find",
+                        "something_wrong",
+                        "other",
                 ):
                     # let's skip this for 15 minutes
                     variation.count_disabled_until = now + timedelta(minutes=15)
@@ -207,6 +214,8 @@ def variation_count(request, code, variation_id=None):
                 form = item["form"]
                 variation = item["variation"]
                 count = form.cleaned_data["count"]
+                old_availability = variation.availability
+                new_availability = form.cleaned_data["availability"]
                 if count is not None:
                     variation.count = count
                     variation.count_reserved_until = None
@@ -224,7 +233,14 @@ def variation_count(request, code, variation_id=None):
                         comment=common_form.cleaned_data["comment"],
                         name=common_form.cleaned_data["name"],
                     ).save()
-
+                if new_availability != old_availability:
+                    variation.availability = new_availability
+                    variation.save()
+                    VariationAvailabilityEvent(
+                        old_state=old_availability,
+                        new_state=new_availability,
+                        variation=variation,
+                    ).save()
             if access_code.as_queue:
                 messages.add_message(
                     request,

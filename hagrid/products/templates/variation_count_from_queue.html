@@ -50,6 +50,16 @@
                 <input type="number" name="{{ form.count.html_name }}">
             </span>
 
+            <b>Old availability</b>
+            <span class="count-table-count">
+                {{ variation.availability }}
+            </span>
+
+            <b>New availability</b>
+            <span class="count-table-count">
+                {{ form.availability }}
+            </span>
+
             {{ common_form.name.label }}
             {{ common_form.name }}
 

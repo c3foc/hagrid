@@ -134,7 +134,7 @@ class Variation(models.Model):
     STATE_FEW_AVAILABLE = "few available"
     STATE_SOLD_OUT = "sold out"
     AVAILABILITY_STATES = [
-        (STATE_MANY_AVAILABLE, "many available"),
+        (STATE_MANY_AVAILABLE, "available"),
         (STATE_FEW_AVAILABLE, "few available"),
         (STATE_SOLD_OUT, "sold out"),
     ]
