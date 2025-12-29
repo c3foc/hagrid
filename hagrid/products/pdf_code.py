@@ -115,7 +115,10 @@ def generate_access_code_pdf(request, access_codes, filename: str):
 
     # Render QR Code next to the comment
     for access_code in access_codes:
-        url = request.build_absolute_uri(access_code.get_absolute_url())
+        url = "{}{}".format(
+            settings.SITE_URL,
+            access_code.get_absolute_url()
+        )
         qr_image = generate_qr_code(url)
         qr_code_size = 50 * mm
         if doc.y < qr_code_size + doc.mb:
