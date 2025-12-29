@@ -238,6 +238,12 @@ class Variation(models.Model):
             scores["outdated_count"] = 0.5 * math.pow(count_age / 3600 / 4.0, 0.5)
             info["count_age"] = count_age
 
+            # Penalize recently counted items to push them to the end of the queue
+            # Items counted within the last 4 hours get a negative score that fades over time
+            if count_age < 4 * 3600:
+                recently_counted_penalty = -1.0 * (1 - count_age / (4 * 3600))
+                scores["recently_counted"] = recently_counted_penalty
+
         return {
             "scores": scores,
             "info": info,
