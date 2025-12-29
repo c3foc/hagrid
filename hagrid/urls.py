@@ -29,6 +29,7 @@ def p(pathname, fn):
 urlpatterns = [
     p("", views.dashboard),
     p("table", views.dashboard_table),
+    p("infobeamer", views.infobeamer),
     p("operator/", views.products_config_overview),
     p("operator/availability/", views.variation_availability_config),
     p("operator/availability/<int:product_id>/", views.variation_availability_config),

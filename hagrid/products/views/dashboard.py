@@ -9,6 +9,7 @@ from hagrid.operations.models import OpenStatus
 from hagrid.gallery.models import GalleryImage
 
 from ..models import (
+    InfoBeamerSettings,
     Product,
     ProductGroup,
     Size,
@@ -112,3 +113,20 @@ def dashboard_table(request):
     }
 
     return render(request, "dashboard_table.html", context)
+
+
+@cache_page(10)
+@require_GET
+def infobeamer(request):
+    """
+    Display the infobeamer page - a full-screen display suitable for big screens.
+    Shows HTML content from InfoBeamerSettings.
+    """
+    settings = InfoBeamerSettings.objects.first()
+    html_content = settings.html_content if settings else ""
+
+    context = {
+        "html_content": html_content,
+    }
+
+    return render(request, "infobeamer.html", context)

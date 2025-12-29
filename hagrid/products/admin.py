@@ -10,7 +10,40 @@ from hagrid.products.pdf_code import generate_access_code_pdf
 
 from .models import *
 
-admin.site.register(StoreSettings)
+@admin.register(StoreSettings)
+class StoreSettingsAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+        from django.shortcuts import redirect
+        from django.urls import reverse
+        obj = StoreSettings.objects.first()
+        if obj:
+            return redirect(reverse('admin:products_storesettings_change', args=[obj.pk]))
+        return super().changelist_view(request, extra_context)
+
+
+@admin.register(InfoBeamerSettings)
+class InfoBeamerSettingsAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+        from django.shortcuts import redirect
+        from django.urls import reverse
+        obj = InfoBeamerSettings.objects.first()
+        if obj:
+            return redirect(reverse('admin:products_infobeamersettings_change', args=[obj.pk]))
+        return super().changelist_view(request, extra_context)
+
+
 admin.site.register(SizeGroup)
 admin.site.register(VariationAvailabilityEvent)
 admin.site.register(ProductGroup)

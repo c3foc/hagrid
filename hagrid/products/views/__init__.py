@@ -5,7 +5,7 @@ from .config import (
     variation_config,
     variation_count_config,
 )
-from .dashboard import dashboard_table, dashboard
+from .dashboard import dashboard_table, dashboard, infobeamer
 from .variation_count import (
     variation_count_overview,
     variation_count_success,

@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <title>InfoBeamer - c3foc</title>
+    <link href="{% static "/bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+
+    {% load compress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "/hagrid.scss" %}" />
+    {% endcompress %}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .infobeamer-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .infobeamer-content > * {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="infobeamer-content">
+        {% if html_content %}
+            {{ html_content|safe }}
+        {% else %}
+            <div class="text-center">
+                <h1>InfoBeamer</h1>
+                <p>No content configured. Please add HTML content in the admin panel.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+

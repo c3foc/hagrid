@@ -14,11 +14,16 @@
             <p>
                 <a class="btn btn-secondary" href="{% url 'admin:products_storesettings_changelist' %}1/change/">Store
                     Settings</a>
+                <a class="btn btn-secondary" href="{% url 'admin:products_infobeamersettings_changelist' %}1/change/">InfoBeamer
+                    Settings</a>
                 <a class="btn btn-secondary" href="{% url 'admin:products_productgroup_changelist' %}">Product
                     Groups</a>
                 <a class="btn btn-secondary" href="{% url 'admin:products_product_changelist' %}">Products</a>
                 <a class="btn btn-secondary" href="{% url 'admin:products_sizegroup_changelist' %}">Sizegroups</a>
                 <a class="btn btn-secondary" href="{% url 'admin:products_size_changelist' %}">Sizes</a>
+            </p>
+            <p>
+                <a class="btn btn-primary" href="{% url 'infobeamer' %}" target="_blank">View InfoBeamer</a>
             </p>
             <p>
                 <a class="btn btn-primary" href="{% url 'admin:index' %}">All models</a>

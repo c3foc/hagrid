@@ -59,6 +59,28 @@ class StoreSettings(models.Model):
         pass
 
 
+class InfoBeamerSettings(models.Model):
+    html_content = models.TextField(
+        help_text="HTML that will be rendered on the infobeamer page (full-screen display)",
+        blank=True,
+        default="",
+    )
+
+    def __str__(self):
+        return "InfoBeamer Settings"
+
+    class Meta:
+        verbose_name = "InfoBeamer Settings"
+        verbose_name_plural = "InfoBeamer Settings"
+
+    def save(self, *args, **kwargs):
+        self.id = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+
 class ProductGroup(models.Model):
     name = models.CharField(max_length=30, unique=True)
     description = models.TextField(
