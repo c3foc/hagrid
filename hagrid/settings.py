@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "hagrid.gallery",
     "hagrid.api",
     "hagrid.operations",
+    "hagrid.staticpages"
 ]
 
 LOGIN_URL = "admin:login"
@@ -100,6 +101,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "hagrid.products.context.contextprocessor",
+                "hagrid.staticpages.context.context_processor",
             ],
         },
     },

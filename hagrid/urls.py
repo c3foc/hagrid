@@ -47,4 +47,5 @@ urlpatterns = [
     path("reservations/", include("hagrid.reservations.urls")),
     path("gallery/", include("hagrid.gallery.urls")),
     path("api/", include("hagrid.api.urls")),
+    path("pages/", include("hagrid.staticpages.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

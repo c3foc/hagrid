@@ -58,6 +58,11 @@
                         <a class="nav-link" href="{% url 'admin:login' %}?next=/">Login</a>
                     </li>
                 {% endif %}
+                {% for page in headerpages %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'staticpages' page.slug %}">{{page.title}}</a>
+                    </li>
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -82,7 +87,15 @@
 
     {% endblock %}
 </main>
-
+<footer class="footer p-5">
+    <div class="container">
+        <div class="row">
+            <ul>
+                {% for page in footerpages %}<li><a href="{% url 'staticpages' page.slug %}">{{page.title}}</a></li>{% endfor %}
+            </ul>
+        </div>
+    </div>
+</footer>
 {% block content2 %}
 {% endblock %}
 
