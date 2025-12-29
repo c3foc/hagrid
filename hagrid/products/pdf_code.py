@@ -1,5 +1,5 @@
 from reportlab.lib.units import mm
-from hagrid import settings
+from django.conf import settings
 from io import BytesIO
 
 from reportlab.pdfbase import pdfmetrics

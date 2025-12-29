@@ -1,5 +1,5 @@
 from django.core.mail import send_mail, mail_admins
-from hagrid import settings
+from django.conf import settings
 from django.urls import reverse
 from hagrid.reservations.models import Reservation
 

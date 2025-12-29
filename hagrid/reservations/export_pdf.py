@@ -2,7 +2,7 @@ from collections import Counter
 
 from django.urls import reverse
 from django.utils.text import slugify
-from hagrid import settings
+from django.conf import settings
 from io import BytesIO
 
 from reportlab.pdfbase import pdfmetrics
