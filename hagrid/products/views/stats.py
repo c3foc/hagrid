@@ -44,13 +44,20 @@ def operator_stats(request):
     INTERVAL = 300
     STEPS = math.ceil(event_time.total_event_duration / INTERVAL)
     stock_times = numpy.arange(STEPS) * INTERVAL
-    stock = get_stock_at(stock_times)
+    if len(stock_times) > 0:
+        stock = get_stock_at(stock_times)
+    else:
+        stock = numpy.array([])
 
     INTERVAL = 3600
     STEPS = math.ceil(event_time.total_event_duration / INTERVAL)
     rate_times = numpy.arange(STEPS) * INTERVAL
-    rate_stock = get_stock_at(rate_times)
-    rate = -numpy.diff(rate_stock, append=rate_stock[-1])
+    if len(rate_times) > 0:
+        rate_stock = get_stock_at(rate_times)
+        rate = -numpy.diff(rate_stock, append=rate_stock[-1])
+    else:
+        rate_stock = numpy.array([])
+        rate = numpy.array([])
 
     availabilities = []
     for i, variation in enumerate(Variation.objects.prefetch_related("events").all()):
