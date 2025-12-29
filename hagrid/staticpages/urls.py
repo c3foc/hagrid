@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import StaticPagesView
+from .views import StaticPageView
 
 urlpatterns = [
-    path('<slug:page_slug>/', StaticPagesView.as_view(), name='staticpages'),
+    path('<slug:page_slug>/', StaticPageView.as_view(), name='staticpages'),
 ]
