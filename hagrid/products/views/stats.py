@@ -41,16 +41,31 @@ def operator_stats(request):
     def get_stock_at(x):
         return sum(c * pow(x, i) for i, c in enumerate(coefficients))
 
+    # Calculate the derivative (rate of change) of the stock polynomial
+    # This gives us the sales rate directly
+    @numpy.vectorize
+    def get_sale_rate_at(x):
+        # Derivative of polynomial: d/dx (c0 + c1*x + c2*x^2) = c1 + 2*c2*x
+        return -sum(i * c * pow(x, i - 1) for i, c in enumerate(coefficients) if i > 0)
+
     INTERVAL = 300
     STEPS = math.ceil(event_time.total_event_duration / INTERVAL)
     stock_times = numpy.arange(STEPS) * INTERVAL
-    stock = get_stock_at(stock_times)
+    if len(stock_times) > 0:
+        stock = get_stock_at(stock_times)
+    else:
+        stock = numpy.array([])
 
     INTERVAL = 3600
     STEPS = math.ceil(event_time.total_event_duration / INTERVAL)
     rate_times = numpy.arange(STEPS) * INTERVAL
-    rate_stock = get_stock_at(rate_times)
-    rate = -numpy.diff(rate_stock, append=rate_stock[-1])
+    if len(rate_times) > 0:
+        # Use the derivative to get the instantaneous rate (items per second)
+        # Then convert to items per hour by multiplying by 3600
+        rate_per_second = get_sale_rate_at(rate_times)
+        rate = rate_per_second * 3600  # Convert to items per hour
+    else:
+        rate = numpy.array([])
 
     availabilities = []
     for i, variation in enumerate(Variation.objects.prefetch_related("events").all()):
