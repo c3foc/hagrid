@@ -101,6 +101,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "hagrid.products.context.contextprocessor",
+                "hagrid.staticpages.context.context_processor",
             ],
         },
     },

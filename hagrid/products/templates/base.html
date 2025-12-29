@@ -82,7 +82,13 @@
 
     {% endblock %}
 </main>
-
+<footer>
+    <li>
+        {% for page in footerpages %}
+            <li><a href="{% url 'staticpages' page.slug %}">{{page.title}}</a></li>
+        {% endfor %}
+    </ul>
+</footer>
 {% block content2 %}
 {% endblock %}
 
