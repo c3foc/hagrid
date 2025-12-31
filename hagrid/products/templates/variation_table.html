@@ -1,24 +1,24 @@
-<table class="table table-bordered table-sm table-hover table-striped">
-  <thead style="
-    position: sticky;
-    top: 56px;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-  " class="thead-dark">
-    <tr>
-      {% for sizename in table.header %}
-      <th class="text-center" scope="col"{% if forloop.first %} width="150rem"{% endif %}>{{ sizename }}</th>
-      {% endfor %}
-    </tr>
-  </thead>
-  <tbody class="table-hover">
-    {% for row in table.entries %}
-    <tr>
-      {% for html in row %}
-        {% if forloop.first %}<th scope="row">{% else %}<td>{% endif %}
-        {{ html|safe }}
-        {% if forloop.first %}</th>{% else %}</td>{% endif %}
-      {% endfor %}
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="overflow-auto">
+    <table class="hagrid-table">
+        <thead class="table-dark">
+        <tr>
+            {% for sizename in table.header %}
+                <th class="text-center" scope="col"{% if forloop.first %} width="150rem"{% endif %}>{{ sizename }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody class="table-hover">
+        {% for row in table.entries %}
+            <tr>
+                {% for html in row %}
+                    {% if forloop.first %}
+                        <th scope="row">{% else %}
+                        <td>{% endif %}
+                {{ html|safe }}
+                {% if forloop.first %}</th>{% else %}</td>{% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

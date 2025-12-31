@@ -46,7 +46,7 @@ Your reservation has been cancelled.
 {% else %}
 <div class="accordion">
   <div class="card">
-    <div class="card-header {% if reservation.state == reservation.STATE_UNAPPROVED %}font-weight-bold{% endif %}">
+    <div class="card-header {% if reservation.state == reservation.STATE_UNAPPROVED %}fw-bold{% endif %}">
       1. Application received
     </div>
     <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_UNAPPROVED %}show{% endif %}">
@@ -59,7 +59,7 @@ Your reservation has been cancelled.
     </div>
   </div>
   <div class="card">
-    <div class="card-header {% if reservation.state  == reservation.STATE_EDITABLE %}font-weight-bold{% endif %}">
+    <div class="card-header {% if reservation.state  == reservation.STATE_EDITABLE %}fw-bold{% endif %}">
       2. Edit Reservation
     </div>
     <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_EDITABLE %}show{% endif %}">
@@ -75,7 +75,7 @@ Your reservation has been cancelled.
     </div>
   </div>
   <div class="card">
-    <div class="card-header {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}font-weight-bold{% endif %}" id="headingOne">
+    <div class="card-header {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}fw-bold{% endif %}" id="headingOne">
       3. Wait for packing
     </div>
       <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}show{% endif %}">
@@ -88,7 +88,7 @@ Your reservation has been cancelled.
     </div>
   </div>
   <div class="card">
-    <div class="card-header {% if reservation.state == reservation.STATE_READY %}font-weight-bold{% endif %}" id="headingOne">
+    <div class="card-header {% if reservation.state == reservation.STATE_READY %}fw-bold{% endif %}" id="headingOne">
       4. Pay and pick up
     </div>
 	<div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_READY %}show{% endif %}">
@@ -101,7 +101,7 @@ Your reservation has been cancelled.
     </div>
   </div>
   <div class="card">
-    <div class="card-header {% if reservation.state == reservation.STATE_PICKED_UP %}font-weight-bold{% endif %}" id="headingOne">
+    <div class="card-header {% if reservation.state == reservation.STATE_PICKED_UP %}fw-bold{% endif %}" id="headingOne">
       5. Done
     </div>
 	<div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_PICKED_UP %}show{% endif %}">

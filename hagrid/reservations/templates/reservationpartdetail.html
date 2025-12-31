@@ -15,8 +15,16 @@
     </div>
   {% endfor %}
 
+    {% if unoffered_product_groups %}
+        Products of the following categories cannot be included in reservations:
+        {% for group in unoffered_product_groups %}
+        {{ group.name }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    {% endif %}
+
   {% for table in variation_tables %}
-  {% include "variation_table.html" with table=table %}
+      <h3>{{table.header.0}}</h3>
+      {% include "variation_table.html" with table=table %}
   {% endfor %}
   <input class="btn btn-lg btn-primary" type="submit" value="Save"/>
 </form>

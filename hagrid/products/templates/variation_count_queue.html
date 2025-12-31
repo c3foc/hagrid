@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% load product %}
+
+{% block content %}
+<article  style="max-width: 40rem;">
+    <h1>Stock counting queue</h1>
+
+    <h2>Are you ready?</h2>
+
+    <p>
+        There are {{ total_variations }} variations accessible to count from
+        this URL, and {{ high_prio_variations }} of them really need to be
+        counted right now.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Oh computer, what do you want me to count?</button>
+    </form>
+
+    <h2>How it works</h2>
+    {% include "count_queue_tutorial.html" %}
+</article>
+{% endblock %}

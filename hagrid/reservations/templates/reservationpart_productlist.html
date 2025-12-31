@@ -1,7 +1,7 @@
 {% load reservation %}
 
 <table class="table table-sm">
-  <caption class="sr-only">List of reservation part positions</caption>
+  <caption class="visually-hidden">List of reservation part positions</caption>
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -20,7 +20,7 @@
     <tr>
       <td></td>
       <td></td>
-      <td class="text-right font-weight-bold">{{ part.price|as_currency }}</td>
+      <td class="text-right fw-bold">{{ part.price|as_currency }}</td>
     </tr>
   </tbody>
 </table>

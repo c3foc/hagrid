@@ -5,15 +5,14 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('reservations', '0004_auto_20191113_2301'),
+        ("reservations", "0004_auto_20191113_2301"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='reservation',
-            name='action_secret',
+            model_name="reservation",
+            name="action_secret",
             field=models.UUIDField(default=uuid.uuid4),
         ),
     ]

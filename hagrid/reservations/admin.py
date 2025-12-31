@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 
 from hagrid.reservations.models import *

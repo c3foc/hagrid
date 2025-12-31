@@ -4,15 +4,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('reservations', '0005_add_action_secret'),
+        ("reservations", "0005_add_action_secret"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='reservation',
-            name='packing_mode',
-            field=models.CharField(choices=[('aggregated', 'Pack everything into one bix box.'), ('seperated parts', 'Pack every reservation part individually')], default='aggregated', max_length=20),
+            model_name="reservation",
+            name="packing_mode",
+            field=models.CharField(
+                choices=[
+                    ("aggregated", "Pack everything into one bix box."),
+                    ("seperated parts", "Pack every reservation part individually"),
+                ],
+                default="aggregated",
+                max_length=20,
+            ),
         ),
     ]

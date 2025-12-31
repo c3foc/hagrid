@@ -1,18 +1,32 @@
-<div class="fieldWrapper">
-  {{ field.errors }}
-  Availability:
-  <div>
-      {{ field.0.tag }}
-    <label class="btn btn-outline-success btn-availability" for="{{ field.0.id_for_label }}">
-      <span class="sr-only">{{ field.0.choice_label }}</span>
+{% load product %}
+
+{{ field.errors }}
+<span class="visually-hidden">Availability:</span>
+<div class="availability-switch">
+    {{ field.0.tag }}
+    <label class="green" for="{{ field.1.id_for_label }}">
+        {% if variation.count is not None and variation.computed_availability|availability_class != "green" %}!?{% endif %}
     </label>
-      {{ field.1.tag }}
-    <label class="btn btn-outline-warning btn-availability" for="{{ field.1.id_for_label }}">
-      <span class="sr-only">{{ field.1.choice_label }}</span>
+    {{ field.1.tag }}
+    <label class="yellow" for="{{ field.2.id_for_label }}">
+        {% if variation.count is not None and variation.computed_availability|availability_class != "yellow" %}!?{% endif %}
     </label>
-      {{ field.2.tag }}
-    <label class="btn btn-outline-danger btn-availability" for="{{ field.2.id_for_label }}">
-      <span class="sr-only">{{ field.2.choice_label }}</span>
+    {{ field.2.tag }}
+    <label class="red" for="{{ field.0.id_for_label }}">
+        {% if variation.count is not None and variation.computed_availability|availability_class != "red" %}!?{% endif %}
     </label>
-  </div>
+</div>
+
+<div class="availability-progress {{variation.computed_availability|availability_class}}">
+    {% if variation.count != None %}
+        <div class="fill"  style="width: {{variation.availability_progress}}"></div>
+    {% endif %}
+
+    <div class="count"{% if variation.counted_at %} title="Counted {{ variation.counted_at|timesince_short }}"{% endif %}>
+        {% with new=variation.counted_at|is_soon:-6 %}
+        {% if not new %}({% endif %}{% if variation.count != None %}{{ variation.count }}{% else %}?{% endif %}{% if not new %}){% endif %}
+    {% endwith %}
+    </div>
+
+    <div class="initial">{{ variation.initial_amount }}</div>
 </div>

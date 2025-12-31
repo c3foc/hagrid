@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Reservation statistics</h1>
+
+<h6>Number of Variations reserved in non-cancelled Reservations</h6>
+
+{% for table in reservation_tables %}
+{% include "variation_table.html" with table=table %}
+{% endfor %}
+
+{% endblock %}
+

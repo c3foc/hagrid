@@ -6,8 +6,12 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
-    replaces = [('products', '0001_initial'), ('products', '0002_remove_product_image'), ('products', '0003_auto_20190825_1812'), ('products', '0004_auto_20190828_1153')]
+    replaces = [
+        ("products", "0001_initial"),
+        ("products", "0002_remove_product_image"),
+        ("products", "0003_auto_20190825_1812"),
+        ("products", "0004_auto_20190828_1153"),
+    ]
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -15,51 +19,153 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30, unique=True)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30, unique=True)),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
             ],
         ),
         migrations.CreateModel(
-            name='Size',
+            name="Size",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
             ],
         ),
         migrations.CreateModel(
-            name='SizeGroup',
+            name="SizeGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Variation',
+            name="Variation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('initial_amount', models.IntegerField(default=100)),
-                ('availability', models.CharField(choices=[('available', 'many available'), ('few available', 'few available'), ('sold out', 'sold out')], default=('available', 'many available'), max_length=20)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.Product')),
-                ('size', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='variations', to='products.Size')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("initial_amount", models.IntegerField(default=100)),
+                (
+                    "availability",
+                    models.CharField(
+                        choices=[
+                            ("available", "many available"),
+                            ("few available", "few available"),
+                            ("sold out", "sold out"),
+                        ],
+                        default=("available", "many available"),
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="products.Product",
+                    ),
+                ),
+                (
+                    "size",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="variations",
+                        to="products.Size",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='size',
-            name='group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sizes', to='products.SizeGroup'),
+            model_name="size",
+            name="group",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sizes",
+                to="products.SizeGroup",
+            ),
         ),
         migrations.CreateModel(
-            name='AvailabilityEvent',
+            name="AvailabilityEvent",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('old_state', models.CharField(choices=[('available', 'many available'), ('few available', 'few available'), ('sold out', 'sold out')], max_length=20)),
-                ('new_state', models.CharField(choices=[('available', 'many available'), ('few available', 'few available'), ('sold out', 'sold out')], max_length=20)),
-                ('datetime', models.DateTimeField(auto_now=True)),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('variation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to='products.Variation')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "old_state",
+                    models.CharField(
+                        choices=[
+                            ("available", "many available"),
+                            ("few available", "few available"),
+                            ("sold out", "sold out"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "new_state",
+                    models.CharField(
+                        choices=[
+                            ("available", "many available"),
+                            ("few available", "few available"),
+                            ("sold out", "sold out"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("datetime", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "variation",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="events",
+                        to="products.Variation",
+                    ),
+                ),
             ],
         ),
     ]

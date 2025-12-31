@@ -1,0 +1,35 @@
+{% load product %}
+
+<h3>{{ table.product.name }}</h3>
+<div class="overflow-auto">
+    <table class="product-table {{ table.table_class }}">
+        <tbody>
+        {% for entry in table.entries %}
+            <tr>
+                <th rowspan="2" width="180">{{ entry.sizegroup.name }}</th>
+                {% for size in entry.sizes %}
+                    <th width="{{table.column_width}}">
+                        {{ size.size.name }}
+                        {% if size.variation %}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+                {% for _ in entry.fill %}
+                    <td width="{{table.column_width}}"></td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                {% for size in entry.sizes %}
+                    <td>
+                        {{ size.html|safe }}
+                    </td>
+                {% endfor %}
+                {% for _ in entry.fill %}
+                <td></td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
