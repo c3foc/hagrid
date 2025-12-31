@@ -1,38 +1,9 @@
+{{ form.product }}
+{{ form.size }}
 
+{{ form.errors }}
 
-<div hidden>
-  {{ form.product }}
-  {{ form.size }}
-</div>
-{{ form.non_field_errors }}
-
-{{ form.exist.errors }}
-{{ form.exist }}
-<label for="{{ form.exist.id_for_label }}" class="btn btn-light btn-sm mark-check">
-Toggle
-</label>
-<div id="{{ form.exist.id_for_label }}-open" class="remove-check">
-  <div class="fieldWrapper">
-      {{ form.initial_amount.errors }}
-      <label for="{{ form.initial_amount.id_for_label }}">Initial:
-      {{ form.initial_amount }}</label>
-  </div>
-  <div class="fieldWrapper">
-    {{ form.availability.errors }}
-    Availability:
-    <div>
-        {{ form.availability.0.tag }}
-      <label class="btn btn-outline-success btn-availability" for="{{ form.availability.0.id_for_label }}">
-        <span class="sr-only">{{ form.availability.0.choice_label }}</span>
-      </label>
-        {{ form.availability.1.tag }}
-      <label class="btn btn-outline-warning btn-availability" for="{{ form.availability.1.id_for_label }}">
-        <span class="sr-only">{{ form.availability.1.choice_label }}</span>
-      </label>
-        {{ form.availability.2.tag }}
-      <label class="btn btn-outline-danger btn-availability" for="{{ form.availability.2.id_for_label }}">
-        <span class="sr-only">{{ form.availability.2.choice_label }}</span>
-      </label>
-    </div>
-  </div>
+<div class="fieldWrapper">
+    <label for="{{ form.initial_amount.id_for_label }}" class="visually-hidden">Initial:</label>
+    {{ form.initial_amount }}
 </div>

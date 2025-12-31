@@ -1,0 +1,23 @@
+{% load product %}
+
+{% spaceless %}
+{% if open_status %}
+    <article class="open-status {% if open_status.open %}open{% elif open_status.stop and open_status.stop|is_soon:2 %}opening{% else %}closed{% endif %}">
+        {% if open_status.open  %}
+            <b>NOW OPEN</b>
+            {% if open_status.stop %}
+                <small>close at {{ open_status.stop|date:"H:i" }}</small>
+            {% endif %}
+            {% if open_status.open_info %}<small>{{ open_status.open_info }}</small>{% endif %}
+        {% elif open_status.stop and open_status.stop|is_soon:2  %}
+            <b>Open soon!</b>
+            <small>at {{ open_status.stop|date:"H:i" }}</small>
+            {% if open_status.open_info %}
+                <small>{{ open_status.open_info }}</small>
+            {% endif %}
+        {% else %}
+            <b>Now closed</b>
+        {% endif %}
+    </article>
+{% endif %}
+{% endspaceless %}

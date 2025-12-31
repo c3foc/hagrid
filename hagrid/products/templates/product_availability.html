@@ -1,0 +1,73 @@
+{% load reservation %}
+{% load static %}
+{% load product %}
+
+{% spaceless %}
+    {% for groupentry in product_availabilities %}
+        <h1 class="title">
+            {{ groupentry.product_group.name }}
+            <button class="btn btn-dark btn-hide-productgroup" type="button" data-bs-toggle="collapse" data-bs-target="#group-{{ groupentry.product_group.id }}"
+                    aria-expanded="false" aria-controls="collapseExample">
+                hide <span class="visually-hidden">this section</span>
+            </button>
+        </h1>
+
+        <div class="collapse show" id="group-{{ groupentry.product_group.id }}">
+
+            {% if groupentry.product_group.description %}
+                <div class="center">
+                    {{ groupentry.product_group.description | safe }}
+                </div>
+            {% endif %}
+
+            {% include 'dashboard_legend.html' %}
+
+            <div class="grid-sizer">
+                <div class="grid-background">
+                    {% for entry in groupentry.products %}
+                        <div class="grid-container product">
+                            <div class="product-name">
+                                <h2>{{ entry.product.name }}</h2>
+                                {% if entry.product.price %}
+                                    <span class="product-price">{{ entry.product.price|format_price }}</span>
+                                {% endif %}
+                                <a href="{% url 'gallery' entry.product.id %}" title="Show product images"
+                                   class="product-image-icon">
+                                    <img src="{% static '/image.svg' %}"/>
+                                </a>
+                            </div>
+                            {% if entry.image %}
+                                <a class="product-image" href="{% url 'gallery' entry.product.id %}">
+                                    <img src="{{ entry.image.image.url }}"/>
+                                    {% if entry.image_count_more %}
+                                        <div class="product-image-count-more">+{{ entry.image_count_more }}</div>
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <div class="product-image">
+                                    <img src="{% static '/tshirt-small.svg' %}"/>
+                                </div>
+                            {% endif %}
+
+                            <div class="product-availabilities">
+                                {% for group in entry.sizegroups %}
+                                    <h3>{{ group.sizegroup.name }}</h3>
+                                    <ul class="product-availability-tags">
+                                        {% for variation in group.variations %}
+                                            <li title="{{ entry.product.name }} in {{ group.sizegroup.name }} size {{ variation.size.name }} is {{ variation.availability }}">
+                                                <{% if variation.availability == "sold out" %}del{% else %}span{% endif %} class="product-availability-tag {{ variation.availability|availability_class }}{% if variation.size.name|length >= 4 or "/" in variation.size.name %} small{% endif %}">
+                                                    {{ variation.size.name }}
+                                                    <span class="visually-hidden">{{ variation.availability }}</span>
+                                                </{% if variation.availability == "sold out" %}del{% else %}span{% endif %}>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endspaceless %}

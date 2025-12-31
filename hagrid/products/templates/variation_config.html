@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Configure which variations exist{% if products|length == 1 %} for {{ products.0.name }}{% endif %}</h1>
+    <ul>
+        <li>Enter the initial amount for each item.</li>
+        <li>If you enter 0, the item will still exist.</li>
+        <li>Leave the box empty or clear it to delete an item.</li>
+        <li>Do not delete items during the event, as that will mess up statistics later.</li>
+    </ul>
+
+    <form method="post" autocomplete="off">
+      {% csrf_token %}
+      {% for table in product_tables %}
+      {% include "product_table.html" with table=table %}
+      {% endfor %}
+      <input class="btn btn-success" type="submit" value="Save variations"/>
+    </form>
+{% endblock %}

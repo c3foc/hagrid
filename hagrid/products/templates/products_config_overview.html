@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Operator view</h1>
+
+    <div class="row">
+
+        <div class="col-sm-6">
+            <h2>General config</h2>
+            <p>
+                Some models are currently only configurable using <a href="{% url 'admin:index' %}">Django Admin</a>.
+            </p>
+            <p>
+                <a class="btn btn-secondary" href="{% url 'admin:products_storesettings_changelist' %}1/change/">Store
+                    Settings</a>
+                <a class="btn btn-secondary" href="{% url 'admin:products_productgroup_changelist' %}">Product
+                    Groups</a>
+                <a class="btn btn-secondary" href="{% url 'admin:products_product_changelist' %}">Products</a>
+                <a class="btn btn-secondary" href="{% url 'admin:products_sizegroup_changelist' %}">Sizegroups</a>
+                <a class="btn btn-secondary" href="{% url 'admin:products_size_changelist' %}">Sizes</a>
+            </p>
+            <p>
+                <a class="btn btn-primary" href="{% url 'admin:index' %}">All models</a>
+            </p>
+
+            <h2>Item counting</h2>
+            <p>Keep the current item count with these features:</p>
+            <p>
+                <a class="btn btn-secondary" href="{% url 'variation_count_overview' %}">Count queue</a>
+                <a class="btn btn-secondary" href="{% url 'variation_count_log' %}">Count log</a>
+                <a class="btn btn-secondary" href="{% url 'admin:products_variationcountaccesscode_changelist' %}">Count
+                    codes</a>
+            </p>
+
+            <h2>All products</h2>
+            <p>These are the tools for managing <b>all products</b> at once. They are big and slow, the same tools are
+                available per product below.</p>
+            <p>
+                <a class="btn btn-secondary" href="{% url "variation_config" %}">All variations</a>
+                <a class="btn btn-secondary" href="{% url "variation_availability_config" %}">All availabilities</a>
+                <a class="btn btn-secondary" href="{% url "variation_count_config" %}">All counts</a>
+            </p>
+        </div>
+        <div class="col-sm-6">
+            <h2>Reservations</h2>
+            <p>Go here to manage reservations.</p>
+            <p>
+                <a class="btn btn-secondary" href="{% url "reservationadministration" %}">Reservations</a>
+            </p>
+
+            <h2>Statistics</h2>
+            <p>These tools give insights on fashion operations.</p>
+            <p>
+                <a class="btn btn-secondary" href="{% url 'variation_availability_event_list' %}">History of
+                    availabilities</a>
+                <a class="btn btn-secondary" href="{% url 'reservationstatistics' %}">Item reservations</a>
+                <a class="btn btn-secondary" href="{% url 'operator_stats' %}">Sale Rate</a>
+            </p>
+        </div>
+    </div>
+
+    {% for group in product_groups %}
+        {% if group.product_group %}
+            <h2>{{ group.product_group.name }}</h2>
+        {% else %}
+            <h2>Products without a group</h2>
+            <p>These products will not show up in the public dashboard.</p>
+        {% endif %}
+        <table class="hagrid-table">
+            {% for product in group.products %}
+                <tr>
+                    <th width="400">{{ product.name }}</th>
+                    <td width="200"><a href="{% url "variation_config" product.id %}">Variations</a></td>
+                    <td width="200"><a href="{% url "variation_availability_config" product.id %}">Availability</a></td>
+                    <td width="200"><a href="{% url "variation_count_config" product.id %}">Count</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endfor %}
+
+{% endblock %}

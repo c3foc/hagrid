@@ -1,95 +1,105 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en" data-bs-theme="light">
 <head>
-  <title>{% block thetitle %}{% endblock %}</title>
-  <link href="{% static "/bootstrap/css/bootstrap.css" %}" rel="stylesheet">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <style>
-body {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-}
-@media (min-width: 34em) {
-    .card-columns {
-        column-count: 1;
-    }
-}
-@media (min-width: 48em) {
-    .card-columns {
-        column-count: 2;
-    }
-}
-@media (min-width: 62em) {
-    .card-columns {
-        column-count: 3;
-    }
-}
-  </style>
-{% block head %}
+    <title>{% block thetitle %}c3foc{% endblock %}</title>
+    <link href="{% static "/bootstrap/css/bootstrap.css" %}" rel="stylesheet">
 
-{% endblock %}
+    {% load compress %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "/hagrid.scss" %}" />
+    {% endcompress %}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block head %}
+
+    {% endblock %}
 </head>
-<body> {#class="bg-dark text-white"> #}
+<body>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-md border-body" data-bs-theme="dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'dashboard' %}">c3foc</a>
+        <div class="d-flex flex-row">
+            <ul class="navbar-nav flex-row">
+                <li class="nav-item me-2"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="nav-item me-2"><a class="nav-link" href="{% url 'gallery' %}">Gallery</a></li>
+            </ul>
+            {% if request.user.is_superuser or store_settings.reservations_link_in_navbar or store_settings.login_link_in_navbar %}
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarAdditionalItems"
+                        aria-controls="navbarAdditionalItems" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            {% endif %}
+        </div>
+        <div class="collapse navbar-collapse" id="navbarAdditionalItems">
+            <ul class="navbar-nav">
+                {% if request.user.is_superuser or store_settings.reservations_link_in_navbar %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reservationapplication' %}">Apply for Reservation</a>
+                    </li>
+                {% endif %}
 
-  <a class="navbar-brand" href="/">c3foc</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbar">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'gallery' %}">Gallery</a>
-      </li>
-      {% if request.user.is_superuser or store_settings.reservations_link_in_navbar %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'reservationapplication' %}">Apply for Reservation</a>
-      </li>
-      {% endif %}
-      {% if request.user.is_superuser %}
-      <li class="nav-item">
-        <a class="nav-link font-weight-bold" href="{% url 'availabilityconfig' %}">Product Config</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link font-weight-bold" href="{% url 'reservationadministration' %}">Reservations</a>
-      </li>
-      {% elif store_settings.login_link_in_navbar %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'admin:login' %}?next=/">Login</a>
-      </li>
-      {% endif %}
-    </ul>
-  </div>
+            {% if request.user.is_superuser %}
+                </ul>
+                <ul class="navbar-nav right admin">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products_config_overview' %}">Operator view</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:logout' %}">Logout</a>
+                    </li>
+                {% elif store_settings.login_link_in_navbar %}
+                </ul>
+                <ul class="navbar-nav right">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:login' %}?next=/">Login</a>
+                    </li>
+                {% endif %}
+                {% for page in headerpages %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'staticpages' page.slug %}">{{page.title}}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </nav>
 
 <main role="main" class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-{% if messages %}
-  {% for message in messages %}
-  <div class="{{ message.tags }}" role="alert">
-    {{ message }}
-  </div>
-  {% endfor %}
-{% endif %}
+    {% block content %}
 
-{% block content %}
+        <div class="starter-template">
+            <h1>Bootstrap starter template</h1>
+            <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text
+                and a mostly barebones HTML document.</p>
+        </div>
 
-<div class="starter-template">
-    <h1>Bootstrap starter template</h1>
-    <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-  </div>
-
+    {% endblock %}
+</main>
+<footer class="footer p-5">
+    <div class="container">
+        <div class="row">
+            <ul>
+                {% for page in footerpages %}<li><a href="{% url 'staticpages' page.slug %}">{{page.title}}</a></li>{% endfor %}
+            </ul>
+        </div>
+    </div>
+</footer>
+{% block content2 %}
 {% endblock %}
 
-</main>
-<script src="{% static "/jquery/jquery-3.4.1.min.js" %}"></script>
-<script src="{% static "/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+<script type="text/javascript" src="{% static "/bootstrap/js/bootstrap.js" %}"></script>
+<script type="text/javascript" src="{% static "/hagrid.js" %}"></script>
 </body>
 </html>

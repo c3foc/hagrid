@@ -4,20 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('products', '0007_auto_20191208_1325'),
+        ("products", "0007_auto_20191208_1325"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='storesettings',
-            name='login_link_in_navbar',
-            field=models.BooleanField(default=True, help_text='Show the link to the login page in the navbar'),
+            model_name="storesettings",
+            name="login_link_in_navbar",
+            field=models.BooleanField(
+                default=True, help_text="Show the link to the login page in the navbar"
+            ),
         ),
         migrations.AlterField(
-            model_name='variation',
-            name='availability',
-            field=models.CharField(choices=[('available', 'many available'), ('few available', 'few available'), ('sold out', 'sold out')], default='available', max_length=20),
+            model_name="variation",
+            name="availability",
+            field=models.CharField(
+                choices=[
+                    ("available", "many available"),
+                    ("few available", "few available"),
+                    ("sold out", "sold out"),
+                ],
+                default="available",
+                max_length=20,
+            ),
         ),
     ]

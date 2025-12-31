@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% load product %}
+
+{% block content %}
+
+<h1>Count log</h1>
+
+<table class="hagrid-table priorities-table table-sticky-head">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Sizegroup</th>
+            <th>Size</th>
+            <th>Stock</th>
+            <th>Initial</th>
+            <th>Counted</th>
+            <th>By</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for item in items %}
+    <tr>
+        <td><a href="{% url 'variation_count_config' item.event.variation.product.id %}">{{ item.event.variation.product.name }}</a></td>
+        <td>{{ item.event.variation.size.group.name }}</td>
+        <td>{{ item.event.variation.size.name }}</td>
+        <td>
+            {% if item.event.variation.count == item.event.count %}
+                {{ item.event.count }}
+            {% else %}
+                <small title="Outdated, current count is {{ item.event.variation.count }}">({{ item.event.count }})</small>
+            {% endif %}
+        </td>
+        <td><small>{{ item.event.variation.initial_amount }}</small></td>
+        <td title="{{ item.event.datetime }}">{% if item.age %}{{ item.age|seconds_to_duration }}{% else %}now{% endif %}</td>
+        <td>{{ item.event.name }}</td>
+        <td>{{ item.event.comment }}</td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

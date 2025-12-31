@@ -5,6 +5,7 @@ register = template.Library()
 
 
 def as_currency(value):
-    return format_currency(value, 'EUR', locale='de_DE')
+    return format_currency(value, "EUR", locale="de_DE")
 
-register.filter('as_currency', as_currency)
+
+register.filter("as_currency", as_currency)

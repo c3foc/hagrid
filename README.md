@@ -45,3 +45,9 @@ Run `python3 manage.py collectstatic` to collect all static files into the `stat
 
 All configuration/management views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage.
 
+
+### License
+
+There is no statement yet on the license of this software, but please be aware that
+the fonts distributed alongside this software (in `hagrid/static/fonts`) are
+shipping with their own respective licenses.

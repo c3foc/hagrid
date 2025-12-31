@@ -5,22 +5,36 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('products', '0001_initial_squashed_0004_auto_20190828_1153'),
+        ("products", "0001_initial_squashed_0004_auto_20190828_1153"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GalleryImage',
+            name="GalleryImage",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='')),
-                ('title', models.CharField(max_length=100)),
-                ('caption', models.TextField()),
-                ('variation', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='products.Variation')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="")),
+                ("title", models.CharField(max_length=100)),
+                ("caption", models.TextField()),
+                (
+                    "variation",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="products.Variation",
+                    ),
+                ),
             ],
         ),
     ]

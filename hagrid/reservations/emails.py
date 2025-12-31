@@ -1,5 +1,5 @@
 from django.core.mail import send_mail, mail_admins
-from hagrid import settings
+from django.conf import settings
 from django.urls import reverse
 from hagrid.reservations.models import Reservation
 
@@ -19,7 +19,8 @@ Please wait until we approve your reservation.
 
 c3foc
             """.format(
-                settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
+                settings.SITE_URL
+                + reverse("reservationdetail", args=[reservation.secret])
             ),
             settings.EMAIL_FROM,
             [reservation.contact_mail],
@@ -54,7 +55,8 @@ your merchandise reservation can now be edited at
 
 c3foc
             """.format(
-                settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
+                settings.SITE_URL
+                + reverse("reservationdetail", args=[reservation.secret])
             ),
             settings.EMAIL_FROM,
             [reservation.contact_mail],
@@ -83,7 +85,8 @@ your merchandise reservation can now be picked up.
 
 c3foc
             """.format(
-                settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])
+                settings.SITE_URL
+                + reverse("reservationdetail", args=[reservation.secret])
             ),
             settings.EMAIL_FROM,
             [reservation.contact_mail],

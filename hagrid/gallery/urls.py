@@ -1,10 +1,8 @@
-
-from django.contrib import admin
-from django.urls import include, path
-from django.views.decorators.cache import cache_page
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    path('', cache_page(10)(views.GalleryView.as_view()), name='gallery'),
+    path("", views.gallery_view, name="gallery"),
+    path("<int:product_id>/", views.gallery_view, name="gallery"),
 ]
