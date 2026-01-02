@@ -3,6 +3,7 @@ import random
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from hagrid.operations.models import OpenStatus
@@ -20,6 +21,7 @@ from ..tables import SizeTable
 
 
 @cache_page(10)
+@csrf_exempt
 @require_GET
 def dashboard(request):
     product_groups = ProductGroup.objects.filter(display_in_dashboard=True)
@@ -89,6 +91,7 @@ def dashboard(request):
 
 
 @cache_page(10)
+@csrf_exempt
 @require_GET
 def dashboard_table(request):
     def render_variation(variation):
