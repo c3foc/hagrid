@@ -1,10 +1,12 @@
 from django.http import Http404
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import GalleryImage
 
 
+@csrf_exempt
 @cache_page(10)
 def gallery_view(request, product_id=None):
     if isinstance(product_id, int):
