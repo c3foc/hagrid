@@ -19,7 +19,7 @@ dependencies = [
     "Babel==2.16.0",
     "Django==5.1.15",
     "Markdown==3.4.4",
-    "Pillow==11.0.0",
+    "Pillow==12.1.1",
     "django-compressor==4.5.1",
     "django-filter==24.3",
     "django-libsass==0.9",
