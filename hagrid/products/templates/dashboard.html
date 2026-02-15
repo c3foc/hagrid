@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load cache %}
+{% cache 30 dashboard %}
 
 {% block content %}
+
+{% if store_settings.dashboard_text %}
+{{ store_settings.dashboard_text|safe }}
+{% endif %}
     <div class="dashboard-logo">
         <img src="{% static "c3foc-logo.svg" %}" />
     </div>
@@ -36,3 +42,5 @@
     {% include "gallery_disclaimer.html" %}
     </div>
 {% endblock %}
+
+{% endcache %}
