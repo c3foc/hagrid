@@ -1,6 +1,6 @@
 Babel==2.16.0
 Django==5.1.15
-Markdown==3.4.4
+Markdown==3.8.1
 Pillow==12.1.1
 django-compressor==4.5.1
 django-filter==24.3
