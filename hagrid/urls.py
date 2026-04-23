@@ -27,7 +27,7 @@ def p(pathname, fn):
 
 
 urlpatterns = [
-    p("", views.dashboard),
+    p("", views.dashboard, name='dashboard'),
     p("table", views.dashboard_table),
     p("operator/", views.products_config_overview),
     p("operator/availability/", views.variation_availability_config),
