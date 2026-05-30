@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Edit reservation part</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in part_form %}
+            <div class="form-group">
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        {% if unoffered_product_groups %}
+            Products of the following categories cannot be included in reservations:
+            {% for group in unoffered_product_groups %}
+                {{ group.name }}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% for table in variation_tables %}
+            <h3>{{table.header.0}}</h3>
+            {% include "variation_table.html" with table=table %}
+        {% endfor %}
+        <input class="btn btn-lg btn-primary" type="submit" value="Save"/>
+    </form>
+
+    <script>
+        function markNumberInputs() {
+            for(let input of $("input.variationcounthighlight")) {//document.getElementsByTagName('input')) {
+                input.closest("td").classList.toggle('bg-primary', input.value > 0);
+            }
+        }
+        setInterval(markNumberInputs, 100);
+        function defer(method) {
+            if (window.jQuery) {
+                method();
+            } else {
+                setTimeout(function() { defer(method) }, 200);
+            }
+        }
+        defer(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+{% endblock %}
+

@@ -13,8 +13,7 @@ import pytz
 
 TZ_BERLIN = pytz.timezone("Europe/Berlin")
 OPENING_HOURS = [
-    (start.replace(tzinfo=TZ_BERLIN), end.replace(tzinfo=TZ_BERLIN))
-    for start, end in OPENING_HOURS
+    (start.replace(tzinfo=TZ_BERLIN), end.replace(tzinfo=TZ_BERLIN)) for start, end in OPENING_HOURS
 ]
 
 
@@ -50,9 +49,7 @@ def show_plot():
                 last_state = event["new_state"]
 
                 # add timeslots to dataframe
-                for timeslot_start, timeslot_end in intersect_with_opening_hours(
-                    start, end
-                ):
+                for timeslot_start, timeslot_end in intersect_with_opening_hours(start, end):
                     dataframe.append(
                         dict(
                             Task=variation_name,
@@ -65,9 +62,7 @@ def show_plot():
         if last_state:
             start = last_time
             end = datetime.datetime(2023, 12, 29, 21, 30, tzinfo=TZ_BERLIN)
-            for timeslot_start, timeslot_end in intersect_with_opening_hours(
-                start, end
-            ):
+            for timeslot_start, timeslot_end in intersect_with_opening_hours(start, end):
                 dataframe.append(
                     dict(
                         Task=variation_name,
@@ -121,9 +116,7 @@ def write_available_time_csv():
                 last_state = event["new_state"]
 
                 # add timeslots to dataframe
-                for timeslot_start, timeslot_end in intersect_with_opening_hours(
-                    start, end
-                ):
+                for timeslot_start, timeslot_end in intersect_with_opening_hours(start, end):
                     dataframe.append(
                         dict(
                             Task=variation_name,
@@ -135,9 +128,7 @@ def write_available_time_csv():
         if last_state:
             start = last_time
             end = datetime.datetime(2023, 12, 29, 21, 30, tzinfo=TZ_BERLIN)
-            for timeslot_start, timeslot_end in intersect_with_opening_hours(
-                start, end
-            ):
+            for timeslot_start, timeslot_end in intersect_with_opening_hours(start, end):
                 dataframe.append(
                     dict(
                         Task=variation_name,
@@ -158,9 +149,7 @@ def write_available_time_csv():
         import csv
 
         with open("37c3-availability-times.csv", "w", newline="") as csvfile:
-            writer = csv.writer(
-                csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL
-            )
+            writer = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
             for variation_name, time in cumulative_available_times.items():
                 writer.writerow([variation_name, time])
 
