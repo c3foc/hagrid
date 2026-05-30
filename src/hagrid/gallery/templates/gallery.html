@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load reservation %}
+
+{% block content %}
+
+    {% if store_settings.gallery_is_public or request.user.is_superuser %}
+        {% if not store_settings.gallery_is_public %}
+            <div class="alert alert-warning" role="alert">
+                The gallery is only visible to superusers.
+            </div>
+        {% endif %}
+
+        {% include "gallery_disclaimer.html" %}
+
+        <div class="gallery">
+            {% for gallery_item in gallery_images %}
+                <div class="gallery-item">
+                    <h4>
+                        {% if gallery_item.title %}
+                            {{ gallery_item.title }}
+                        {% elif gallery_item.product and gallery_item.sizegroup %}
+                            {{ gallery_item.product }}, {{ gallery_item.sizegroup }}
+                        {% endif %}
+                    </h4>
+                    <a href="{{ gallery_item.image.url }}">
+                        <img src="{{ gallery_item.image.url }}"
+                             alt="{{ gallery_item.alt_text }}"
+                             title="{{ gallery_item.alt_text }}"
+                        />
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <p>
+            The gallery is currently not available.
+        </p>
+    {% endif %}
+{% endblock %}
+

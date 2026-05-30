@@ -1,0 +1,24 @@
+<div class="overflow-auto">
+    <table class="hagrid-table">
+        <thead class="table-dark">
+            <tr>
+                {% for sizename in table.header %}
+                    <th class="text-center" scope="col"{% if forloop.first %} width="150rem"{% endif %}>{{ sizename }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody class="table-hover">
+            {% for row in table.entries %}
+                <tr>
+                    {% for html in row %}
+                        {% if forloop.first %}
+                            <th scope="row">{% else %}
+                            <td>{% endif %}
+                        {{ html|safe }}
+                        {% if forloop.first %}</th>{% else %}</td>{% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
