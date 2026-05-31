@@ -40,7 +40,7 @@
             <tr>
                 <th>Score</th>
                 <th>Product</th>
-                <th>Sizegroup</th>
+                <th>SizeScale</th>
                 <th>Size</th>
                 <th>Stock</th>
                 <th>Counted</th>
@@ -75,7 +75,7 @@
                             n/a
                         {% else %}
                             {{ priority.variation.count }}
-                            / {{ priority.variation.initial_amount }}
+                            / {{ priority.variation.amount_initial }}
                         {% endif %}
                     </td>
 

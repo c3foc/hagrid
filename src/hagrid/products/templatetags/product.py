@@ -3,18 +3,18 @@ from decimal import Decimal
 from django import template
 from django.utils import timezone
 
-from hagrid.products.models import Variation
+from hagrid.products.models import SizeVariation
 
 register = template.Library()
 
 
 @register.filter
 def availability_class(availability):
-    if availability == Variation.STATE_MANY_AVAILABLE:
+    if availability == SizeVariation.STATE_MANY_AVAILABLE:
         return "green"
-    elif availability == Variation.STATE_FEW_AVAILABLE:
+    elif availability == SizeVariation.STATE_FEW_AVAILABLE:
         return "yellow"
-    elif availability == Variation.STATE_SOLD_OUT:
+    elif availability == SizeVariation.STATE_SOLD_OUT:
         return "red"
     else:
         return "gray"

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from hagrid.products.models import Product, Size, SizeGroup, Variation
+from hagrid.products.models import Product, Size, SizeScale, SizeVariation
 
 
 class ProductAPISerializer(serializers.ModelSerializer):
@@ -9,24 +9,24 @@ class ProductAPISerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class SizeGroupAPISerializer(serializers.ModelSerializer):
+class SizeScaleAPISerializer(serializers.ModelSerializer):
     class Meta:
-        model = SizeGroup
+        model = SizeScale
         fields = "__all__"
 
 
 class SizeAPISerializer(serializers.ModelSerializer):
-    group = SizeGroupAPISerializer()
+    scale = SizeScaleAPISerializer()
 
     class Meta:
         model = Size
         fields = "__all__"
 
 
-class VariationAPISerializer(serializers.ModelSerializer):
+class SizeVariationAPISerializer(serializers.ModelSerializer):
     size = SizeAPISerializer()
     product = ProductAPISerializer()
 
     class Meta:
-        model = Variation
+        model = SizeVariation
         fields = "__all__"

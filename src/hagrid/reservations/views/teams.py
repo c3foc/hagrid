@@ -8,11 +8,10 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from hagrid.products.models import Product, ProductGroup, SizeGroup, StoreSettings
+from hagrid.products.models import Product, ProductCategory, SizeScale, StoreSettings
 from hagrid.products.tables import SizeTable
 from hagrid.reservations import emails
-
-from ..models import Reservation, ReservationPart, ReservationPosition
+from hagrid.reservations.models import Reservation, ReservationPart, ReservationPosition
 
 
 def require_reservation_state(required_state, superuser_bypass=False):
@@ -163,7 +162,7 @@ class ReservationPositionForm(forms.ModelForm):
         self.fields["variation"].widget = forms.NumberInput()
         variation = self.initial["variation"]
         old_amount = self.initial["amount"]
-        self.max_amount = max(0, variation.initial_amount - amount_reserved(variation) + old_amount)
+        self.max_amount = max(0, variation.amount_initial - amount_reserved(variation) + old_amount)
         self.fields["amount"].widget.attrs.update({
             "style": "width: 7ch;",
             "class": "variationcounthighlight",
@@ -179,7 +178,7 @@ class ReservationPositionForm(forms.ModelForm):
         variation = cleaned_data["variation"]
         old_amount = self.initial["amount"]
         new_amount = max(0, cleaned_data.get("amount", 0))
-        max_amount = max(0, variation.initial_amount - amount_reserved(variation) + old_amount)
+        max_amount = max(0, variation.amount_initial - amount_reserved(variation) + old_amount)
         if variation and new_amount and new_amount > max_amount:
             msg = (
                 "No {variation} available."
@@ -262,7 +261,7 @@ class ReservationPartDetailView(View):
             {
                 "variation_tables": variation_tables,
                 "part_form": ReservationPartTitleForm(instance=reservation_part),
-                "unoffered_product_groups": ProductGroup.objects.all().filter(
+                "unoffered_product_groups": ProductCategory.objects.all().filter(
                     offer_in_reservations=False
                 ),
             },
@@ -313,11 +312,11 @@ class ReservationPartDetailView(View):
 
         tables = [
             SizeTable(
-                sizegroup,
+                scale,
                 render_variation=render_variation_form,
                 products_queryset=Product.objects.all().select_related("product_group"),
             )
-            for sizegroup in SizeGroup.objects.all().prefetch_related("sizes")
+            for scale in SizeScale.objects.all().prefetch_related("sizes")
         ]
         return tables, forms
 

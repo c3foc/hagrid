@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from hagrid.operations.models import EventTime
-from hagrid.products.models import Variation
+from hagrid.products.models import SizeVariation
 
 MAX_FIT_DEGREE = 2
 
@@ -18,7 +18,7 @@ def operator_stats(request):
     event_time = EventTime()
 
     coefficients = numpy.zeros((MAX_FIT_DEGREE + 1,))
-    for variation in Variation.objects.prefetch_related("count_events").all():
+    for variation in SizeVariation.objects.prefetch_related("count_events").all():
         xy = {}
         for c in variation.count_events.all():
             xy[event_time.datetime_to_event_time(c.datetime)] = c.count
@@ -28,7 +28,7 @@ def operator_stats(request):
             xy[event_time.total_event_duration] = 0
 
         # track start value
-        xy[0] = variation.initial_amount
+        xy[0] = variation.amount_initial
 
         xy = numpy.array(sorted(xy.items()))
 
@@ -67,14 +67,14 @@ def operator_stats(request):
         rate = numpy.array([])
 
     availabilities = []
-    for i, variation in enumerate(Variation.objects.prefetch_related("events").all()):
+    for i, variation in enumerate(SizeVariation.objects.prefetch_related("events").all()):
         xy = {0: 2}
         for c in variation.events.all():
             xy[event_time.datetime_to_event_time(c.datetime)] = (
                 2
-                if c.new_state == Variation.STATE_MANY_AVAILABLE
+                if c.new_state == SizeVariation.STATE_MANY_AVAILABLE
                 else 1
-                if c.new_state == Variation.STATE_FEW_AVAILABLE
+                if c.new_state == SizeVariation.STATE_FEW_AVAILABLE
                 else 0
             )
         avail = sorted(xy.items())

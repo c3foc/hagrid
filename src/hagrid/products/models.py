@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from positions import PositionField
 
-from hagrid.operations.models import EventTime
+from hagrid.operations.models import Event, EventTime
 
 
 class StoreSettings(models.Model):
@@ -55,34 +55,9 @@ class StoreSettings(models.Model):
         pass
 
 
-class Event(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = "Event"
-        verbose_name_plural = "Events"
-        ordering = ["-start_date"]
-
-
-class ProductGroup(models.Model):
-    name = models.CharField(max_length=30, unique=True)
-    description = models.TextField(
-        help_text="HTML that will be rendered in the dashboard section",
-        blank=True,
-        default="",
-    )
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=200, unique=True)
     position = PositionField()
-    display_in_dashboard = models.BooleanField(
-        help_text="Show the group in the dashboard", default=True
-    )
-    offer_in_reservations = models.BooleanField(
-        help_text="Offer products of this group in reservations", default=False
-    )
 
     def __str__(self):
         return self.name
@@ -93,21 +68,13 @@ class ProductGroup(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=250, unique=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
     position = PositionField()
-    product_group = models.ForeignKey(
-        ProductGroup,
+    category = models.ForeignKey(
+        ProductCategory,
         related_name="products",
-        on_delete=models.SET_NULL,
-        default=None,
-        blank=True,
-        null=True,
+        on_delete=models.PROTECT,
     )
-    crate_size = models.IntegerField(
-        help_text="How many items of this product come in a crate?",
-        blank=True,
-        null=True,
-    )
+    size_scale = models.ForeignKey("SizeScale", on_delete=models.PROTECT, related_name="products")
 
     def __str__(self):
         return self.name
@@ -116,8 +83,8 @@ class Product(models.Model):
         ordering = ["position"]
 
 
-class SizeGroup(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+class SizeScale(models.Model):
+    name = models.CharField(max_length=60, unique=True)
     position = PositionField()
 
     def __str__(self):
@@ -128,20 +95,52 @@ class SizeGroup(models.Model):
 
 
 class Size(models.Model):
-    name = models.CharField(max_length=30)
-    group = models.ForeignKey(SizeGroup, related_name="sizes", on_delete=models.CASCADE)
-    position = PositionField(collection="group")
+    name = models.CharField(max_length=30, unique=True, blank=True)
+    scale = models.ForeignKey(SizeScale, related_name="sizes", on_delete=models.CASCADE)
+    position = PositionField(collection="scale")
 
     def __str__(self):
-        return f"{self.group!s} {self.name}"
+        return self.name
 
     class Meta:
         ordering = ["position"]
 
 
-class Variation(models.Model):
+class Design(models.Model):
+    name = models.CharField(max_length=200)
+    position = PositionField()
+    event = models.ForeignKey(Event, related_name="designs", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.event!s} {self.name}"
+
+    class Meta:
+        ordering = ["position"]
+
+
+class DesignVariation(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="design_variations")
+    design = models.ForeignKey(Design, on_delete=models.CASCADE, related_name="variations")
+
+    def __str__(self):
+        return f"{self.design!s} {self.product!s}"
+
+
+class Price(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="prices")
+    valid_at = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="sale_prices")
+    valid_for_products_from_event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name="historic_prices"
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        unique_together = (("product", "valid_for_products_from_event", "valid_at"),)
+
+
+class SizeVariation(models.Model):
     """
-    A variation is a concrete item
+    A size variation is a concrete item
     """
 
     STATE_MANY_AVAILABLE = "available"
@@ -153,31 +152,42 @@ class Variation(models.Model):
         (STATE_SOLD_OUT, "sold out"),
     ]
     size = models.ForeignKey(Size, on_delete=models.CASCADE, related_name="variations")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variations")
-    initial_amount = models.IntegerField(default=100)
+    design_variation = models.ForeignKey(
+        DesignVariation, on_delete=models.CASCADE, related_name="size_variations"
+    )
+
     count = models.IntegerField(blank=True, null=True)
     counted_at = models.DateTimeField(blank=True, null=True)
     count_reserved_until = models.DateTimeField(blank=True, null=True)
     count_disabled_until = models.DateTimeField(blank=True, null=True)
     count_disabled_reason = models.CharField(max_length=30, blank=True, null=True)
     count_prio_bumped = models.BooleanField(default=False)
+
     availability = models.CharField(
         default=STATE_MANY_AVAILABLE, max_length=20, choices=AVAILABILITY_STATES
     )
+
+    amount_initial = models.IntegerField(
+        verbose_name="Amount received from the producer", blank=True, null=True
+    )
+    amount_preordered = models.IntegerField(
+        verbose_name="Amount preordered from customers", blank=True, null=True
+    )
+
     crate_size = models.IntegerField(
-        help_text="How many items of this variation come in a crate (overrides product setting)?",
+        help_text="How many items of this variation come in a crate?",
         blank=True,
         null=True,
     )
 
     def __str__(self):
-        return f"{self.product!s} ({self.size!s})"
+        return f"{self.design_variation!s} {self.size!s}"
 
     @property
     def availability_progress(self):
         progress = 0
-        if self.count is not None and self.initial_amount:
-            progress = self.count / self.initial_amount * 100
+        if self.count is not None and self.amount_initial:
+            progress = self.count / self.amount_initial * 100
         return f"{progress:.1f}%"
 
     @property
@@ -194,22 +204,22 @@ class Variation(models.Model):
             return None
 
         if self.count == 0:
-            return Variation.STATE_SOLD_OUT
+            return SizeVariation.STATE_SOLD_OUT
 
         if self.count <= 2 or (
-            self.initial_amount is not None and self.count < self.initial_amount * 0.1
+            self.amount_initial is not None and self.count < self.amount_initial * 0.1
         ):
-            return Variation.STATE_FEW_AVAILABLE
+            return SizeVariation.STATE_FEW_AVAILABLE
 
-        return Variation.STATE_MANY_AVAILABLE
+        return SizeVariation.STATE_MANY_AVAILABLE
 
     def get_count_priority(self, event_time: EventTime):
         scores = {}
         info = {}
 
-        def count_severity(count, initial_amount, exp=0.5):
+        def count_severity(count, amount_initial, exp=0.5):
             try:
-                return max(0, 1 - math.pow(count / initial_amount, exp))
+                return max(0, 1 - math.pow(count / amount_initial, exp))
             except ArithmeticError:
                 return 1
 
@@ -218,14 +228,14 @@ class Variation(models.Model):
 
         if self.count == 0:
             scores["depleted"] = 0
-        elif not self.initial_amount:
+        elif not self.amount_initial:
             scores["invalid"] = 0
         else:
             now = event_time.datetime_to_event_time(timezone.now())
 
             if self.count is None or self.counted_at is None:
-                # pretend we counted all items at t=0 with their initial_amount
-                count = self.initial_amount
+                # pretend we counted all items at t=0 with their amount_initial
+                count = self.amount_initial
                 count_event_time = 0
                 # add a little score that indicates that don't really know much about this item's count
                 # or sale rate
@@ -235,16 +245,16 @@ class Variation(models.Model):
                 count_event_time = event_time.datetime_to_event_time(self.counted_at)
 
             # try to estimate the current count
-            total_sold = self.initial_amount - count
+            total_sold = self.amount_initial - count
             sale_rate = max(0, total_sold / max(1, count_event_time))
-            estimate = self.initial_amount - now * sale_rate
-            estimated_count = min(self.initial_amount, max(0, estimate))
+            estimate = self.amount_initial - now * sale_rate
+            estimated_count = min(self.amount_initial, max(0, estimate))
 
             scores["running_low_estimated"] = count_severity(estimated_count, count)
             info["estimated_count"] = estimated_count
             info["sale_rate"] = sale_rate * 3600
 
-            scores["running_low"] = 0.5 * count_severity(count, self.initial_amount)
+            scores["running_low"] = 0.5 * count_severity(count, self.amount_initial)
 
             count_age = max(0, now - count_event_time)
             scores["outdated_count"] = 0.5 * math.pow(count_age / 3600 / 4.0, 0.5)
@@ -265,28 +275,18 @@ class Variation(models.Model):
 
     @property
     def has_crate_size(self):
-        return (
-            self.product.crate_size is not None
-            if (self.crate_size is None)
-            else (self.crate_size != 0)
-        )
+        return bool(self.crate_size)
 
     @property
     def crate_size_value(self):
-        return (
-            self.product.crate_size
-            if self.crate_size is None
-            else None
-            if self.crate_size == 0
-            else self.crate_size
-        )
+        return self.crate_size or None
 
 
-class VariationAvailabilityEvent(models.Model):
-    old_state = models.CharField(max_length=20, choices=Variation.AVAILABILITY_STATES)
-    new_state = models.CharField(max_length=20, choices=Variation.AVAILABILITY_STATES)
+class AvailabilityEvent(models.Model):
+    old_state = models.CharField(max_length=20, choices=SizeVariation.AVAILABILITY_STATES)
+    new_state = models.CharField(max_length=20, choices=SizeVariation.AVAILABILITY_STATES)
     datetime = models.DateTimeField(auto_now=True)
-    variation = models.ForeignKey(Variation, related_name="events", on_delete=models.CASCADE)
+    variation = models.ForeignKey(SizeVariation, related_name="events", on_delete=models.CASCADE)
 
     def __str__(self):
         return "At {} {} changed from {} to {}".format(
@@ -297,10 +297,12 @@ class VariationAvailabilityEvent(models.Model):
         )
 
 
-class VariationCountEvent(models.Model):
+class CountEvent(models.Model):
     count = models.IntegerField(blank=True, null=True)
     datetime = models.DateTimeField(auto_now=True)
-    variation = models.ForeignKey(Variation, related_name="count_events", on_delete=models.CASCADE)
+    variation = models.ForeignKey(
+        SizeVariation, related_name="count_events", on_delete=models.CASCADE
+    )
     comment = models.TextField(blank=True, default="")
     name = models.TextField(blank=True, default="")
 
@@ -313,7 +315,7 @@ def generate_access_code():
     return secrets.token_urlsafe(12)
 
 
-class VariationCountAccessCode(models.Model):
+class CountAccessCode(models.Model):
     code = models.CharField(
         max_length=32,
         unique=True,
@@ -333,9 +335,9 @@ class VariationCountAccessCode(models.Model):
     products = models.ManyToManyField(
         Product, help_text="allow editing only variations these products", blank=True
     )
-    sizegroups = models.ManyToManyField(
-        SizeGroup,
-        help_text="allow editing only variations these sizegroups",
+    events = models.ManyToManyField(
+        Event,
+        help_text="allow editing only products from these events",
         blank=True,
     )
     sizes = models.ManyToManyField(
@@ -347,7 +349,7 @@ class VariationCountAccessCode(models.Model):
 
     def __str__(self):
         filters = []
-        for attr in ["products", "sizegroups", "sizes"]:
+        for attr in ["products", "SizeScales", "sizes"]:
             items = getattr(self, attr).all()
 
             if items:
@@ -362,7 +364,7 @@ class VariationCountAccessCode(models.Model):
 
     @property
     def variations(self):
-        queryset = Variation.objects
+        queryset = SizeVariation.objects
 
         products = self.products.all()
         if products:
@@ -372,9 +374,9 @@ class VariationCountAccessCode(models.Model):
         if sizes:
             queryset = queryset.filter(size__in=sizes)
 
-        sizegroups = self.sizegroups.all()
-        if sizegroups:
-            queryset = queryset.filter(size__group__in=sizegroups)
+        SizeScales = self.SizeScales.all()
+        if SizeScales:
+            queryset = queryset.filter(size__group__in=SizeScales)
 
         queryset = queryset.order_by(
             "product__product_group__position",
@@ -390,16 +392,16 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
-@receiver(pre_save, sender=Variation, dispatch_uid="variation_availability_change")
+@receiver(pre_save, sender=SizeVariation, dispatch_uid="variation_availability_change")
 def variation_availability_change(sender, instance, **kwargs):
     new_instance = instance
     try:
-        old_instance = Variation.objects.get(pk=instance.pk)
-    except Variation.DoesNotExist:
+        old_instance = SizeVariation.objects.get(pk=instance.pk)
+    except SizeVariation.DoesNotExist:
         return
 
     if new_instance.availability != old_instance.availability:
-        VariationAvailabilityEvent(
+        AvailabilityEvent(
             old_state=old_instance.availability,
             new_state=new_instance.availability,
             variation=instance,

@@ -22,32 +22,32 @@ $gridBorder: $gridBorderWidth solid $gridBorderColor;
 @font-face {
     font-family: 'Kario';
     font-weight: 880;
-    src: URL(static('/fonts/Kario/Kario39C3VarWEB-Roman.woff2')) format('woff2');
+    src: URL(static('fonts/Kario/Kario39C3VarWEB-Roman.woff2')) format('woff2');
 }
 
 @font-face {
     font-family: 'Officer';
-    src: URL(static('/fonts/Officer/OfficerSansWeb-Regular.woff2')) format('woff2');
+    src: URL(static('fonts/Officer/OfficerSansWeb-Regular.woff2')) format('woff2');
 }
 @font-face {
     font-family: 'Officer';
     font-weight: 500;
-    src: URL(static('/fonts/Officer/OfficerSansCondWeb-Bold.woff2')) format('woff2');
+    src: URL(static('fonts/Officer/OfficerSansCondWeb-Bold.woff2')) format('woff2');
 }
 @font-face {
     font-family: 'Officer';
     font-weight: bold;
-    src: URL(static('/fonts/Officer/OfficerSansWeb-Bold.woff2')) format('woff2');
+    src: URL(static('fonts/Officer/OfficerSansWeb-Bold.woff2')) format('woff2');
 }
 
 @font-face {
     font-family: 'space-mono';
-    src: URL(static('/fonts/space-mono/SpaceMono-Regular.ttf')) format('truetype');
+    src: URL(static('fonts/space-mono/SpaceMono-Regular.ttf')) format('truetype');
 }
 @font-face {
     font-family: 'space-mono';
     font-weight: bold;
-    src: URL(static('/fonts/space-mono/SpaceMono-Bold.ttf')) format('truetype');
+    src: URL(static('fonts/space-mono/SpaceMono-Bold.ttf')) format('truetype');
 }
 
 $fontTitle: "Kario", sans-serif;
@@ -59,19 +59,6 @@ body {
   background: $background;
   color: $accent1;
   font-family: $fontBase;
-}
-
-#background-tshirt {
-  background: URL(static('/tshirt-large.svg')) no-repeat center center;
-  background-size: 100%;
-  width: 120%;
-  max-width: 1200px;
-  aspect-ratio: 1;
-  position: fixed;
-  left: 50%;
-  top: 20%;
-  z-index: -1;
-  transform: translateX(-50%);
 }
 
 a {
@@ -149,20 +136,8 @@ main.container {
   padding-bottom: $gridSize + $gridBorderWidth;
   margin-right: -$gridBorderWidth;
 
-  max-width: $gridSize * 23 + $gridBorderWidth;
+  max-width: $gridSize * 25 + $gridBorderWidth;
   margin-inline: auto;
-
-  // now for something ugly, let's build an inline SVG as a data-url so we can
-  $s: str-slice(#{$gridSize}, 0, -3);
-  $o: str-slice(#{$gridBorderWidth/2}, 0, -3);
-  $o2: str-slice(#{$gridBorderWidth}, 0, -3);
-  background-color: $background;
-  background-image: url(
-    "data:image/svg+xml;utf8,"
-    + "<svg xmlns='http://www.w3.org/2000/svg' width='#{$s}' height='#{$s}' viewBox='0 0 #{$s} #{$s}'>"
-    + "<path fill='none' stroke-width='#{$o2}' stroke='%23#{str-slice(#{$gridBorderColor},2)}' "
-    + "d='M #{$s} #{$o} L#{$o} #{$o} L#{$o} #{$s}'/></svg>"
-  );
 }
 
 .grid-container {
@@ -183,7 +158,7 @@ main.container {
   grid-template-columns: repeat(auto-fit, $gridSize - $gridBorderWidth);
   grid-template-rows: repeat(auto-fit, $gridSize - $gridBorderWidth);
   gap: $gridBorderWidth;
-  grid-column: 4 / -1;
+  grid-column: 6 / -1;
   margin: 0;
   padding: 0;
 
@@ -332,10 +307,10 @@ main.container {
     grid-template-columns: [start] repeat(auto-fit, $gridSize - $gridBorderWidth) [end];
     grid-gap: $gridBorderWidth;
 
-    // for sizegroup: fitted/straight or color
+    // for SizeScale: fitted/straight or color
     > h3 {
       background: $background;
-      grid-column: span 3;
+      grid-column: span 5;
 
       display: inline-flex;
       align-items: center;
@@ -647,6 +622,7 @@ table.table-sticky-head {
 .availabilities-table {
   td {
     padding: 0;
+    min-width: 56px;
   }
 }
 

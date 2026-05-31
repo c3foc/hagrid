@@ -2,8 +2,7 @@ import csv
 import io
 import logging
 
-from hagrid.products.models import Variation
-
+from ..products.models import SizeVariation
 from .models import Reservation
 
 logger = logging.getLogger(__name__)
@@ -22,7 +21,7 @@ def write_reservation(reservation: Reservation, writer):
     ])
     for part in reservation.parts.all():
         for position in part.positions.all():
-            variation: Variation = position.variation
+            variation: SizeVariation = position.variation
             for i in range(position.amount):
                 writer.writerow([
                     str(reservation.team_name),

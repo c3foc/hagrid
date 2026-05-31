@@ -14,8 +14,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 
-from hagrid.products.models import Variation
-
+from ..products.models import SizeVariation
 from .models import Reservation
 
 logger = logging.getLogger(__name__)
@@ -255,7 +254,7 @@ def render_collection_table_header(d: Document, title: str):
     d.cursor_y -= 15
 
 
-def render_collection_list_entry(pos: Variation, amount: int, d: Document):
+def render_collection_list_entry(pos: SizeVariation, amount: int, d: Document):
     # Draw table boxes
     d.canvas.line(d.cursor_x, d.cursor_y, d.w - d.right_inset, d.cursor_y)
     d.canvas.line(d.cursor_x, d.cursor_y, d.cursor_x, d.cursor_y - 15)
@@ -352,7 +351,7 @@ def render_invoice_end(l, d: Document):
             d.new_page()
             render_settlement_head(d)
         amount: int = request[1]
-        a: Variation = request[0]
+        a: SizeVariation = request[0]
         price = a.product.price
         total += price * amount
         d.canvas.line(45, d.cursor_y, 45, d.cursor_y - 15)

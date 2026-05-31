@@ -12,13 +12,12 @@ from django.utils.text import slugify
 from django.views import View
 from django.views.generic.base import TemplateView
 
-from hagrid.products.models import SizeGroup
+from hagrid.products.models import SizeScale
 from hagrid.products.tables import SizeTable
 from hagrid.reservations import emails
-
-from ..export_csv import generate_reservation_csv
-from ..export_pdf import generate_packing_pdf
-from ..models import Reservation, ReservationPosition
+from hagrid.reservations.export_csv import generate_reservation_csv
+from hagrid.reservations.export_pdf import generate_packing_pdf
+from hagrid.reservations.models import Reservation, ReservationPosition
 
 
 class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
@@ -27,7 +26,7 @@ class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # variations_counted = Variation.objects.annotate(num_reserved=Sum('reservation_positions__all__amount', filter=Q(reservation_positions__part__reservation__state!=Reservation.STATE_CANCELLED)))
+        # variations_counted = SizeVariation.objects.annotate(num_reserved=Sum('reservation_positions__all__amount', filter=Q(reservation_positions__part__reservation__state!=Reservation.STATE_CANCELLED)))
         amount_reserved_by_variation_id = {
             l["variation"]: l["amount_reserved"]
             for l in ReservationPosition.objects
@@ -41,7 +40,7 @@ class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
 
         context["reservation_tables"] = [
             SizeTable(sg, render_variation=render_variation_count_in_reservations)
-            for sg in SizeGroup.objects.all()
+            for sg in SizeScale.objects.all()
         ]
         return context
 

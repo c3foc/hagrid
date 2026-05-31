@@ -12,46 +12,47 @@ from hagrid.products.pdf_code import generate_access_code_pdf
 from .models import *
 
 admin.site.register(StoreSettings)
-admin.site.register(SizeGroup)
-admin.site.register(VariationAvailabilityEvent)
-admin.site.register(ProductGroup)
+admin.site.register(SizeScale)
+admin.site.register(AvailabilityEvent)
+admin.site.register(ProductCategory)
+admin.site.register(DesignVariation)
+admin.site.register(Design)
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["name", "price", "position", "product_group", "crate_size"]
-    list_editable = ["price", "position", "product_group", "crate_size"]
-    list_filter = ["product_group"]
+    list_display = ["name", "position", "category"]
+    list_editable = ["position", "category"]
+    list_filter = ["category"]
 
 
-@admin.register(Variation)
-class VariationAdmin(admin.ModelAdmin):
+@admin.register(SizeVariation)
+class SizeVariationAdmin(admin.ModelAdmin):
     list_display = [
         "__str__",
-        "product",
+        "design_variation",
         "size",
-        "initial_amount",
+        "amount_initial",
+        "amount_preordered",
         "count",
         "availability",
-        "crate_size",
     ]
-    list_editable = ["crate_size"]
-    list_filter = ["product__product_group", "product", "size__group", "size"]
+    list_editable = []
+    list_filter = ["design_variation__design__event", "design_variation__product"]
 
 
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ["name", "group", "position"]
-    list_filter = ["group"]
+    list_display = ["name", "scale", "position"]
+    list_filter = ["scale"]
 
 
-@admin.register(VariationCountEvent)
-class VariationCountEventAdmin(admin.ModelAdmin):
+@admin.register(CountEvent)
+class CountEventAdmin(admin.ModelAdmin):
     list_display = ["datetime", "variation", "name", "comment", "count"]
     list_filter = [
-        "variation__product",
-        "variation__size__name",
-        "variation__size__group",
+        "variation__design_variation",
+        "variation__design_variation__design__event",
     ]
 
     actions = (
@@ -73,7 +74,7 @@ class VariationCountEventAdmin(admin.ModelAdmin):
             writer.writerow([
                 "datetime",
                 "product",
-                "sizegroupsize",
+                "SizeScalesize",
                 "comment",
                 "count",
             ])
@@ -94,8 +95,8 @@ class VariationCountEventAdmin(admin.ModelAdmin):
         return response
 
 
-@admin.register(VariationCountAccessCode)
-class VariationCountAccessCodeAdmin(admin.ModelAdmin):
+@admin.register(CountAccessCode)
+class CountAccessCodeAdmin(admin.ModelAdmin):
     list_display = ("code", "name", "description", "as_queue", "code_actions")
     actions = ("make_pdf",)
 
@@ -122,7 +123,7 @@ class VariationCountAccessCodeAdmin(admin.ModelAdmin):
         ]
 
     def process_pdf(self, request, object_id):
-        return self.make_pdf(request, VariationCountAccessCode.objects.filter(pk=object_id))
+        return self.make_pdf(request, CountAccessCode.objects.filter(pk=object_id))
 
     def make_pdf(self, request, queryset):
         access_codes = queryset.all()

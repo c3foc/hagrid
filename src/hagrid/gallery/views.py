@@ -14,7 +14,7 @@ def gallery_view(request, product_id=None):
         images = GalleryImage.objects.filter(product__product_group__isnull=False)
 
     images = images.order_by(
-        "product__product_group__position", "product__position", "sizegroup__position"
+        "product__product_group__position", "product__position", "SizeScale__position"
     )
 
     return render(
