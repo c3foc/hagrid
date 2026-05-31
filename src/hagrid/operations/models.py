@@ -6,6 +6,80 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
+class Event(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    day_1 = models.DateField()
+    last_day = models.DateField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Event"
+        verbose_name_plural = "Events"
+        ordering = ["-day_1"]
+
+
+class OpenStatus(models.Model):
+    class Mode(models.TextChoices):
+        CLOSED = "closed", _("Closed")
+        OPEN = "open", _("Open")
+        PRESALE_PICKUP = "presale", _("Presale pickup")
+
+    datetime = models.DateTimeField(default=datetime.now)
+    comment = models.TextField(
+        help_text="information about this operating time", blank=True, null=True
+    )
+    public_info = models.CharField(
+        help_text="shown on dashboard",
+        max_length=1000,
+        blank=True,
+        null=True,
+        default=None,
+    )
+    mode = models.CharField(max_length=7, choices=Mode.choices, default=Mode.CLOSED)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="open_statuses")
+    selling_items_from = models.ManyToManyField(
+        Event,
+        related_name="sold_at",
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name_plural = "open statuses"
+        ordering = ["datetime"]
+
+    def __str__(self):
+        date = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
+        status = "open" if self.open else "closed"
+        return f"{status} at {date}"
+
+    @property
+    def open(self):
+        return self.mode != OpenStatus.Mode.CLOSED
+
+    @classmethod
+    def get_status(cls):
+        now = timezone.now()
+
+        prev_status = cls.objects.filter(datetime__lt=now).order_by("-datetime").first()
+        next_status = cls.objects.filter(datetime__gte=now).order_by("datetime").first()
+
+        is_open = prev_status.open if prev_status else False
+
+        return {
+            "open": is_open,
+            "start": prev_status.datetime if prev_status else None,
+            "stop": next_status.datetime if next_status else None,
+            "closed_info": prev_status.public_info
+            if not is_open
+            else (next_status.public_info if next_status else None),
+            "open_info": prev_status.public_info
+            if is_open
+            else (next_status.public_info if next_status else None),
+        }
+
+
 class EventTime:
     total_event_duration: float
 
@@ -66,57 +140,3 @@ class EventTime:
 
         # convert from numpy.float
         return float(event_time)
-
-
-class OpenStatus(models.Model):
-    class Mode(models.TextChoices):
-        CLOSED = "closed", _("Closed")
-        OPEN = "open", _("Open")
-        PRESALE_PICKUP = "presale", _("Presale pickup")
-
-    datetime = models.DateTimeField(default=datetime.now)
-    comment = models.TextField(
-        help_text="information about this operating time", blank=True, null=True
-    )
-    public_info = models.CharField(
-        help_text="shown on dashboard",
-        max_length=1000,
-        blank=True,
-        null=True,
-        default=None,
-    )
-    mode = models.CharField(max_length=7, choices=Mode.choices, default=Mode.CLOSED)
-
-    class Meta:
-        verbose_name_plural = "open statuses"
-        ordering = ["datetime"]
-
-    def __str__(self):
-        date = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
-        status = "open" if self.open else "closed"
-        return f"{status} at {date}"
-
-    @property
-    def open(self):
-        return self.mode != OpenStatus.Mode.CLOSED
-
-    @classmethod
-    def get_status(cls):
-        now = timezone.now()
-
-        prev_status = cls.objects.filter(datetime__lt=now).order_by("-datetime").first()
-        next_status = cls.objects.filter(datetime__gte=now).order_by("datetime").first()
-
-        is_open = prev_status.open if prev_status else False
-
-        return {
-            "open": is_open,
-            "start": prev_status.datetime if prev_status else None,
-            "stop": next_status.datetime if next_status else None,
-            "closed_info": prev_status.public_info
-            if not is_open
-            else (next_status.public_info if next_status else None),
-            "open_info": prev_status.public_info
-            if is_open
-            else (next_status.public_info if next_status else None),
-        }

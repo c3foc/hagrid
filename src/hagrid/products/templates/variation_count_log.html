@@ -10,7 +10,7 @@
         <thead>
             <tr>
                 <th>Product</th>
-                <th>Sizegroup</th>
+                <th>SizeScale</th>
                 <th>Size</th>
                 <th>Stock</th>
                 <th>Initial</th>
@@ -32,7 +32,7 @@
                             <small title="Outdated, current count is {{ item.event.variation.count }}">({{ item.event.count }})</small>
                         {% endif %}
                     </td>
-                    <td><small>{{ item.event.variation.initial_amount }}</small></td>
+                    <td><small>{{ item.event.variation.amount_initial }}</small></td>
                     <td title="{{ item.event.datetime }}">{% if item.age %}{{ item.age|seconds_to_duration }}{% else %}now{% endif %}</td>
                     <td>{{ item.event.name }}</td>
                     <td>{{ item.event.comment }}</td>

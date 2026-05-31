@@ -1,8 +1,13 @@
 from django.contrib import admin
 
-from .models import OpenStatus
+from .models import Event, OpenStatus
 
 
 @admin.register(OpenStatus)
-class SizeAdmin(admin.ModelAdmin):
-    list_display = ["mode", "datetime", "comment", "public_info"]
+class OpenStatusAdmin(admin.ModelAdmin):
+    list_display = ["mode", "datetime", "event", "public_info"]
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ["name", "day_1", "last_day"]

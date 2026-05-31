@@ -1,21 +1,20 @@
 from .models import (
+    DesignVariation,
     Product,
-    Size,
-    SizeGroup,
-    Variation,
+    SizeVariation,
 )
 
 
 class SizeTable:
     def __init__(
         self,
-        sizegroup,
+        SizeScale,
         render_variation=None,
         render_empty=None,
         show_empty_rows=False,
         products_queryset=None,
     ):
-        self.sizegroup = sizegroup
+        self.SizeScale = SizeScale
         self.show_empty_rows = show_empty_rows
         if not render_variation:
             render_variation = lambda v: v.availability
@@ -30,23 +29,23 @@ class SizeTable:
 
     @property
     def header(self):
-        return [self.sizegroup.name] + [size.name for size in self.sizegroup.sizes.all()]
+        return [self.SizeScale.name] + [size.name for size in self.SizeScale.sizes.all()]
 
     def generate_entries(self):
         rows = []
-        all_variations = Variation.objects.all()
+        all_variations = SizeVariation.objects.all()
         bool(all_variations)  # cache all variations in queryset
-        sizegroup_sizes = self.sizegroup.sizes.all()
+        SizeScale_sizes = self.SizeScale.sizes.all()
 
         for product in self.products_queryset:
             row = [product.name]
             found_variation = False
-            for size in sizegroup_sizes:
+            for size in SizeScale_sizes:
                 try:
                     variation = all_variations.get(product=product, size=size)
                     row.append(self.render_variation(variation))
                     found_variation = True
-                except Variation.DoesNotExist:
+                except SizeVariation.DoesNotExist:
                     row.append(self.render_empty(product, size))
             if found_variation or self.show_empty_rows:
                 rows.append(row)
@@ -56,55 +55,62 @@ class SizeTable:
 class ProductTable:
     def __init__(
         self,
+        title,
         product,
+        only_events_in=None,
         render_variation=None,
         render_empty=None,
         show_empty_rows=False,
         table_class: str = "",
     ):
+        self.title = title
         self.product = product
+        self.only_events_in = only_events_in
         self.table_class = table_class
         self.show_empty_rows = show_empty_rows
         self.render_variation = render_variation or (lambda v: v.availability)
         self.render_empty = render_empty or (lambda *_args: "")
 
-        self.entries = list(self.generate_entries())
-        self.column_count = (
-            max(len(entry["sizes"]) for entry in self.entries) if self.entries else 0
+        self.rows = list(self.generate_rows())
+
+    def generate_rows(self):
+        design_variations = DesignVariation.objects.filter(
+            product=self.product,
         )
-        for entry in self.entries:
-            entry["fill"] = [""] * (self.column_count - len(entry["sizes"]))
+        if self.only_events_in:
+            design_variations = design_variations.filter(design__event__in=self.only_events_in)
+        bool(design_variations)
+        sizes = self.product.size_scale.sizes.all()
+        bool(sizes)
 
-    def generate_entries(self):
-        all_variations = Variation.objects.all()
-        bool(all_variations)  # cache all variations in queryset
-        all_sizegroups = SizeGroup.objects.all()
-        bool(all_variations)
-        all_sizes = Size.objects.filter(variations__product=self.product).distinct()
-        bool(all_sizes)
+        all_variations = {
+            (v.design_variation_id, v.size_id): v
+            for v in SizeVariation.objects.filter(design_variation__in=design_variations)
+        }
 
-        for sizegroup in all_sizegroups:
-            entry = {"sizegroup": sizegroup, "sizes": []}
+        for design_variation in design_variations:
+            row = {
+                "design_variation": design_variation,
+                "variations": [],
+            }
             found_variation = False
-            for size in sizegroup.sizes.all():
+            for size in sizes:
                 try:
-                    variation = all_variations.get(product=self.product, size=size)
-                    entry["sizes"].append({
+                    variation = all_variations[(design_variation.id, size.id)]
+                    row["variations"].append({
                         "size": size,
                         "variation": variation,
                         "html": self.render_variation(variation),
                     })
-
                     found_variation = True
-                except Variation.DoesNotExist:
-                    entry["sizes"].append({
+                except KeyError:
+                    row["variations"].append({
                         "size": size,
                         "variation": None,
-                        "html": self.render_empty(self.product, size),
+                        "html": self.render_empty(design_variation, size),
                     })
-
             if found_variation or self.show_empty_rows:
-                yield entry
+                yield row
 
     @property
     def column_width(self):

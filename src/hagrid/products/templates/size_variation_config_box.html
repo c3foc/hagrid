@@ -1,0 +1,15 @@
+{{ form.design_variation }}
+{{ form.size }}
+
+{{ form.errors }}
+
+<div class="fieldWrapper">
+    <small>
+        <label for="{{ form.amount_initial.id_for_label }}" class="">Delivered</label>
+    </small><br/>
+    {{ form.amount_initial }}<br/>
+    <small>
+        <label for="{{ form.amount_preordered.id_for_label }}" class="">Preordered</label>
+    </small><br/>
+    {{ form.amount_preordered }}
+</div>

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+import datetime
 import os
 from email.utils import getaddresses
 from pathlib import Path
@@ -190,3 +191,55 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 }
+
+# logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"default": {"format": "[%(levelname)s] %(asctime)s %(name)s :: %(message)s"}},
+    "filters": {
+        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
+        "require_debug_true": {"()": "django.utils.log.RequireDebugTrue"},
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+            "filters": ["require_debug_true"],
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        },
+        "file": {
+            "level": "DEBUG",
+            "formatter": "default",
+            "filters": [],
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": os.path.join(LOG_DIR, "ephios.log"),
+            "when": "midnight",
+            "backupCount": env.int("LOGGING_BACKUP_DAYS", default=14),
+            "atTime": datetime.time(4),
+            "encoding": "utf-8",
+        },
+    },
+    "loggers": {
+        "ephios": {
+            "handlers": ["mail_admins", "console", "file"],
+            "level": "DEBUG" if DEBUG else "INFO",
+            "propagate": False,
+        },
+        "django": {"handlers": [], "level": "INFO", "propagate": True},
+        "django.server": {"handlers": [], "level": "INFO", "propagate": True},
+    },
+    "root": {"handlers": ["mail_admins", "console", "file"], "level": "INFO"},
+}
+
+ENABLE_DEBUG_TOOLBAR = env.bool("DEBUG_TOOLBAR", False)
+if ENABLE_DEBUG_TOOLBAR:
+    INSTALLED_APPS.append("django_extensions")
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    INTERNAL_IPS = env.list("INTERNAL_IPS", default=["127.0.0.1"])

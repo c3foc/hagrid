@@ -53,7 +53,7 @@ The order of all items is:
 
 * Product group, by `position`
 * Product, by `position`
-* Sizegroup, by `position`
+* SizeScale, by `position`
 * Size, by `position`
 
 A product group can have a HTML description, like `<p>Only available on <b>DAY
@@ -63,7 +63,7 @@ A product group can have a HTML description, like `<p>Only available on <b>DAY
 
 The product images on the dashboard are chosen at random from all gallery
 images associated with a product. Add all your images as gallery images. If you
-enter no name, then the Product + Sizegroup will be used for the title in the
+enter no name, then the Product + SizeScale will be used for the title in the
 gallery. That is usually fine.
  
 The gallery images do not track item size anymore. You can't judge a size from

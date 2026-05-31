@@ -3,10 +3,10 @@ from rest_framework import generics, viewsets
 from hagrid.api.serializers import (
     ProductAPISerializer,
     SizeAPISerializer,
-    SizeGroupAPISerializer,
-    VariationAPISerializer,
+    SizeScaleAPISerializer,
+    SizeVariationAPISerializer,
 )
-from hagrid.products.models import Product, Size, SizeGroup, Variation
+from hagrid.products.models import Product, Size, SizeScale, SizeVariation
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -19,16 +19,16 @@ class SizeViewSet(viewsets.ModelViewSet):
     serializer_class = SizeAPISerializer
 
 
-class SizeGroupViewSet(viewsets.ModelViewSet):
-    queryset = SizeGroup.objects.all()
-    serializer_class = SizeGroupAPISerializer
+class SizeScaleViewSet(viewsets.ModelViewSet):
+    queryset = SizeScale.objects.all()
+    serializer_class = SizeScaleAPISerializer
 
 
-class VariationProductDetail(generics.ListAPIView):
-    serializer_class = VariationAPISerializer
+class SizeVariationProductDetail(generics.ListAPIView):
+    serializer_class = SizeVariationAPISerializer
 
     def get_queryset(self):
-        queryset = Variation.objects.all()
+        queryset = SizeVariation.objects.all()
         product_id = self.request.query_params.get("product_id", None)
         if product_id is not None:
             queryset = queryset.filter(product__id=product_id)

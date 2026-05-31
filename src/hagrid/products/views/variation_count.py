@@ -10,22 +10,21 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods
 
 from hagrid.operations.models import EventTime
-
-from ..models import (
+from hagrid.products.models import (
+    AvailabilityEvent,
+    CountAccessCode,
+    CountEvent,
     Product,
     Size,
-    SizeGroup,
+    SizeScale,
+    SizeVariation,
     StoreSettings,
-    Variation,
-    VariationAvailabilityEvent,
-    VariationCountAccessCode,
-    VariationCountEvent,
 )
 
 
 class VariationCountForm(forms.ModelForm):
     availability = forms.ChoiceField(
-        choices=Variation.AVAILABILITY_STATES,
+        choices=SizeVariation.AVAILABILITY_STATES,
     )
 
     def __init__(self, *args, count_required=False, **kwargs):
@@ -34,7 +33,7 @@ class VariationCountForm(forms.ModelForm):
         self.fields["count"].required = count_required
 
     class Meta:
-        model = VariationCountEvent
+        model = CountEvent
         exclude = ["datetime", "variation", "comment", "name"]
 
 
@@ -73,7 +72,7 @@ def variation_count(request, code, variation_id=None):
         messages.add_message(request, messages.ERROR, "We are not counting items at the moment.")
         return redirect("dashboard")
 
-    access_code = get_object_or_404(VariationCountAccessCode, code=code, disabled=False)
+    access_code = get_object_or_404(CountAccessCode, code=code, disabled=False)
 
     if access_code.as_queue:
         if not variation_id:
@@ -132,7 +131,7 @@ def variation_count(request, code, variation_id=None):
 
         try:
             variations = [access_code.variations.get(id=variation_id)]
-        except Variation.DoesNotExist:
+        except SizeVariation.DoesNotExist:
             raise Http404()
 
     elif variation_id:
@@ -163,10 +162,10 @@ def variation_count(request, code, variation_id=None):
     if not product_column:
         common_name.append(str(products_used[0]))
 
-    sizegroups_used = list(SizeGroup.objects.filter(sizes__variations__in=variations).distinct())
-    sizegroup_column = len(sizegroups_used) > 1
-    if not sizegroup_column:
-        common_name.append(str(sizegroups_used[0]))
+    SizeScales_used = list(SizeScale.objects.filter(sizes__variations__in=variations).distinct())
+    SizeScale_column = len(SizeScales_used) > 1
+    if not SizeScale_column:
+        common_name.append(str(SizeScales_used[0]))
 
     sizes_used = list(Size.objects.filter(variations__in=variations).distinct())
     size_column = len(sizes_used) > 1
@@ -178,7 +177,7 @@ def variation_count(request, code, variation_id=None):
 
         if common_form.is_valid() and common_form.cleaned_data["action"] != "save":
             if variation_id:
-                variation = Variation.objects.get(id=variation_id)
+                variation = SizeVariation.objects.get(id=variation_id)
                 common_form.cleaned_data["action"]
                 variation.count_disabled_reason = common_form.cleaned_data["action"]
                 if variation.count_disabled_reason in (
@@ -220,7 +219,7 @@ def variation_count(request, code, variation_id=None):
                     total += count
                     items_changed += 1
 
-                    VariationCountEvent(
+                    CountEvent(
                         count=count,
                         variation=variation,
                         comment=common_form.cleaned_data["comment"],
@@ -229,7 +228,7 @@ def variation_count(request, code, variation_id=None):
                 if new_availability != old_availability:
                     variation.availability = new_availability
                     variation.save()
-                    VariationAvailabilityEvent(
+                    AvailabilityEvent(
                         old_state=old_availability,
                         new_state=new_availability,
                         variation=variation,
@@ -262,9 +261,9 @@ def variation_count(request, code, variation_id=None):
         "variation_count.html",
         {
             "product_column": product_column,
-            "sizegroup_column": sizegroup_column,
+            "SizeScale_column": SizeScale_column,
             "size_column": size_column,
-            "column_count": product_column + sizegroup_column + size_column,
+            "column_count": product_column + SizeScale_column + size_column,
             "common_name": " / ".join(common_name),
             "access_code": access_code,
             "items": items,
@@ -308,7 +307,7 @@ def variation_count_overview(request):
     event_time = EventTime()
 
     priorities = []
-    for variation in Variation.objects.all():
+    for variation in SizeVariation.objects.all():
         prefix = f"variation-{variation.id}"
         form = (
             VariationBumpForm(request.POST, prefix=prefix)
@@ -352,7 +351,7 @@ def variation_count_overview(request):
 def variation_count_log(request):
     event_time = EventTime()
     now = event_time.datetime_to_event_time(timezone.now())
-    events = VariationCountEvent.objects.order_by("-datetime").all()
+    events = CountEvent.objects.order_by("-datetime").all()
     context = {
         "items": [
             {

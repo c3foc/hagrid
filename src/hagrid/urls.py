@@ -19,7 +19,21 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from hagrid.products import views
+from hagrid.products.views.config import (
+    operator_overview,
+    size_variation_config,
+    variation_availability_config,
+    variation_availability_event_list,
+    variation_count_config,
+)
+from hagrid.products.views.dashboard import dashboard, dashboard_table
+from hagrid.products.views.stats import operator_stats
+from hagrid.products.views.variation_count import (
+    variation_count,
+    variation_count_log,
+    variation_count_overview,
+    variation_count_success,
+)
 
 
 # auto-assign URL lookup name from function name
@@ -28,25 +42,30 @@ def p(pathname, fn):
 
 
 urlpatterns = [
-    p("", views.dashboard),
-    p("table", views.dashboard_table),
-    p("operator/", views.products_config_overview),
-    p("operator/availability/", views.variation_availability_config),
-    p("operator/availability/<int:product_id>/", views.variation_availability_config),
-    p("operator/variations/", views.variation_config),
-    p("operator/stats", views.operator_stats),
-    p("operator/variations/<int:product_id>/", views.variation_config),
-    p("operator/count/queue", views.variation_count_overview),
-    p("operator/count/edit", views.variation_count_config),
-    p("operator/count/log", views.variation_count_log),
-    p("operator/count/<int:product_id>/", views.variation_count_config),
-    p("history/", views.variation_availability_event_list),
-    p("count/success", views.variation_count_success),
-    p("count/<slug:code>/", views.variation_count),
-    p("count/<slug:code>/<int:variation_id>", views.variation_count),
+    p("", dashboard),
+    p("table", dashboard_table),
+    p("operator/", operator_overview),
+    p("operator/availability/", variation_availability_config),
+    p("operator/availability/<int:product_id>/", variation_availability_config),
+    p("operator/variations/", size_variation_config),
+    p("operator/stats", operator_stats),
+    p("operator/variations/<int:product_id>/", size_variation_config),
+    p("operator/count/queue", variation_count_overview),
+    p("operator/count/edit", variation_count_config),
+    p("operator/count/log", variation_count_log),
+    p("operator/count/<int:product_id>/", variation_count_config),
+    p("history/", variation_availability_event_list),
+    p("count/success", variation_count_success),
+    p("count/<slug:code>/", variation_count),
+    p("count/<slug:code>/<int:variation_id>", variation_count),
     path("admin/", admin.site.urls),
     path("reservations/", include("hagrid.reservations.urls")),
     path("gallery/", include("hagrid.gallery.urls")),
     path("api/", include("hagrid.api.urls")),
     path("pages/", include("hagrid.staticpages.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.ENABLE_DEBUG_TOOLBAR:
+    import debug_toolbar
+
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
