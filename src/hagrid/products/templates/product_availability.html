@@ -2,83 +2,79 @@
 {% load static %}
 {% load product %}
 
+
 {% spaceless %}
-    {% for section in sections %}
-        <h1 class="title">
-            {{ section.title }}
-            <button class="btn btn-dark btn-hide-productgroup" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#section-{{ section.title|slugify }}"
-                    aria-expanded="false" aria-controls="collapseExample">
-                hide <span class="visually-hidden">this section</span>
-            </button>
-        </h1>
+    <div id="availability-sections" hx-ext="sse" sse-connect="/api/events/availability-display/">
+        {% for section in sections %}
+            <h1 class="title">
+                {{ section.title }}
+                <button class="btn btn-dark btn-hide-productgroup" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#section-{{ section.title|slugify }}"
+                        aria-expanded="false" aria-controls="collapseExample">
+                    hide <span class="visually-hidden">this section</span>
+                </button>
+            </h1>
 
-        <div class="collapse show" id="section-{{ section.title|slugify }}">
+            <div class="collapse show" id="section-{{ section.title|slugify }}">
 
-            {% if section.description %}
-                <div class="center">
-                    {{ section.description | safe }}
-                </div>
-            {% endif %}
+                {% if section.description %}
+                    <div class="center">
+                        {{ section.description | safe }}
+                    </div>
+                {% endif %}
 
-            {% include 'dashboard_legend.html' %}
+                {% include 'dashboard_legend.html' %}
 
-            <div class="grid-sizer">
-                <div class="grid-background">
-                    {% for table in section.tables %}
-                        <div class="grid-container product">
-                            <div class="product-name">
-                                <h2>{{ table.title }}</h2>
-                                {% if table.price.min_price is not None %}
-                                    {% if table.price.min_price == table.price.max_price %}
-                                        <span class="product-price">{{ table.price.min_price|format_price }}</span>
-                                    {% else %}
-                                        <span class="product-price">
-                                            {{ table.price.min_price|format_price }}
-                                            to
-                                            {{ table.price.max_price|format_price }}
-                                        </span>
+                <div class="grid-sizer">
+                    <div class="grid-background">
+                        {% for table in section.tables %}
+                            <div class="grid-container product">
+                                <div class="product-name">
+                                    <h2>{{ table.title }}</h2>
+                                    {% if table.price.min_price is not None %}
+                                        {% if table.price.min_price == table.price.max_price %}
+                                            <span class="product-price">{{ table.price.min_price|format_price }}</span>
+                                        {% else %}
+                                            <span class="product-price">
+                                                {{ table.price.min_price|format_price }}
+                                                to
+                                                {{ table.price.max_price|format_price }}
+                                            </span>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                                <a href="" title="Show product images"
-                                   class="product-image-icon">
-                                    <img src="{% static 'image.svg' %}"/>
-                                </a>
-                            </div>
-                            {% if entry.image %}
-                                <a class="product-image" href="">
-                                    <img src="{{ entry.image.image.url }}"/>
-                                    {% if entry.image_count_more %}
-                                        <div class="product-image-count-more">+{{ entry.image_count_more }}</div>
-                                    {% endif %}
-                                </a>
-                            {% else %}
-                                <div class="product-image">
-                                    <img src="{% static 'tshirt-small.svg' %}"/>
+                                    <a href="" title="Show product images"
+                                       class="product-image-icon">
+                                        <img src="{% static 'image.svg' %}"/>
+                                    </a>
                                 </div>
-                            {% endif %}
+                                {% if entry.image %}
+                                    <a class="product-image" href="">
+                                        <img src="{{ entry.image.image.url }}"/>
+                                        {% if entry.image_count_more %}
+                                            <div class="product-image-count-more">+{{ entry.image_count_more }}</div>
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <div class="product-image">
+                                        <img src="{% static 'tshirt-small.svg' %}"/>
+                                    </div>
+                                {% endif %}
 
-                            <div class="product-availabilities">
-                                {% for variation_name, availabilities in table.iterate_rows %}
-                                    <h3>{{ variation_name }}</h3>
-                                    <ul class="product-availability-tags">
-                                        {% for variation in availabilities %}
-                                            <li title="{{ variation_name }} size {{ variation.size.name }} is {{ variation.availability }}">
-                                                <{% if variation.availability == "sold out" %}del{% else %}span{% endif %}
-                                                class="product-availability-tag {{ variation.availability|availability_class }}{% if variation.size.name|length >= 4 or "/" in variation.size.name %} small{% endif %}"
-                                                >
-                                                {{ variation.size.name }}
-                                                <span class="visually-hidden">{{ availability }}</span>
-                                            </{% if variation.availability == "sold out" %}del{% else %}span{% endif %}>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endfor %}
+                                <div class="product-availabilities">
+                                    {% for variation_name, availabilities in table.iterate_rows %}
+                                        <h3>{{ variation_name }}</h3>
+                                        <ul class="product-availability-tags">
+                                            {% for variation in availabilities %}
+                                                {% include 'product_availability_tag.html' with variation=variation %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 {% endspaceless %}

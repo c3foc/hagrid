@@ -59,7 +59,6 @@ else:
     SECRET_FILE = os.path.join(PRIVATE_DIR, ".secret")
     SECRET_KEY = django_secret_from_file(SECRET_FILE)
 
-
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 SITE_URL = env.str("SITE_URL").rstrip("/")
@@ -70,11 +69,11 @@ DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL")
 SERVER_EMAIL = env.str("SERVER_EMAIL")
 ADMINS = getaddresses([env("ADMINS")])
 
-
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 # Application definition
 INSTALLED_APPS = [
+    "daphne",
     "compressor",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -82,6 +81,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_eventstream",
+    "django_htmx",
     "rest_framework",
     "hagrid.products",
     "hagrid.reservations",
@@ -109,6 +110,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "hagrid.urls"
@@ -132,6 +134,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "hagrid.wsgi.application"
+ASGI_APPLICATION = "hagrid.asgi.application"
 
 # SASS compiling
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
@@ -163,7 +166,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {"DEFAULT_PERMISSION_CLASSES": ["hagrid.api.permissions.IsSafeMethodOnly"]}
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -172,7 +174,6 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Europe/Berlin"
 USE_I18N = False
 USE_L10N = True
-USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

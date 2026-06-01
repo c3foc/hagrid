@@ -1,0 +1,7 @@
+{% load product %}
+{% spaceless %}
+    <li title="{{ variation.design_variation }} size {{ variation.size.name }} is {{ variation.availability }}" sse-swap="variation-{{ variation.id }}">
+        <{% if variation.availability == "sold out" %}del{% else %}span{% endif %} class="product-availability-tag {{ variation.availability|availability_class }}{% if variation.size.name|length >= 4 or "/" in variation.size.name %} small{% endif %}">{{ variation.size.name }}<span class="visually-hidden">{{ availability }}</span>
+    </{% if variation.availability == "sold out" %}del{% else %}span{% endif %}>
+    </li>
+{% endspaceless %}
