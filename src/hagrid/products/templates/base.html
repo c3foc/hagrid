@@ -1,13 +1,21 @@
 {% load static %}
+{% load django_htmx %}
+{% load compress %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
     <head>
         <title>{% block thetitle %}c3foc{% endblock %}</title>
         <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
 
-        {% load compress %}
         {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "hagrid.scss" %}" />
+            <link rel="stylesheet" type="text/x-scss" href="{% static "hagrid.scss" %}"/>
+        {% endcompress %}
+
+        {% compress js %}
+            <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.js" %}"></script>
+            <script type="text/javascript" src="{% static "js/hagrid.js" %}"></script>
+            {% htmx_script %}
+            <script type="text/javascript" src="{% static "js/htmx-ext-sse.js" %}" defer></script>
         {% endcompress %}
 
         <meta charset="utf-8">
@@ -16,7 +24,7 @@
 
         {% endblock %}
     </head>
-    <body>
+    <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
 
         <nav class="navbar navbar-expand-md border-body" data-bs-theme="dark">
             <div class="container">
@@ -60,7 +68,7 @@
                         {% endif %}
                         {% for page in headerpages %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'staticpages' page.slug %}">{{page.title}}</a>
+                                <a class="nav-link" href="{% url 'staticpages' page.slug %}">{{ page.title }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -90,13 +98,12 @@
             <div class="container">
                 <div class="row">
                     <ul>
-                        {% for page in footerpages %}<li><a href="{% url 'staticpages' page.slug %}">{{page.title}}</a></li>{% endfor %}
+                        {% for page in footerpages %}
+                            <li><a href="{% url 'staticpages' page.slug %}">{{ page.title }}</a></li>{% endfor %}
                     </ul>
                 </div>
             </div>
         </footer>
 
-        <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.js" %}"></script>
-        <script type="text/javascript" src="{% static "hagrid.js" %}"></script>
     </body>
 </html>

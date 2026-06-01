@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+import django_eventstream
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -61,6 +62,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("reservations/", include("hagrid.reservations.urls")),
     path("gallery/", include("hagrid.gallery.urls")),
+    path(
+        "api/events/availability-display/",
+        include(django_eventstream.urls),
+        {"channels": ["availability-display"]},
+    ),
     path("api/", include("hagrid.api.urls")),
     path("pages/", include("hagrid.staticpages.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

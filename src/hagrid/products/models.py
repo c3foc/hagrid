@@ -2,8 +2,10 @@ import math
 import secrets
 
 from django.db import models
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
+from django_eventstream import send_event
 from positions import PositionField
 
 from hagrid.operations.models import Event, EventTime
@@ -406,3 +408,14 @@ def variation_availability_change(sender, instance, **kwargs):
             new_state=new_instance.availability,
             variation=instance,
         ).save()
+        send_event(
+            "availability-display",
+            f"variation-{instance.id}",
+            data=render_to_string(
+                "product_availability_tag.html",
+                {
+                    "variation": instance,
+                },
+            ),
+            json_encode=False,
+        )
