@@ -21,6 +21,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from hagrid.products.views.config import (
+    htmx_update_variation_availability,
     operator_overview,
     size_variation_config,
     variation_availability_config,
@@ -66,6 +67,16 @@ urlpatterns = [
         "api/events/availability-display/",
         include(django_eventstream.urls),
         {"channels": ["availability-display"]},
+    ),
+    path(
+        "api/events/availability-form/",
+        include(django_eventstream.urls),
+        {"channels": ["availability-form"]},
+    ),
+    path(
+        "api/form/availability/<int:variation_id>/",
+        htmx_update_variation_availability,
+        name="htmx_update_variation_availability",
     ),
     path("api/", include("hagrid.api.urls")),
     path("pages/", include("hagrid.staticpages.urls")),

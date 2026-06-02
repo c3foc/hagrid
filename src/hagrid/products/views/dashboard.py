@@ -84,7 +84,7 @@ def dashboard(request):
         "dashboard_text": dashboard_text,
     }
 
-    return render(request, "dashboard.html", context)
+    return render(request, "dashboard/dashboard.html", context)
 
 
 def built_product_tables(current_event: Event, events: list[Any]) -> list[Any]:
@@ -145,5 +145,5 @@ def dashboard_table(request):
             SizeTable(sg, render_variation=render_variation) for sg in SizeScale.objects.all()
         ],
     }
-
+    # TODO what is this view and how do we use it?
     return render(request, "dashboard_table.html", context)

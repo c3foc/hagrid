@@ -412,8 +412,25 @@ def variation_availability_change(sender, instance, **kwargs):
             "availability-display",
             f"variation-{instance.id}",
             data=render_to_string(
-                "product_availability_tag.html",
+                "dashboard/product_availability_tag.html",
                 {
+                    "variation": instance,
+                },
+            ),
+            json_encode=False,
+        )
+        # Availbility change form
+        from hagrid.products.views.config import VariationsAvailabilityForm
+
+        form = VariationsAvailabilityForm([instance])
+        field = form.field_for_rendering_by_variation(instance)
+        send_event(
+            "availability-form",
+            f"variation-{instance.id}",
+            data=render_to_string(
+                "operator/variation_availability_box.html",
+                {
+                    "field": field,
                     "variation": instance,
                 },
             ),

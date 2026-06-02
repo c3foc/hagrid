@@ -23,7 +23,7 @@
                     </div>
                 {% endif %}
 
-                {% include 'dashboard_legend.html' %}
+                {% include 'dashboard/dashboard_legend.html' %}
 
                 <div class="grid-sizer">
                     <div class="grid-background">
@@ -65,7 +65,7 @@
                                         <h3>{{ variation_name }}</h3>
                                         <ul class="product-availability-tags">
                                             {% for variation in availabilities %}
-                                                {% include 'product_availability_tag.html' with variation=variation %}
+                                                {% include 'dashboard/product_availability_tag.html' with variation=variation %}
                                             {% endfor %}
                                         </ul>
                                     {% endfor %}

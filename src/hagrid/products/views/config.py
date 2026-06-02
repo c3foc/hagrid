@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.views import login_required
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -40,7 +41,7 @@ def size_variation_config(request, product_id=None):
 
     def render_form(form, variation=None):
         return render_to_string(
-            "size_variation_config_box.html", context={"form": form}, request=request
+            "operator/size_variation_config_box.html", context={"form": form}, request=request
         )
 
     def render_variation_form(size_variation):
@@ -127,7 +128,7 @@ def size_variation_config(request, product_id=None):
 
     return render(
         request,
-        "size_variation_config.html",
+        "operator/size_variation_config.html",
         {
             "products": products,
             "product_tables": tables,
@@ -145,7 +146,6 @@ class VariationsAvailabilityForm(forms.Form):
                 initial=variation.availability,
                 widget=forms.RadioSelect(
                     choices=SizeVariation.AVAILABILITY_STATES,
-                    attrs={"style": "position:fixed;opacity:0;"},
                 ),
             )
 
@@ -167,7 +167,7 @@ def variation_availability_config(request, product_id=None):
     def render_variation_form(variation):
         field = form.field_for_rendering_by_variation(variation)
         return render_to_string(
-            "variation_availability_box.html",
+            "operator/variation_availability_box.html",
             context={"field": field, "variation": variation},
             request=request,
         )
@@ -213,7 +213,20 @@ def variation_availability_config(request, product_id=None):
         )
 
     context = {"tables": tables}
-    return render(request, "variation_availability_config.html", context)
+    return render(request, "operator/variation_availability_config.html", context)
+
+
+@login_required()
+@require_http_methods(["POST"])
+def htmx_update_variation_availability(request, variation_id):
+    variation = get_object_or_404(SizeVariation, pk=variation_id)
+    form = VariationsAvailabilityForm(variations=[variation], data=request.POST)
+    if form.is_valid():
+        value = form.cleaned_data[f"variation_{variation.id}"]
+        if variation.availability != value:
+            variation.availability = value
+            variation.save(update_fields=["availability"])
+    return HttpResponse()
 
 
 class VariationsCountForm(forms.Form):
@@ -345,7 +358,7 @@ def operator_overview(request):
             "datetime"
         ),
     }
-    return render(request, "operator_overview.html", context)
+    return render(request, "operator/operator_overview.html", context)
 
 
 @login_required()
