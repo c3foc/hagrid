@@ -647,6 +647,9 @@ table.table-sticky-head {
   input:checked + label {
     display: block;
   }
+  input {
+    display: none !important;
+  }
 }
 
 .availability-progress {
