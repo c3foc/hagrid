@@ -1,5 +1,5 @@
 {% load product %}
-<div sse-swap="variation-{{ variation.id }}">
+<div sse-swap="variation-{{ variation.id }}" hx-swap="outerHTML" hx-indicator="closest .swapbox" class="swapbox">
     {{ field.errors }}
     <span class="visually-hidden">Availability:</span>
     <div class="availability-switch" hx-post="{% url "htmx_update_variation_availability" variation_id=variation.id %}" hx-trigger="change"
