@@ -17,6 +17,7 @@ admin.site.register(AvailabilityEvent)
 admin.site.register(ProductCategory)
 admin.site.register(DesignVariation)
 admin.site.register(Design)
+admin.site.register(Price)
 
 
 @admin.register(Product)

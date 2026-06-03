@@ -15,36 +15,34 @@
             </div>
         {% endfor %}
 
-        {% if unoffered_product_groups %}
-            Products of the following categories cannot be included in reservations:
-            {% for group in unoffered_product_groups %}
-                {{ group.name }}{% if not forloop.last %},{% endif %}
-            {% endfor %}
+        {% if unoffered_events %}
+            Products of the following events cannot be included in reservations:
+            {{ unoffered_events|join:", " }}
         {% endif %}
 
         {% for table in variation_tables %}
-            <h3>{{table.header.0}}</h3>
-            {% include "variation_table.html" with table=table %}
+            {% include "product_table.html" with table=table %}
         {% endfor %}
-        <input class="btn btn-lg btn-primary" type="submit" value="Save"/>
+        <input class="btn btn-lg btn-primary mt-3 d-block" type="submit" value="Save"/>
     </form>
 
     <script>
         function markNumberInputs() {
-            for(let input of $("input.variationcounthighlight")) {//document.getElementsByTagName('input')) {
-                input.closest("td").classList.toggle('bg-primary', input.value > 0);
+            for (let input of document.querySelectorAll(".variationcounthighlight")) {
+                const td = input.closest("td");
+                if (td) td.classList.toggle("bg-secondary", input.value > 0);
             }
         }
+
         setInterval(markNumberInputs, 100);
-        function defer(method) {
-            if (window.jQuery) {
-                method();
-            } else {
-                setTimeout(function() { defer(method) }, 200);
-            }
-        }
-        defer(function(){
-            $('[data-toggle="tooltip"]').tooltip();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tooltipTriggerList = [].slice.call(
+                document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            );
+            tooltipTriggerList.forEach(el => {
+                new bootstrap.Tooltip(el);
+            });
         });
     </script>
 

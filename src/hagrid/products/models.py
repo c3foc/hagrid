@@ -2,6 +2,8 @@ import math
 import secrets
 
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
@@ -138,6 +140,12 @@ class Price(models.Model):
 
     class Meta:
         unique_together = (("product", "valid_for_products_from_event", "valid_at"),)
+
+    def __str__(self):
+        s = f"{self.valid_for_products_from_event!s} {self.product!s} at {self.valid_at!s}"
+        if self.valid_for_products_from_event != self.valid_at:
+            return f"old {s}"
+        return s
 
 
 class SizeVariation(models.Model):
@@ -388,10 +396,6 @@ class CountAccessCode(models.Model):
         )
 
         return queryset
-
-
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 
 
 @receiver(pre_save, sender=SizeVariation, dispatch_uid="variation_availability_change")

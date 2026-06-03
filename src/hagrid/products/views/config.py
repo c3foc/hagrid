@@ -255,7 +255,7 @@ def variation_count_config(request, product_id=None):
     products = Product.objects.all()
     if product_id is not None:
         products = products.filter(id=product_id)
-    variations = list(SizeVariation.objects.filter(product__in=products).all())
+    variations = list(SizeVariation.objects.filter(design_variation__product__in=products).all())
 
     form = VariationsCountForm(variations, request.POST or None)
 
@@ -270,16 +270,27 @@ def variation_count_config(request, product_id=None):
     def render_empty_form(product, size):
         return ""
 
-    product_tables = {
-        product.id: ProductTable(
-            product,
-            render_variation=render_variation_form,
-            render_empty=render_empty_form,
-            show_empty_rows=False,
-            table_class="count-config-table",
-        )
+    open_status = get_current_open_status()
+    current_event = open_status.event if open_status else Event.objects.order_by("-day_1").first()
+    tables = [
+        table
+        for event_groups, label in [
+            ({current_event}, current_event.name),
+            (set(Event.objects.all()) - {current_event}, "old"),
+        ]
         for product in products
-    }
+        if (
+            table := ProductTable(
+                title=f"{label} {product.name}",
+                product=product,
+                only_events_in=event_groups,
+                render_variation=render_variation_form,
+                render_empty=render_empty_form,
+                show_empty_rows=False,
+                table_class="count-config-table",
+            )
+        ).rows
+    ]
 
     if request.POST and form.is_valid():
         now = timezone.now()
@@ -312,32 +323,8 @@ def variation_count_config(request, product_id=None):
             else redirect("variation_count_config")
         )
 
-    product_groups = [
-        {
-            "product_group": product_group,
-            "tables": [
-                product_tables[product.id]
-                for product in product_group.products.all()
-                if product.id in product_tables
-            ],
-        }
-        for product_group in ProductCategory.objects.all()
-    ]
-
-    unassigned = list(Product.objects.filter(product_group=None))
-    if unassigned:
-        product_groups.append({
-            "product_group": None,
-            "tables": [
-                product_tables[product.id] for product in unassigned if product.id in product_tables
-            ],
-        })
-
-    # filter empty groups
-    product_groups = [p for p in product_groups if len(p["tables"])]
-
-    context = {"product_groups": product_groups}
-    return render(request, "variation_count_config.html", context)
+    context = {"tables": tables}
+    return render(request, "operator/variation_count_config.html", context)
 
 
 @login_required()

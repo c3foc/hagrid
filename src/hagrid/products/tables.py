@@ -1,58 +1,16 @@
 from .models import (
     DesignVariation,
-    Product,
     SizeVariation,
 )
 
 
-class SizeTable:
-    def __init__(
-        self,
-        SizeScale,
-        render_variation=None,
-        render_empty=None,
-        show_empty_rows=False,
-        products_queryset=None,
-    ):
-        self.SizeScale = SizeScale
-        self.show_empty_rows = show_empty_rows
-        if not render_variation:
-            render_variation = lambda v: v.availability
-        self.render_variation = render_variation
-        if not render_empty:
-            render_empty = lambda p, s: ""
-        self.render_empty = render_empty
-        self.products_queryset = (
-            products_queryset if products_queryset is not None else Product.objects.all()
-        )
-        self.entries = self.generate_entries()
-
-    @property
-    def header(self):
-        return [self.SizeScale.name] + [size.name for size in self.SizeScale.sizes.all()]
-
-    def generate_entries(self):
-        rows = []
-        all_variations = SizeVariation.objects.all()
-        bool(all_variations)  # cache all variations in queryset
-        SizeScale_sizes = self.SizeScale.sizes.all()
-
-        for product in self.products_queryset:
-            row = [product.name]
-            found_variation = False
-            for size in SizeScale_sizes:
-                try:
-                    variation = all_variations.get(product=product, size=size)
-                    row.append(self.render_variation(variation))
-                    found_variation = True
-                except SizeVariation.DoesNotExist:
-                    row.append(self.render_empty(product, size))
-            if found_variation or self.show_empty_rows:
-                rows.append(row)
-        return rows
-
-
 class ProductTable:
+    """
+    A table where the rows are design variants of a product
+    and the columns sizes of the associated size scale.
+    Can be limited to designs of specific events.
+    """
+
     def __init__(
         self,
         title,
@@ -77,7 +35,7 @@ class ProductTable:
         design_variations = DesignVariation.objects.filter(
             product=self.product,
         )
-        if self.only_events_in:
+        if self.only_events_in is not None:
             design_variations = design_variations.filter(design__event__in=self.only_events_in)
         bool(design_variations)
         sizes = self.product.size_scale.sizes.all()

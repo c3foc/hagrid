@@ -652,6 +652,10 @@ table.table-sticky-head {
   }
 }
 
+input.variationcounthighlight {
+  background: $background;  // so its still readable with a highlighted background
+}
+
 .availability-progress {
   position: relative;
   height: 20px;
