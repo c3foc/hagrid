@@ -30,7 +30,7 @@
         function markNumberInputs() {
             for (let input of document.querySelectorAll(".variationcounthighlight")) {
                 const td = input.closest("td");
-                if (td) td.classList.toggle("bg-secondary", input.value > 0);
+                if (td) td.classList.toggle("bg-primary", input.value > 0);
             }
         }
 

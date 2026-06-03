@@ -211,6 +211,11 @@ def variation_availability_config(request, product_id=None):
             messages.SUCCESS,
             f"Changed {changed_count} availabilities",
         )
+        return (
+            redirect("variation_availability_config", product_id)
+            if product_id
+            else redirect("variation_availability_config")
+        )
 
     context = {"tables": tables}
     return render(request, "operator/variation_availability_config.html", context)

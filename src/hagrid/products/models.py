@@ -291,6 +291,16 @@ class SizeVariation(models.Model):
     def crate_size_value(self):
         return self.crate_size or None
 
+    def get_price_at(self, event: Event):
+        price = Price.objects.filter(
+            product_id=self.design_variation.product_id,
+            valid_at=event,
+            valid_for_products_from_event_id=self.design_variation.design.event_id,
+        ).first()
+        if price is None:
+            return None
+        return price.amount
+
 
 class AvailabilityEvent(models.Model):
     old_state = models.CharField(max_length=20, choices=SizeVariation.AVAILABILITY_STATES)

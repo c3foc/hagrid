@@ -7,10 +7,12 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views import View
 from django.views.generic.base import TemplateView
+from django_eventstream import send_event
 
 from hagrid.operations.models import Event
 from hagrid.products.models import Product
@@ -99,6 +101,12 @@ class ReservationAdministrationView(LoginRequiredMixin, View):
             "btn-secondary",
             "btn-outline-secondary",
         ),
+        StateButton(
+            Reservation.STATE_PACKING,
+            "Packing",
+            "btn-secondary",
+            "btn-outline-secondary",
+        ),
         StateButton(Reservation.STATE_PACKED, "Packed", "btn-secondary", "btn-outline-secondary"),
         StateButton(Reservation.STATE_READY, "Ready", "btn-secondary", "btn-outline-secondary"),
         StateButton(
@@ -120,18 +128,35 @@ class ReservationAdministrationView(LoginRequiredMixin, View):
             emails.send_reservation_state_changed_by_admin_mail(
                 reservation, old_state, reservation.state
             )
+            self.send_htmx_update(reservation)
         else:
             messages.add_message(request, messages.ERROR, "This action could not be performed.")
         return redirect("reservationadministration")
 
     def get(self, request):
+        event = get_current_open_status().event
         return render(
             request,
             self.template_name,
             {
-                "reservations": Reservation.objects.all(),
+                "reservations": Reservation.objects.filter(event=event),
                 "state_buttons": self.state_buttons,
+                "event": event,
             },
+        )
+
+    def send_htmx_update(self, reservation):
+        send_event(
+            "reservation-state-form",
+            f"reservation-{reservation.id}",
+            data=render_to_string(
+                "reservation_state_buttons.html",
+                {
+                    "reservation": reservation,
+                    "state_buttons": self.state_buttons,
+                },
+            ),
+            json_encode=False,
         )
 
 

@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 
+from hagrid.operations.models import Event
 from hagrid.products.models import Price, SizeVariation
 from hagrid.products.views.dashboard import get_current_open_status
 
@@ -10,6 +11,7 @@ class Reservation(models.Model):
     STATE_UNAPPROVED = "unapproved"
     STATE_EDITABLE = "editable"
     STATE_SUBMITTED = "submitted"
+    STATE_PACKING = "packing"
     STATE_PACKED = "packed"
     STATE_READY = "ready for pickup"
     STATE_PICKED_UP = "picked up"
@@ -18,6 +20,7 @@ class Reservation(models.Model):
         (STATE_UNAPPROVED, "unapproved"),
         (STATE_EDITABLE, "editable"),
         (STATE_SUBMITTED, "submitted"),
+        (STATE_PACKING, "packing"),
         (STATE_PACKED, "packed"),
         (STATE_READY, "ready to be picked up"),
         (STATE_PICKED_UP, "picked up"),
@@ -42,6 +45,7 @@ class Reservation(models.Model):
     packing_mode = models.CharField(
         max_length=20, choices=PACKING_MODES, default=PACKING_MODE_AGGREGATED
     )
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="reservations")
 
     def __str__(self):
         return f"Reservation for {self.team_name} by {self.contact_name}"

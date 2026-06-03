@@ -74,6 +74,11 @@ urlpatterns = [
         {"channels": ["availability-form"]},
     ),
     path(
+        "api/events/reservation-state-form/",
+        include(django_eventstream.urls),
+        {"channels": ["reservation-state-form"]},
+    ),
+    path(
         "api/form/availability/<int:variation_id>/",
         htmx_update_variation_availability,
         name="htmx_update_variation_availability",
