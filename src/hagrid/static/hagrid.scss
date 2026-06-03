@@ -20,34 +20,37 @@ $gridBorder: $gridBorderWidth solid $gridBorderColor;
 // $textColor: $highlight;
 
 @font-face {
-    font-family: 'Kario';
-    font-weight: 880;
-    src: URL(static('fonts/Kario/Kario39C3VarWEB-Roman.woff2')) format('woff2');
+  font-family: 'Kario';
+  font-weight: 880;
+  src: URL(static('fonts/Kario/Kario39C3VarWEB-Roman.woff2')) format('woff2');
 }
 
 @font-face {
-    font-family: 'Officer';
-    src: URL(static('fonts/Officer/OfficerSansWeb-Regular.woff2')) format('woff2');
-}
-@font-face {
-    font-family: 'Officer';
-    font-weight: 500;
-    src: URL(static('fonts/Officer/OfficerSansCondWeb-Bold.woff2')) format('woff2');
-}
-@font-face {
-    font-family: 'Officer';
-    font-weight: bold;
-    src: URL(static('fonts/Officer/OfficerSansWeb-Bold.woff2')) format('woff2');
+  font-family: 'Officer';
+  src: URL(static('fonts/Officer/OfficerSansWeb-Regular.woff2')) format('woff2');
 }
 
 @font-face {
-    font-family: 'space-mono';
-    src: URL(static('fonts/space-mono/SpaceMono-Regular.ttf')) format('truetype');
+  font-family: 'Officer';
+  font-weight: 500;
+  src: URL(static('fonts/Officer/OfficerSansCondWeb-Bold.woff2')) format('woff2');
 }
+
 @font-face {
-    font-family: 'space-mono';
-    font-weight: bold;
-    src: URL(static('fonts/space-mono/SpaceMono-Bold.ttf')) format('truetype');
+  font-family: 'Officer';
+  font-weight: bold;
+  src: URL(static('fonts/Officer/OfficerSansWeb-Bold.woff2')) format('woff2');
+}
+
+@font-face {
+  font-family: 'space-mono';
+  src: URL(static('fonts/space-mono/SpaceMono-Regular.ttf')) format('truetype');
+}
+
+@font-face {
+  font-family: 'space-mono';
+  font-weight: bold;
+  src: URL(static('fonts/space-mono/SpaceMono-Bold.ttf')) format('truetype');
 }
 
 $fontTitle: "Kario", sans-serif;
@@ -63,6 +66,7 @@ body {
 
 a {
   color: $accent4;
+
   &:hover {
     color: $accent2;
   }
@@ -82,6 +86,7 @@ h1 {
   font-family: $fontH1;
   color: $primary;
 }
+
 .center {
   text-align: center;
 }
@@ -125,6 +130,7 @@ main.container {
   // display: grid;
   // grid-template-columns: [start] repeat(auto-fit, $gridSize) [end];
 }
+
 .grid-sizer > * {
   // grid-column: start / end;
 }
@@ -173,6 +179,7 @@ main.container {
     justify-content: center;
   }
 }
+
 .product-availability-tag {
   // background: $primary;
   display: inline-flex;
@@ -194,19 +201,22 @@ main.container {
   }
 
   // color variations:
-  &.red  {
+  &.red {
     color: $red;
   }
+
   &.green {
     // color: $green;
     background: $green;
     border-color: $green;
     color: $background;
   }
-  &.yellow  {
+
+  &.yellow {
     color: $yellow;
   }
-  &.gray  {
+
+  &.gray {
     color: $accent4;
   }
 }
@@ -357,15 +367,16 @@ main.container {
   }
 }
 
-  input, textarea {
-    background: transparent;
-    border: 1px solid $accent2;
-    border-radius: 4px;
-    color: $highlight;
-  }
-  .form-group {
-    margin-block: 1rem;
-  }
+input, textarea {
+  background: transparent;
+  border: 1px solid $accent2;
+  border-radius: 4px;
+  color: $highlight;
+}
+
+.form-group {
+  margin-block: 1rem;
+}
 
 dl.legend {
   font-family: $fontMono;
@@ -377,6 +388,7 @@ dl.legend {
   dt, dd {
     display: inline-block;
   }
+
   dd {
     padding-inline: 1rem 2rem;
 
@@ -398,9 +410,11 @@ dl.legend {
     font-family: $fontTitle;
     color: $accent1;
   }
+
   .navbar-nav.right {
     margin-left: auto;
   }
+
   .navbar-nav.admin {
     .nav-link {
       color: $primary;
@@ -438,6 +452,7 @@ dl.legend {
     }
   }
 }
+
 .count-page-abort-buttons {
   margin-top: 2rem;
   grid-column: span 2;
@@ -462,8 +477,9 @@ dl.legend {
       background: $accent5;
     }
   }
+
   thead th {
-      background: $accent4;
+    background: $accent4;
   }
 }
 
@@ -486,9 +502,9 @@ table.table-sticky-head {
 
     tr {
       th {
-      height: 60px;
+        height: 60px;
         vertical-align: middle !important;
-       }
+      }
     }
   }
 }
@@ -504,6 +520,7 @@ table.table-sticky-head {
 
   td, th {
     padding-block: 0.5rem;
+
     &:nth-last-child(-n+2) {
       vertical-align: top;
       text-align: center;
@@ -514,9 +531,11 @@ table.table-sticky-head {
 .color-red {
   color: $red;
 }
+
 .color-green {
   color: $green;
 }
+
 .color-yellow {
   color: $yellow;
 }
@@ -561,11 +580,12 @@ table.table-sticky-head {
 }
 
 .count-table-count input[type=number] {
-    -moz-appearance:textfield;
+  -moz-appearance: textfield;
 }
 
 .toggle-visibility-checkbox {
   display: none;
+
   &:not(:checked) + * {
     display: none;
   }
@@ -589,15 +609,19 @@ table.table-sticky-head {
     font-size: 2.5rem;
     display: block;
   }
+
   small {
     font-size: 1.5rem;
   }
+
   &.open {
     color: $green;
   }
+
   &.opening {
     color: $yellow;
   }
+
   &.closed {
     color: $red;
   }
@@ -640,20 +664,37 @@ table.table-sticky-head {
     user-select: none;
     cursor: pointer;
 
-    &.red { background: $red; }
-    &.yellow { background: $yellow; }
-    &.green { background: $green; }
+    &.red {
+      background: $red;
+    }
+
+    &.yellow {
+      background: $yellow;
+    }
+
+    &.green {
+      background: $green;
+    }
   }
+
   input:checked + label {
     display: block;
   }
+
   input {
     display: none !important;
   }
 }
 
+.swapbox.htmx-request {
+  label {
+    filter: grayscale(100%);
+    pointer-events: none;
+  }
+}
+
 input.variationcounthighlight {
-  background: $background;  // so its still readable with a highlighted background
+  background: $background; // so its still readable with a highlighted background
 }
 
 .availability-progress {
@@ -673,21 +714,25 @@ input.variationcounthighlight {
     background: currentcolor;
     max-width: 100%;
   }
+
   .count {
     position: absolute;
     left: 4px;
   }
+
   .initial {
     position: absolute;
     right: 4px;
   }
 
-  &.red{
+  &.red {
     color: $red;
   }
+
   &.green {
     color: $green;
   }
+
   &.yellow {
     color: $yellow;
   }
@@ -705,12 +750,15 @@ input.variationcounthighlight {
   z-index: 1;
   pointer-events: none;
 }
+
 .hagrid-has-tooltip {
   position: relative;
+
   &:hover .hagrid-tooltip {
     display: block;
   }
 }
+
 .scores-tooltip-table {
   display: grid;
   grid-template-columns: auto auto;
@@ -726,7 +774,7 @@ td .count-config-field {
   > input {
     width: 2.5em;
     text-align: right;
-    -moz-appearance:textfield;
+    -moz-appearance: textfield;
 
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
@@ -789,6 +837,7 @@ td .count-config-field {
       > h3 {
         grid-column: span 2;
       }
+
       .product-availability-tags {
         grid-column-start: 3;
       }
@@ -821,7 +870,7 @@ td .count-config-field {
 .crate-size {
   font-family: $fontMono;
   background: url(
-    "data:image/svg+xml;utf8,"
+  "data:image/svg+xml;utf8,"
     + "<svg width='16' height='16' viewBox='0 0 4.233 4.233' xmlns='http://www.w3.org/2000/svg'><path d='M2.315.13A.221.221 0 0 0 2.24.15l-1.77.885a.221.221 0 0 0-.12.2H.347v1.768a.221.221 0 0 0 .098.184l1.328.884.003-.005a.221.221 0 0 0 .22.017l1.77-.884a.221.221 0 0 0 .12-.196v-1.77a.221.221 0 0 0-.098-.186L2.463.167a.221.221 0 0 0-.148-.038zm.007.475l.332.22-1.314.657-.33-.22zm.573.38l.331.22-1.315.66-.331-.222zm.55.606v1.277l-1.329.662V2.257zm-2.654.057l.885.59v1.236l-.885-.59z' fill='%23" + str-slice(#{$accent1}, 2) +"'/></svg>"
   ) left center no-repeat;
   padding-left: 16px;

@@ -37,8 +37,28 @@ Make sure to adjust the following settings in a `.env` file for use in productio
 * `SITE_URL` (URL for building absolute links)
 * `DATA_DIR` (where to store data like logs or user-uploaded content)
 * `DATABASE_URL` for which DB to use.
+* `DEFAULT_FROM_EMAIL` for sending emails (e.g. for password resets).
 
 See the [Django Docs](https://docs.djangoproject.com/en/2.2/ref/settings/) or the comments in `settings.py` on what these do.
+
+hagrid requires an ASGI server like daphne to run, as well as redis for caching and event streaming. You can use something like nginx to serve static and media files directly and proxy requests to the ASGI server.
+
+Nginx must be configured for EventStream under the `/api/events/` route: 
+
+```
+location /api/event/ {
+    proxy_pass # ......
+    
+    # Crucial for Server-Sent Events
+    proxy_set_header Connection "";
+    # Disable buffering to allow real-time streaming
+    proxy_buffering off;
+    proxy_cache off;
+    # Increase timeouts for long-lived connections
+    proxy_read_timeout 24h;
+    proxy_send_timeout 24h;
+}
+```
 
 Run `python3 manage.py migrate` to initialize the database.
 
