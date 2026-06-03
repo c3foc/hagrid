@@ -2,7 +2,8 @@ import uuid
 
 from django.db import models
 
-from hagrid.products.models import SizeVariation
+from hagrid.products.models import Price, SizeVariation
+from hagrid.products.views.dashboard import get_current_open_status
 
 
 class Reservation(models.Model):
@@ -66,7 +67,7 @@ class ReservationPart(models.Model):
 
     @property
     def price(self):
-        return sum(position.price for position in self.positions.all())
+        return sum(position.price for position in self.positions.all() if position.price)
 
 
 class ReservationPosition(models.Model):
@@ -78,4 +79,14 @@ class ReservationPosition(models.Model):
 
     @property
     def price(self):
-        return self.variation.product.price * self.amount
+        status = get_current_open_status()
+        if not status:
+            return None
+        price = Price.objects.filter(
+            product=self.variation.design_variation.product,
+            valid_at=status.event,
+            valid_for_products_from_event=self.variation.design_variation.design.event,
+        ).first()
+        if not price:
+            return None
+        return price.amount * self.amount

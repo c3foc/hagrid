@@ -5,6 +5,8 @@ register = template.Library()
 
 
 def as_currency(value):
+    if value is None:
+        return None
     return format_currency(value, "EUR", locale="de_DE")
 
 

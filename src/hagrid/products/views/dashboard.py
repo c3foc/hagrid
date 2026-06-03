@@ -18,7 +18,6 @@ from hagrid.products.models import (
     SizeVariation,
     StoreSettings,
 )
-from hagrid.products.tables import SizeTable
 
 
 class ProductAvailabilityTable:
@@ -141,9 +140,7 @@ def dashboard_table(request):
         "sizes": Size.objects.all(),
         "SizeScales": SizeScale.objects.all(),
         "variations": SizeVariation.objects.all(),
-        "availability_tables": [
-            SizeTable(sg, render_variation=render_variation) for sg in SizeScale.objects.all()
-        ],
+        "availability_tables": [],
     }
     # TODO what is this view and how do we use it?
     return render(request, "dashboard_table.html", context)

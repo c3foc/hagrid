@@ -8,8 +8,10 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from hagrid.products.models import Product, ProductCategory, SizeScale, StoreSettings
-from hagrid.products.tables import SizeTable
+from hagrid.operations.models import Event
+from hagrid.products.models import Product, StoreSettings
+from hagrid.products.tables import ProductTable
+from hagrid.products.views.dashboard import get_current_open_status
 from hagrid.reservations import emails
 from hagrid.reservations.models import Reservation, ReservationPart, ReservationPosition
 
@@ -261,8 +263,8 @@ class ReservationPartDetailView(View):
             {
                 "variation_tables": variation_tables,
                 "part_form": ReservationPartTitleForm(instance=reservation_part),
-                "unoffered_product_groups": ProductCategory.objects.all().filter(
-                    offer_in_reservations=False
+                "unoffered_events": Event.objects.all().exclude(
+                    id__in=get_current_open_status().allow_reservations_from.all()
                 ),
             },
         )
@@ -279,7 +281,10 @@ class ReservationPartDetailView(View):
 
         def render_variation_form(variation):
             prefix = f"{variation.id}"
-            disabled = not variation.product.product_group.offer_in_reservations
+            disabled = (
+                variation.design_variation.design.event
+                not in get_current_open_status().allow_reservations_from.all()
+            )
             try:
                 amount = part_positions.get(variation=variation).amount
                 disabled = disabled and amount == 0
@@ -310,13 +315,30 @@ class ReservationPartDetailView(View):
             forms.append(form)
             return render_form(form)
 
+        products = Product.objects.all()
+        open_status = get_current_open_status()
+        reservable_events = set(open_status.allow_reservations_from.all())
+        current_event = (
+            open_status.event if open_status else Event.objects.order_by("-day_1").first()
+        )
         tables = [
-            SizeTable(
-                scale,
-                render_variation=render_variation_form,
-                products_queryset=Product.objects.all().select_related("product_group"),
-            )
-            for scale in SizeScale.objects.all().prefetch_related("sizes")
+            table
+            for event_groups, label in [
+                (reservable_events & {current_event}, current_event.name),
+                (reservable_events - {current_event}, "old"),
+            ]
+            for product in products
+            if (
+                table := ProductTable(
+                    title=f"{label} {product.name}",
+                    product=product,
+                    only_events_in=event_groups,
+                    render_variation=render_variation_form,
+                    render_empty=None,
+                    show_empty_rows=False,
+                    table_class="count-config-table",
+                )
+            ).rows
         ]
         return tables, forms
 

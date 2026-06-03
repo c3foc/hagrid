@@ -20,7 +20,7 @@ Please wait until we approve your reservation.
 
 c3foc
             """.format(settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])),
-            settings.EMAIL_FROM,
+            settings.DEFAULT_FROM_EMAIL,
             [reservation.contact_mail],
             fail_silently=True,
         )
@@ -53,7 +53,7 @@ your merchandise reservation can now be edited at
 
 c3foc
             """.format(settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])),
-            settings.EMAIL_FROM,
+            settings.DEFAULT_FROM_EMAIL,
             [reservation.contact_mail],
             fail_silently=True,
         )
@@ -80,7 +80,7 @@ your merchandise reservation can now be picked up.
 
 c3foc
             """.format(settings.SITE_URL + reverse("reservationdetail", args=[reservation.secret])),
-            settings.EMAIL_FROM,
+            settings.DEFAULT_FROM_EMAIL,
             [reservation.contact_mail],
             fail_silently=True,
         )

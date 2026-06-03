@@ -14,7 +14,7 @@
       <tr>
         <td>{{ position.amount }}</td>
         <td>{{ position.variation }}</td>
-        <td class="text-right">{{ position.price|as_currency }}</td>
+        <td class="text-right">{{ position.price|as_currency|default_if_none:"?" }}</td>
       </tr>
     {% endfor %}
     <tr>

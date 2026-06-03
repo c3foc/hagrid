@@ -12,8 +12,10 @@ from django.utils.text import slugify
 from django.views import View
 from django.views.generic.base import TemplateView
 
-from hagrid.products.models import SizeScale
-from hagrid.products.tables import SizeTable
+from hagrid.operations.models import Event
+from hagrid.products.models import Product
+from hagrid.products.tables import ProductTable
+from hagrid.products.views.dashboard import get_current_open_status
 from hagrid.reservations import emails
 from hagrid.reservations.export_csv import generate_reservation_csv
 from hagrid.reservations.export_pdf import generate_packing_pdf
@@ -38,10 +40,32 @@ class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
         def render_variation_count_in_reservations(variation):
             return f'<div class="text-center">{amount_reserved_by_variation_id.get(variation.id, 0)}</span></div>'
 
-        context["reservation_tables"] = [
-            SizeTable(sg, render_variation=render_variation_count_in_reservations)
-            for sg in SizeScale.objects.all()
+        products = Product.objects.all()
+        open_status = get_current_open_status()
+        current_event = (
+            open_status.event if open_status else Event.objects.order_by("-day_1").first()
+        )
+        tables = [
+            table
+            for event_groups, label in [
+                ({current_event}, current_event.name),
+                (set(Event.objects.all()) - {current_event}, "old"),
+            ]
+            for product in products
+            if (
+                table := ProductTable(
+                    title=f"{label} {product.name}",
+                    product=product,
+                    only_events_in=event_groups,
+                    render_variation=render_variation_count_in_reservations,
+                    render_empty=None,
+                    show_empty_rows=False,
+                    table_class="count-config-table",
+                )
+            ).rows
         ]
+
+        context["tables"] = tables
         return context
 
 

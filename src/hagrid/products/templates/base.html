@@ -12,7 +12,7 @@
         {% endcompress %}
 
         {% compress js %}
-            <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.js" %}"></script>
+            <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.bundle.min.js" %}"></script>
             <script type="text/javascript" src="{% static "js/hagrid.js" %}"></script>
             {% htmx_script %}
             <script type="text/javascript" src="{% static "js/htmx-ext-sse.js" %}" defer></script>
@@ -86,12 +86,6 @@
             {% endif %}
 
             {% block content %}
-                <div class="starter-template">
-                    <h1>Bootstrap starter template</h1>
-                    <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text
-                        and a mostly barebones HTML document.</p>
-                </div>
-
             {% endblock %}
         </main>
         <footer class="footer p-5">

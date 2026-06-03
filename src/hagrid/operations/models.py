@@ -44,6 +44,11 @@ class OpenStatus(models.Model):
         related_name="sold_at",
         blank=True,
     )
+    allow_reservations_from = models.ManyToManyField(
+        Event,
+        related_name="reservation_at",
+        blank=True,
+    )
 
     class Meta:
         verbose_name_plural = "open statuses"
