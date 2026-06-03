@@ -10,34 +10,28 @@ logger = logging.getLogger(__name__)
 
 def write_reservation(reservation: Reservation, writer):
     writer.writerow([
+        "event",
         "team name",
+        "state",
+        "contact name",
         "part name",
-        "position idstate",
+        "position and number",
         "price",
-        "product name",
-        "size group",
-        "size",
-        "full product desciption",
+        "item",
     ])
     for part in reservation.parts.all():
         for position in part.positions.all():
             variation: SizeVariation = position.variation
             for i in range(position.amount):
                 writer.writerow([
+                    str(reservation.event),
                     str(reservation.team_name),
+                    str(reservation.state),
+                    str(reservation.contact_name),
                     str(part.title),
                     str(position.id) + "-" + str(i),
-                    str(reservation.contact_name),
-                    str(reservation.state),
-                    str(variation.product.price),
-                    str(variation.product.name),
-                    str(variation.size.group.name),
-                    str(variation.size.name),
-                    str(variation.product.name)
-                    + " "
-                    + str(variation.size.group.name)
-                    + " "
-                    + str(variation.size.name),
+                    str(variation.get_price_at(reservation.event)),
+                    str(variation),
                 ])
     writer.writerow([])
 

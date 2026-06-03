@@ -1,0 +1,10 @@
+<div class="btn-group pipeline" sse-swap="reservation-{{ reservation.id }}">
+    {% for button in state_buttons %}
+        {% if reservation.state == button.state %}
+            <button disabled class="btn btn-sm {{ button.active_classes }}">{{ button.label }}</button>
+        {% else %}
+            <button type="submit" name="new_state" value="{{ button.state }}"
+                    class="btn btn-sm {{ button.inactive_classes }}">{{ button.label }}</button>
+        {% endif %}
+    {% endfor %}
+</div>

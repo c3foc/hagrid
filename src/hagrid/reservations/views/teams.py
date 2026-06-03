@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import messages
 from django.db.models import Sum
+from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.crypto import get_random_string
@@ -362,12 +363,17 @@ class ReservationApplicationView(FormView):
     template_name = "reservationapplication.html"
     form_class = ReservationApplicationForm
 
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(event=get_current_open_status().event, **kwargs)
+
+    @atomic()
     def form_valid(self, form):
         # Create Reservation
         if not StoreSettings.objects.first().reservations_enabled:
             messages.add_message(self.request, messages.ERROR, "Reservations are disabled.")
             return redirect("reservationapplication")
-        new_reservation = form.save()
+        new_reservation = form.save(commit=False)
+        new_reservation.event = get_current_open_status().event
         new_reservation.secret = get_random_string(length=16)
         while Reservation.objects.filter(secret=new_reservation.secret).exists():
             new_reservation.secret = get_random_string(length=16)

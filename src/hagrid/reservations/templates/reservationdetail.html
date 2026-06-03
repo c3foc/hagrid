@@ -9,7 +9,7 @@
     </div>
   {% endif %}
 
-  <h2>Your Reservation</h2>
+  <h2>Your Reservation at {{ reservation.event }}</h2>
 
   <p>This is a reservation by {{ reservation.contact_name }} for {{reservation.team_name }}. Make sure to save the URL to access this page later.</p>
 
@@ -24,7 +24,7 @@
         </table>
 
         {% if request.user.is_superuser or reservation.state == reservation.STATE_EDITABLE %}
-          <input class="btn btn-secondary" type="submit" value="Save"/>
+          <input class="btn btn-secondary d-block mt-3" type="submit" value="Save"/>
         {% endif %}
       </form>
     </div>
@@ -75,12 +75,12 @@
         </div>
       </div>
       <div class="card">
-        <div class="card-header {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}fw-bold{% endif %}" id="headingOne">
+        <div class="card-header {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKING or reservation.state == reservation.STATE_PACKED %}fw-bold{% endif %}" id="headingOne">
           3. Wait for packing
         </div>
-        <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}show{% endif %}">
+        <div id="collapseOne" class="collapse {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKING or reservation.state == reservation.STATE_PACKED %}show{% endif %}">
           <div class="card-body">
-            {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKED %}
+            {% if reservation.state == reservation.STATE_SUBMITTED or reservation.state == reservation.STATE_PACKING or reservation.state == reservation.STATE_PACKED %}
               <p>Please wait while we pack your reservation. Here is what you ordered.</p>
               {% include "reservation_partoverview.html" with show_part_edit_buttons=request.user.is_superuser %}
             {% endif %}

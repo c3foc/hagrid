@@ -341,7 +341,7 @@ def render_settlement_head(d: Document):
     d.canvas.setFont("Helvetica", 9)
 
 
-def render_invoice_end(l, d: Document):
+def render_invoice_end(l, d: Document, reservation):
     render_settlement_head(d)
     total = 0
     for request in l:
@@ -352,14 +352,15 @@ def render_invoice_end(l, d: Document):
             render_settlement_head(d)
         amount: int = request[1]
         a: SizeVariation = request[0]
-        price = a.product.price
-        total += price * amount
+        price = a.get_price_at(reservation.event)
+        total += price * amount if price else 0
         d.canvas.line(45, d.cursor_y, 45, d.cursor_y - 15)
         d.canvas.line(d.w - 45, d.cursor_y, d.w - 45, d.cursor_y - 15)
         d.canvas.drawString(100, d.cursor_y - 10, str(a))
         d.canvas.drawString(50, d.cursor_y - 10, str(amount))
-        d.canvas.drawString(250, d.cursor_y - 10, f"{price:20,.2f} €")
-        d.canvas.drawString(d.w - 175, d.cursor_y - 10, f"{price * amount:20,.2f} €")
+        if price is not None:
+            d.canvas.drawString(250, d.cursor_y - 10, f"{price:20,.2f} €")
+            d.canvas.drawString(d.w - 175, d.cursor_y - 10, f"{price * amount:20,.2f} €")
         d.cursor_y -= 15
     cy = d.cursor_y
     d.canvas.line(45, cy, d.w - 45, cy)
@@ -394,9 +395,9 @@ def render_reservation(r: Reservation, d: Document):
         # We need to regenerate the list (this time without separation)
         # As we still want a single sum
         articles, titles = generate_collection_list(r, False)
-        render_invoice_end(articles[0], d)
+        render_invoice_end(articles[0], d, r)
     else:
-        render_invoice_end(articles[0], d)
+        render_invoice_end(articles[0], d, r)
 
 
 def get_side_stip_text(r: Reservation):
@@ -440,7 +441,7 @@ def generate_packing_pdf(
     )
     for reservation_counter, r in enumerate(reservations):
         # Test for document appending
-        if reservation_counter != 1:
+        if reservation_counter != 0:
             d.side_label = get_side_stip_text(r)
             d.page = 0
             d.new_page()
