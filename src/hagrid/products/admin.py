@@ -17,7 +17,13 @@ admin.site.register(AvailabilityEvent)
 admin.site.register(ProductCategory)
 admin.site.register(DesignVariation)
 admin.site.register(Design)
-admin.site.register(Price)
+
+
+@admin.register(Price)
+class PriceAdmin(admin.ModelAdmin):
+    list_display = ["product", "valid_at", "valid_for_products_from_event", "amount"]
+    list_editable = ["amount"]
+    list_filter = ["valid_at"]
 
 
 @admin.register(Product)

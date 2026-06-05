@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>
+        Set prices for {{ form.event }}
+    </h1>
+    <p>
+        Old events: {{ form.old_events|join:", "|default:"None" }}
+    </p>
+    <form method="post">
+        {{ form.errors }}
+        {% csrf_token %}
+
+        <div class="overflow-auto">
+            <table class="product-table {{ table.table_class }}">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price for {{ form.event }} designs</th>
+                        <th>Price for old designs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product, current_field, old_field in form.iter_product_current_old_fields %}
+                        <tr>
+                            <th>{{ product }}</th>
+                            <td>
+                                {% if current_field %}
+                                    {{ current_field.errors }}
+                                    {{ current_field }}<br/>
+                                    {{ current_field.help_text }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if old_field %}
+                                    {{ old_field.errors }}
+                                    {{ old_field }}<br/>
+                                    {{ old_field.help_text }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <input class="btn btn-lg btn-success mt-3" type="submit" value="Save prices"/>
+
+    </form>
+{% endblock %}

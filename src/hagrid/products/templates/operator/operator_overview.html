@@ -28,9 +28,8 @@
             </p>
             <h2>Products and Designs</h2>
             <p>
-                Setup products within categories and a size scale with sizes.
-                Setup event-specific designs and associate products with designs for variation.
-                Then set which sizes are available for each variation.
+                Setup size scales with sizes and associate products within categories.
+                Then setup event-specific designs, combine with products, set available sizes and prices.
             </p>
             <p>
                 <a class="btn btn-secondary" href="{% url 'admin:products_productcategory_changelist' %}">Product
@@ -44,7 +43,7 @@
                 <a class="btn btn-secondary" href="{% url 'admin:products_designvariation_changelist' %}">2. Design
                     Variation</a>
                 <a class="btn btn-secondary" href="{% url "size_variation_config" %}">3. Size Variations</a>
-                <a class="btn btn-secondary" href="{% url "admin:products_price_changelist" %}">4. Prices</a>
+                <a class="btn btn-secondary" href="{% url "event_prices_config" %}">4. Prices</a>
 
             </p>
 
