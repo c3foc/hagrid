@@ -29,11 +29,14 @@ class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        # variations_counted = SizeVariation.objects.annotate(num_reserved=Sum('reservation_positions__all__amount', filter=Q(reservation_positions__part__reservation__state!=Reservation.STATE_CANCELLED)))
+        open_status = get_current_open_status()
+        current_event = (
+            open_status.event if open_status else Event.objects.order_by("-day_1").first()
+        )  # variations_counted = SizeVariation.objects.annotate(num_reserved=Sum('reservation_positions__all__amount', filter=Q(reservation_positions__part__reservation__state!=Reservation.STATE_CANCELLED)))
         amount_reserved_by_variation_id = {
             l["variation"]: l["amount_reserved"]
             for l in ReservationPosition.objects
+            .filter(part__reservation__event=current_event)
             .exclude(part__reservation__state=Reservation.STATE_CANCELLED)
             .values("variation")
             .annotate(amount_reserved=Sum("amount"))
@@ -43,10 +46,6 @@ class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
             return f'<div class="text-center">{amount_reserved_by_variation_id.get(variation.id, 0)}</span></div>'
 
         products = Product.objects.all()
-        open_status = get_current_open_status()
-        current_event = (
-            open_status.event if open_status else Event.objects.order_by("-day_1").first()
-        )
         tables = [
             table
             for event_groups, label in [
@@ -68,6 +67,7 @@ class ReservationStatisticsView(LoginRequiredMixin, TemplateView):
         ]
 
         context["tables"] = tables
+        context["event"] = current_event
         return context
 
 

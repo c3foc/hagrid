@@ -20,11 +20,7 @@ from hagrid.products.models import (
 )
 
 
-class ProductAvailabilityTable:
-    """
-    Data for a table to show with a unified size scale
-    """
-
+class DashboardTable:
     def __init__(self, title, design_variations, product, price):
         self.title = title
         self.price = price
@@ -61,7 +57,6 @@ def dashboard(request):
 
     if open_status is not None:
         current_event = open_status.event
-        # ////
         tables = built_product_tables(current_event, [current_event])
         sections.append({"title": current_event.name, "tables": tables, "description": ""})
         if (other_events := open_status.selling_items_from.exclude(id=current_event.id)) and (
@@ -112,7 +107,7 @@ def built_product_tables(current_event: Event, events: list[Any]) -> list[Any]:
             max_price=Max("amount"),
         )
         tables.append(
-            ProductAvailabilityTable(
+            DashboardTable(
                 title=product.name,
                 product=product,
                 price=price,
