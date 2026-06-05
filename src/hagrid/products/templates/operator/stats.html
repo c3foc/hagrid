@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block content %}
-    <h1 class="title">Stats</h1>
+    <h1 class="title">Stats at {{ event }}</h1>
 
     <h2>Stock and sale rate</h2>
     <div id="sale_rate_chart_container"></div>
@@ -13,7 +13,7 @@
 
     {{ chart_data|json_script:"chart_data" }}
 
-    <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
-    <script type="text/javascript" src="https://code.highcharts.com/modules/xrange.js"></script>
+    <script type="text/javascript" src="{% static "js/highcharts/highcharts.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/highcharts/xrange.js" %}"></script>
     <script type="text/javascript" src="{% static "js/hagrid-stats.js" %}"></script>
 {% endblock %}

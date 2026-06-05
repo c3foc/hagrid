@@ -88,9 +88,10 @@ class OpenStatus(models.Model):
 class EventTime:
     total_event_duration: float
 
-    def __init__(self):
+    def __init__(self, event):
+        self.event = event
         # TODO: make this more resilient against partial configuration or misconfiguration
-        statuses = OpenStatus.objects.order_by("datetime").all()
+        statuses = OpenStatus.objects.filter(event=event).order_by("datetime").all()
 
         self.status_change_timestamps = numpy.array([
             int(status.datetime.timestamp()) for status in statuses

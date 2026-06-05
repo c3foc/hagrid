@@ -6,7 +6,7 @@ from hagrid.products.models import DesignVariation
 
 
 class GalleryImage(models.Model):
-    image = models.ImageField(upload_to="galleryimages/")
+    image = models.ImageField(upload_to="galleryimages/")  # todo public
     design_variation = models.ForeignKey(
         DesignVariation, blank=True, null=True, on_delete=models.SET_NULL
     )

@@ -306,7 +306,9 @@ class AvailabilityEvent(models.Model):
     old_state = models.CharField(max_length=20, choices=SizeVariation.AVAILABILITY_STATES)
     new_state = models.CharField(max_length=20, choices=SizeVariation.AVAILABILITY_STATES)
     datetime = models.DateTimeField(auto_now=True)
-    variation = models.ForeignKey(SizeVariation, related_name="events", on_delete=models.CASCADE)
+    variation = models.ForeignKey(
+        SizeVariation, related_name="availability_events", on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return "At {} {} changed from {} to {}".format(
