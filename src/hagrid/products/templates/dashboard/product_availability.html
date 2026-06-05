@@ -1,0 +1,80 @@
+{% load reservation %}
+{% load static %}
+{% load product %}
+
+
+{% spaceless %}
+    <div id="availability-sections" hx-ext="sse" sse-connect="/api/events/availability-display/">
+        {% for section in sections %}
+            <h1 class="title">
+                {{ section.title }}
+                <button class="btn btn-dark btn-hide-productgroup" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#section-{{ section.title|slugify }}"
+                        aria-expanded="false" aria-controls="collapseExample">
+                    hide <span class="visually-hidden">this section</span>
+                </button>
+            </h1>
+
+            <div class="collapse show" id="section-{{ section.title|slugify }}">
+
+                {% if section.description %}
+                    <div class="center">
+                        {{ section.description | safe }}
+                    </div>
+                {% endif %}
+
+                {% include 'dashboard/dashboard_legend.html' %}
+
+                <div class="grid-sizer">
+                    <div class="grid-background">
+                        {% for table in section.tables %}
+                            <div class="grid-container product">
+                                <div class="product-name">
+                                    <h2>{{ table.title }}</h2>
+                                    {% if table.price.min_price is not None %}
+                                        {% if table.price.min_price == table.price.max_price %}
+                                            <span class="product-price">{{ table.price.min_price|format_price }}</span>
+                                        {% else %}
+                                            <span class="product-price">
+                                                {{ table.price.min_price|format_price }}
+                                                to
+                                                {{ table.price.max_price|format_price }}
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
+                                    <a href="{# TODO #}" title="Show product images"
+                                       class="product-image-icon">
+                                        <img src="{% static 'image.svg' %}"/>
+                                    </a>
+                                </div>
+                                {% if table.image %}
+                                    <a class="product-image" href="{# TODO #}">
+                                        <img src="{{ table.image.image.url }}"/>
+                                        {% if table.image_count_more %}
+                                            <div class="product-image-count-more">+{{ table.image_count_more }}</div>
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <div class="product-image">
+                                        <img src="{% static 'tshirt-small.svg' %}"/>
+                                    </div>
+                                {% endif %}
+
+                                <div class="product-availabilities">
+                                    {% for variation_name, availabilities in table.iterate_rows %}
+                                        <h3>{{ variation_name }}</h3>
+                                        <ul class="product-availability-tags">
+                                            {% for variation in availabilities %}
+                                                {% include 'dashboard/product_availability_tag.html' with variation=variation %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endspaceless %}

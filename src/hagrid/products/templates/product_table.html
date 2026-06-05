@@ -1,0 +1,30 @@
+{% load product %}
+
+<h3>{{ table.title }}</h3>
+<div class="overflow-auto">
+    <table class="product-table {{ table.table_class }}">
+        <tbody>
+            {% for row in table.rows %}
+                <tr>
+                    <th rowspan="2" width="180">{{ row.design_variation }}</th>
+                    {% for variation in row.variations %}
+                        <th>
+                            {{ variation.size.name }}
+                        </th>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    {% for variation in row.variations %}
+                        <td>
+                            {{ variation.html|safe }}
+                        </td>
+                    {% endfor %}
+                    {% for _ in row.fill %}
+                        <td></td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

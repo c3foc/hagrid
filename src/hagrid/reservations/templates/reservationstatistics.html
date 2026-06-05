@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Statistics for reservations at {{ event }}</h1>
+
+    <h6>Number of Variations reserved in non-cancelled Reservations</h6>
+
+    {% for table in tables %}
+        {% include "product_table.html" with table=table %}
+    {% endfor %}
+
+{% endblock %}
+

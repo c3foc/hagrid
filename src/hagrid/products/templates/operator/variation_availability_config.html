@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>
+        Change availablity
+    </h1>
+    <form method="post" hx-ext="sse" sse-connect="/api/events/availability-form/">
+        {{ form.errors }}
+        {% csrf_token %}
+        {% for table in tables %}
+            {% include "product_table.html" with table=table %}
+        {% endfor %}
+
+        <noscript>
+            <input class="btn btn-lg btn-success mt-3" type="submit" value="Save availabilities"/>
+        </noscript>
+    </form>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>
+        Manage item count
+    </h1>
+
+    <form method="post">
+        {{form.errors}}
+        {% csrf_token %}
+
+        {% for table in tables %}
+            {% include "product_table.html" with table=table %}
+        {% endfor %}
+
+        <input class="btn btn-lg btn-success mt-3" type="submit" value="Save item counts"/>
+    </form>
+{% endblock %}

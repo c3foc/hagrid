@@ -152,9 +152,7 @@ events_37c3 = [
         "id": 172,
         "old_state": "available",
         "new_state": "few available",
-        "datetime": datetime.datetime(
-            2023, 12, 27, 10, 26, 0, 3137, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 27, 10, 26, 0, 3137, tzinfo=datetime.UTC),
         "variation_id": 134,
     },
     {
@@ -162,7 +160,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 27, 10, 26, 0, 226316, tzinfo=datetime.timezone.utc
+            2023, 12, 27, 10, 26, 0, 226316, tzinfo=datetime.UTC
         ),
         "variation_id": 141,
     },
@@ -171,7 +169,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 27, 10, 26, 0, 414823, tzinfo=datetime.timezone.utc
+            2023, 12, 27, 10, 26, 0, 414823, tzinfo=datetime.UTC
         ),
         "variation_id": 147,
     },
@@ -180,7 +178,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 27, 10, 41, 35, 421156, tzinfo=datetime.timezone.utc
+            2023, 12, 27, 10, 41, 35, 421156, tzinfo=datetime.UTC
         ),
         "variation_id": 157,
     },
@@ -189,7 +187,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 27, 10, 41, 35, 458008, tzinfo=datetime.timezone.utc
+            2023, 12, 27, 10, 41, 35, 458008, tzinfo=datetime.UTC
         ),
         "variation_id": 158,
     },
@@ -198,7 +196,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 27, 10, 44, 32, 331450, tzinfo=datetime.timezone.utc
+            2023, 12, 27, 10, 44, 32, 331450, tzinfo=datetime.UTC
         ),
         "variation_id": 157,
     },
@@ -207,7 +205,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 27, 10, 44, 32, 367877, tzinfo=datetime.timezone.utc
+            2023, 12, 27, 10, 44, 32, 367877, tzinfo=datetime.UTC
         ),
         "variation_id": 158,
     },
@@ -216,7 +214,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 11, 0, 22, 822770, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 11, 0, 22, 822770, tzinfo=datetime.UTC
         ),
         "variation_id": 188,
     },
@@ -225,7 +223,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 27, 17, 48, 4, 243796, tzinfo=datetime.timezone.utc
+            2023, 12, 27, 17, 48, 4, 243796, tzinfo=datetime.UTC
         ),
         "variation_id": 230,
     },
@@ -233,9 +231,7 @@ events_37c3 = [
         "id": 181,
         "old_state": "available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 11, 22, 50, 6402, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 11, 22, 50, 6402, tzinfo=datetime.UTC),
         "variation_id": 204,
     },
     {
@@ -243,7 +239,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 11, 22, 56, 325045, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 11, 22, 56, 325045, tzinfo=datetime.UTC
         ),
         "variation_id": 100,
     },
@@ -251,9 +247,7 @@ events_37c3 = [
         "id": 183,
         "old_state": "available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 11, 24, 7, 10844, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 11, 24, 7, 10844, tzinfo=datetime.UTC),
         "variation_id": 194,
     },
     {
@@ -261,7 +255,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 11, 36, 59, 107424, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 11, 36, 59, 107424, tzinfo=datetime.UTC
         ),
         "variation_id": 216,
     },
@@ -270,7 +264,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 11, 38, 51, 404277, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 11, 38, 51, 404277, tzinfo=datetime.UTC
         ),
         "variation_id": 196,
     },
@@ -279,7 +273,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 11, 53, 41, 580209, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 11, 53, 41, 580209, tzinfo=datetime.UTC
         ),
         "variation_id": 180,
     },
@@ -288,7 +282,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 11, 53, 41, 600639, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 11, 53, 41, 600639, tzinfo=datetime.UTC
         ),
         "variation_id": 181,
     },
@@ -297,7 +291,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 11, 58, 19, 82277, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 11, 58, 19, 82277, tzinfo=datetime.UTC
         ),
         "variation_id": 193,
     },
@@ -306,7 +300,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 12, 17, 38, 196367, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 12, 17, 38, 196367, tzinfo=datetime.UTC
         ),
         "variation_id": 191,
     },
@@ -315,7 +309,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 12, 41, 11, 15664, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 12, 41, 11, 15664, tzinfo=datetime.UTC
         ),
         "variation_id": 205,
     },
@@ -324,7 +318,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 12, 41, 11, 127322, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 12, 41, 11, 127322, tzinfo=datetime.UTC
         ),
         "variation_id": 213,
     },
@@ -333,7 +327,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 12, 41, 11, 151837, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 12, 41, 11, 151837, tzinfo=datetime.UTC
         ),
         "variation_id": 214,
     },
@@ -342,7 +336,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 12, 43, 2, 624366, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 12, 43, 2, 624366, tzinfo=datetime.UTC
         ),
         "variation_id": 98,
     },
@@ -351,7 +345,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 12, 49, 27, 885108, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 12, 49, 27, 885108, tzinfo=datetime.UTC
         ),
         "variation_id": 192,
     },
@@ -360,7 +354,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 13, 36, 48, 403666, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 13, 36, 48, 403666, tzinfo=datetime.UTC
         ),
         "variation_id": 201,
     },
@@ -369,7 +363,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 13, 47, 37, 474364, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 13, 47, 37, 474364, tzinfo=datetime.UTC
         ),
         "variation_id": 165,
     },
@@ -378,7 +372,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 13, 56, 9, 669349, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 13, 56, 9, 669349, tzinfo=datetime.UTC
         ),
         "variation_id": 202,
     },
@@ -387,7 +381,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 14, 4, 58, 782017, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 14, 4, 58, 782017, tzinfo=datetime.UTC
         ),
         "variation_id": 187,
     },
@@ -396,7 +390,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 14, 10, 57, 658337, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 14, 10, 57, 658337, tzinfo=datetime.UTC
         ),
         "variation_id": 195,
     },
@@ -405,7 +399,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 14, 10, 57, 776417, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 14, 10, 57, 776417, tzinfo=datetime.UTC
         ),
         "variation_id": 203,
     },
@@ -414,7 +408,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 14, 10, 57, 842758, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 14, 10, 57, 842758, tzinfo=datetime.UTC
         ),
         "variation_id": 206,
     },
@@ -423,7 +417,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 14, 32, 25, 556164, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 14, 32, 25, 556164, tzinfo=datetime.UTC
         ),
         "variation_id": 175,
     },
@@ -432,7 +426,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 14, 55, 15, 570999, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 14, 55, 15, 570999, tzinfo=datetime.UTC
         ),
         "variation_id": 190,
     },
@@ -441,7 +435,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 14, 55, 16, 84907, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 14, 55, 16, 84907, tzinfo=datetime.UTC
         ),
         "variation_id": 222,
     },
@@ -450,7 +444,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 15, 0, 27, 979239, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 15, 0, 27, 979239, tzinfo=datetime.UTC
         ),
         "variation_id": 224,
     },
@@ -459,7 +453,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 15, 0, 45, 244737, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 15, 0, 45, 244737, tzinfo=datetime.UTC
         ),
         "variation_id": 189,
     },
@@ -468,7 +462,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 3, 31, 993335, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 3, 31, 993335, tzinfo=datetime.UTC
         ),
         "variation_id": 162,
     },
@@ -477,7 +471,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 3, 32, 144051, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 3, 32, 144051, tzinfo=datetime.UTC
         ),
         "variation_id": 172,
     },
@@ -486,7 +480,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 45, 50, 982481, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 45, 50, 982481, tzinfo=datetime.UTC
         ),
         "variation_id": 163,
     },
@@ -495,7 +489,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 45, 51, 183799, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 45, 51, 183799, tzinfo=datetime.UTC
         ),
         "variation_id": 170,
     },
@@ -504,7 +498,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 45, 51, 218704, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 45, 51, 218704, tzinfo=datetime.UTC
         ),
         "variation_id": 171,
     },
@@ -513,7 +507,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 45, 51, 246257, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 45, 51, 246257, tzinfo=datetime.UTC
         ),
         "variation_id": 172,
     },
@@ -522,7 +516,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 45, 51, 275594, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 45, 51, 275594, tzinfo=datetime.UTC
         ),
         "variation_id": 173,
     },
@@ -531,7 +525,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 45, 52, 209590, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 45, 52, 209590, tzinfo=datetime.UTC
         ),
         "variation_id": 229,
     },
@@ -540,7 +534,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 47, 27, 71560, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 47, 27, 71560, tzinfo=datetime.UTC
         ),
         "variation_id": 177,
     },
@@ -549,7 +543,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 47, 27, 184014, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 47, 27, 184014, tzinfo=datetime.UTC
         ),
         "variation_id": 182,
     },
@@ -558,7 +552,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 52, 874545, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 52, 874545, tzinfo=datetime.UTC
         ),
         "variation_id": 184,
     },
@@ -567,7 +561,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 53, 27288, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 53, 27288, tzinfo=datetime.UTC
         ),
         "variation_id": 199,
     },
@@ -576,7 +570,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 53, 48595, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 53, 48595, tzinfo=datetime.UTC
         ),
         "variation_id": 200,
     },
@@ -585,7 +579,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 53, 145672, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 53, 145672, tzinfo=datetime.UTC
         ),
         "variation_id": 207,
     },
@@ -594,7 +588,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 53, 169015, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 53, 169015, tzinfo=datetime.UTC
         ),
         "variation_id": 208,
     },
@@ -603,7 +597,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 53, 214587, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 53, 214587, tzinfo=datetime.UTC
         ),
         "variation_id": 211,
     },
@@ -612,7 +606,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 53, 236399, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 53, 236399, tzinfo=datetime.UTC
         ),
         "variation_id": 212,
     },
@@ -621,7 +615,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 49, 53, 298822, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 49, 53, 298822, tzinfo=datetime.UTC
         ),
         "variation_id": 215,
     },
@@ -630,7 +624,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 16, 52, 20, 78871, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 16, 52, 20, 78871, tzinfo=datetime.UTC
         ),
         "variation_id": 222,
     },
@@ -639,7 +633,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 17, 28, 44, 536342, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 17, 28, 44, 536342, tzinfo=datetime.UTC
         ),
         "variation_id": 223,
     },
@@ -648,7 +642,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 17, 40, 3, 106266, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 17, 40, 3, 106266, tzinfo=datetime.UTC
         ),
         "variation_id": 181,
     },
@@ -657,7 +651,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 17, 40, 3, 536846, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 17, 40, 3, 536846, tzinfo=datetime.UTC
         ),
         "variation_id": 212,
     },
@@ -666,7 +660,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 17, 40, 56, 835608, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 17, 40, 56, 835608, tzinfo=datetime.UTC
         ),
         "variation_id": 180,
     },
@@ -675,7 +669,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 17, 48, 21, 992734, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 17, 48, 21, 992734, tzinfo=datetime.UTC
         ),
         "variation_id": 166,
     },
@@ -684,7 +678,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 12, 46, 959404, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 12, 46, 959404, tzinfo=datetime.UTC
         ),
         "variation_id": 189,
     },
@@ -693,7 +687,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 12, 46, 989769, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 12, 46, 989769, tzinfo=datetime.UTC
         ),
         "variation_id": 190,
     },
@@ -702,7 +696,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 12, 47, 21353, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 12, 47, 21353, tzinfo=datetime.UTC
         ),
         "variation_id": 191,
     },
@@ -711,7 +705,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 12, 47, 49693, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 12, 47, 49693, tzinfo=datetime.UTC
         ),
         "variation_id": 192,
     },
@@ -720,7 +714,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 12, 47, 97217, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 12, 47, 97217, tzinfo=datetime.UTC
         ),
         "variation_id": 194,
     },
@@ -729,7 +723,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 12, 47, 117560, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 12, 47, 117560, tzinfo=datetime.UTC
         ),
         "variation_id": 195,
     },
@@ -738,7 +732,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 25, 44, 548541, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 25, 44, 548541, tzinfo=datetime.UTC
         ),
         "variation_id": 201,
     },
@@ -747,7 +741,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 18, 25, 44, 580517, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 18, 25, 44, 580517, tzinfo=datetime.UTC
         ),
         "variation_id": 202,
     },
@@ -755,63 +749,49 @@ events_37c3 = [
         "id": 239,
         "old_state": "sold out",
         "new_state": "few available",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 19, 1, 8, 436889, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 19, 1, 8, 436889, tzinfo=datetime.UTC),
         "variation_id": 165,
     },
     {
         "id": 240,
         "old_state": "few available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 19, 1, 8, 921890, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 19, 1, 8, 921890, tzinfo=datetime.UTC),
         "variation_id": 189,
     },
     {
         "id": 241,
         "old_state": "few available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 19, 1, 8, 955311, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 19, 1, 8, 955311, tzinfo=datetime.UTC),
         "variation_id": 190,
     },
     {
         "id": 242,
         "old_state": "few available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 19, 1, 9, 38110, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 19, 1, 9, 38110, tzinfo=datetime.UTC),
         "variation_id": 194,
     },
     {
         "id": 243,
         "old_state": "few available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 19, 2, 3, 171101, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 19, 2, 3, 171101, tzinfo=datetime.UTC),
         "variation_id": 170,
     },
     {
         "id": 244,
         "old_state": "available",
         "new_state": "few available",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 19, 2, 51, 448, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 19, 2, 51, 448, tzinfo=datetime.UTC),
         "variation_id": 174,
     },
     {
         "id": 245,
         "old_state": "available",
         "new_state": "few available",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 19, 2, 51, 50818, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 19, 2, 51, 50818, tzinfo=datetime.UTC),
         "variation_id": 176,
     },
     {
@@ -819,7 +799,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 19, 8, 24, 443385, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 19, 8, 24, 443385, tzinfo=datetime.UTC
         ),
         "variation_id": 117,
     },
@@ -828,7 +808,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 19, 49, 14, 861883, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 19, 49, 14, 861883, tzinfo=datetime.UTC
         ),
         "variation_id": 123,
     },
@@ -837,7 +817,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 21, 15, 8, 201163, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 21, 15, 8, 201163, tzinfo=datetime.UTC
         ),
         "variation_id": 100,
     },
@@ -845,9 +825,7 @@ events_37c3 = [
         "id": 249,
         "old_state": "few available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 28, 21, 40, 4, 56685, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 28, 21, 40, 4, 56685, tzinfo=datetime.UTC),
         "variation_id": 191,
     },
     {
@@ -855,7 +833,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 22, 28, 36, 42664, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 22, 28, 36, 42664, tzinfo=datetime.UTC
         ),
         "variation_id": 187,
     },
@@ -864,7 +842,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 22, 28, 36, 146634, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 22, 28, 36, 146634, tzinfo=datetime.UTC
         ),
         "variation_id": 192,
     },
@@ -873,7 +851,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 22, 28, 36, 222384, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 22, 28, 36, 222384, tzinfo=datetime.UTC
         ),
         "variation_id": 195,
     },
@@ -882,7 +860,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 22, 28, 36, 306847, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 22, 28, 36, 306847, tzinfo=datetime.UTC
         ),
         "variation_id": 200,
     },
@@ -891,7 +869,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 22, 28, 36, 343196, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 22, 28, 36, 343196, tzinfo=datetime.UTC
         ),
         "variation_id": 201,
     },
@@ -900,7 +878,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 28, 22, 28, 36, 377023, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 22, 28, 36, 377023, tzinfo=datetime.UTC
         ),
         "variation_id": 202,
     },
@@ -909,7 +887,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 28, 22, 28, 36, 810872, tzinfo=datetime.timezone.utc
+            2023, 12, 28, 22, 28, 36, 810872, tzinfo=datetime.UTC
         ),
         "variation_id": 225,
     },
@@ -918,7 +896,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 17, 36, 555335, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 17, 36, 555335, tzinfo=datetime.UTC
         ),
         "variation_id": 162,
     },
@@ -927,7 +905,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 17, 36, 578211, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 17, 36, 578211, tzinfo=datetime.UTC
         ),
         "variation_id": 163,
     },
@@ -936,7 +914,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 20, 6, 386029, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 20, 6, 386029, tzinfo=datetime.UTC
         ),
         "variation_id": 156,
     },
@@ -945,7 +923,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 20, 6, 619621, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 20, 6, 619621, tzinfo=datetime.UTC
         ),
         "variation_id": 169,
     },
@@ -954,7 +932,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 20, 6, 648444, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 20, 6, 648444, tzinfo=datetime.UTC
         ),
         "variation_id": 170,
     },
@@ -963,7 +941,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 20, 6, 727674, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 20, 6, 727674, tzinfo=datetime.UTC
         ),
         "variation_id": 174,
     },
@@ -972,7 +950,7 @@ events_37c3 = [
         "old_state": "sold out",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 20, 6, 757986, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 20, 6, 757986, tzinfo=datetime.UTC
         ),
         "variation_id": 175,
     },
@@ -980,18 +958,14 @@ events_37c3 = [
         "id": 264,
         "old_state": "available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 29, 11, 23, 9, 25107, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 29, 11, 23, 9, 25107, tzinfo=datetime.UTC),
         "variation_id": 125,
     },
     {
         "id": 265,
         "old_state": "available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 29, 11, 23, 9, 57344, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 29, 11, 23, 9, 57344, tzinfo=datetime.UTC),
         "variation_id": 126,
     },
     {
@@ -999,7 +973,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 24, 46, 312481, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 24, 46, 312481, tzinfo=datetime.UTC
         ),
         "variation_id": 187,
     },
@@ -1008,7 +982,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 24, 46, 655602, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 24, 46, 655602, tzinfo=datetime.UTC
         ),
         "variation_id": 207,
     },
@@ -1017,7 +991,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 24, 46, 685177, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 24, 46, 685177, tzinfo=datetime.UTC
         ),
         "variation_id": 208,
     },
@@ -1026,7 +1000,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 24, 46, 715212, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 24, 46, 715212, tzinfo=datetime.UTC
         ),
         "variation_id": 209,
     },
@@ -1035,7 +1009,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 24, 46, 746217, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 24, 46, 746217, tzinfo=datetime.UTC
         ),
         "variation_id": 210,
     },
@@ -1044,7 +1018,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 24, 46, 775401, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 24, 46, 775401, tzinfo=datetime.UTC
         ),
         "variation_id": 211,
     },
@@ -1053,7 +1027,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 24, 46, 802445, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 24, 46, 802445, tzinfo=datetime.UTC
         ),
         "variation_id": 212,
     },
@@ -1062,7 +1036,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 25, 44, 527913, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 25, 44, 527913, tzinfo=datetime.UTC
         ),
         "variation_id": 209,
     },
@@ -1071,7 +1045,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 25, 44, 556230, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 25, 44, 556230, tzinfo=datetime.UTC
         ),
         "variation_id": 210,
     },
@@ -1080,7 +1054,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 25, 44, 674597, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 25, 44, 674597, tzinfo=datetime.UTC
         ),
         "variation_id": 218,
     },
@@ -1089,7 +1063,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 25, 44, 748211, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 25, 44, 748211, tzinfo=datetime.UTC
         ),
         "variation_id": 221,
     },
@@ -1098,7 +1072,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 25, 44, 780364, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 25, 44, 780364, tzinfo=datetime.UTC
         ),
         "variation_id": 222,
     },
@@ -1107,7 +1081,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 25, 44, 834898, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 25, 44, 834898, tzinfo=datetime.UTC
         ),
         "variation_id": 225,
     },
@@ -1116,7 +1090,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 34, 20, 208244, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 34, 20, 208244, tzinfo=datetime.UTC
         ),
         "variation_id": 127,
     },
@@ -1125,7 +1099,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 34, 21, 394318, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 34, 21, 394318, tzinfo=datetime.UTC
         ),
         "variation_id": 236,
     },
@@ -1134,7 +1108,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 35, 489617, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 35, 489617, tzinfo=datetime.UTC
         ),
         "variation_id": 157,
     },
@@ -1143,7 +1117,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 35, 913166, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 35, 913166, tzinfo=datetime.UTC
         ),
         "variation_id": 179,
     },
@@ -1152,7 +1126,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 35, 945708, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 35, 945708, tzinfo=datetime.UTC
         ),
         "variation_id": 180,
     },
@@ -1161,7 +1135,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 35, 977575, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 35, 977575, tzinfo=datetime.UTC
         ),
         "variation_id": 181,
     },
@@ -1170,7 +1144,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 36, 27112, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 36, 27112, tzinfo=datetime.UTC
         ),
         "variation_id": 183,
     },
@@ -1179,7 +1153,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 36, 57235, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 36, 57235, tzinfo=datetime.UTC
         ),
         "variation_id": 184,
     },
@@ -1188,7 +1162,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 36, 88715, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 36, 88715, tzinfo=datetime.UTC
         ),
         "variation_id": 185,
     },
@@ -1197,7 +1171,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 37, 36, 119648, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 37, 36, 119648, tzinfo=datetime.UTC
         ),
         "variation_id": 186,
     },
@@ -1206,7 +1180,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 11, 52, 40, 640076, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 11, 52, 40, 640076, tzinfo=datetime.UTC
         ),
         "variation_id": 232,
     },
@@ -1215,7 +1189,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 14, 9, 27, 243750, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 14, 9, 27, 243750, tzinfo=datetime.UTC
         ),
         "variation_id": 200,
     },
@@ -1224,7 +1198,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 14, 10, 28, 619311, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 14, 10, 28, 619311, tzinfo=datetime.UTC
         ),
         "variation_id": 220,
     },
@@ -1233,7 +1207,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 14, 10, 28, 651903, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 14, 10, 28, 651903, tzinfo=datetime.UTC
         ),
         "variation_id": 221,
     },
@@ -1242,7 +1216,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 14, 42, 19, 599580, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 14, 42, 19, 599580, tzinfo=datetime.UTC
         ),
         "variation_id": 135,
     },
@@ -1251,7 +1225,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 14, 42, 19, 634344, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 14, 42, 19, 634344, tzinfo=datetime.UTC
         ),
         "variation_id": 136,
     },
@@ -1260,7 +1234,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 15, 8, 26, 132076, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 15, 8, 26, 132076, tzinfo=datetime.UTC
         ),
         "variation_id": 209,
     },
@@ -1268,18 +1242,14 @@ events_37c3 = [
         "id": 296,
         "old_state": "available",
         "new_state": "sold out",
-        "datetime": datetime.datetime(
-            2023, 12, 29, 15, 9, 0, 765186, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 29, 15, 9, 0, 765186, tzinfo=datetime.UTC),
         "variation_id": 210,
     },
     {
         "id": 297,
         "old_state": "available",
         "new_state": "few available",
-        "datetime": datetime.datetime(
-            2023, 12, 29, 15, 9, 0, 927921, tzinfo=datetime.timezone.utc
-        ),
+        "datetime": datetime.datetime(2023, 12, 29, 15, 9, 0, 927921, tzinfo=datetime.UTC),
         "variation_id": 219,
     },
     {
@@ -1287,7 +1257,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 15, 40, 25, 73107, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 15, 40, 25, 73107, tzinfo=datetime.UTC
         ),
         "variation_id": 120,
     },
@@ -1296,7 +1266,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 25, 42, 921700, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 25, 42, 921700, tzinfo=datetime.UTC
         ),
         "variation_id": 128,
     },
@@ -1305,7 +1275,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 25, 42, 961046, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 25, 42, 961046, tzinfo=datetime.UTC
         ),
         "variation_id": 130,
     },
@@ -1314,7 +1284,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 25, 43, 275647, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 25, 43, 275647, tzinfo=datetime.UTC
         ),
         "variation_id": 154,
     },
@@ -1323,7 +1293,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 25, 43, 302162, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 25, 43, 302162, tzinfo=datetime.UTC
         ),
         "variation_id": 155,
     },
@@ -1332,7 +1302,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 25, 44, 505938, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 25, 44, 505938, tzinfo=datetime.UTC
         ),
         "variation_id": 236,
     },
@@ -1341,7 +1311,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 28, 25, 834817, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 28, 25, 834817, tzinfo=datetime.UTC
         ),
         "variation_id": 104,
     },
@@ -1350,7 +1320,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 28, 26, 57136, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 28, 26, 57136, tzinfo=datetime.UTC
         ),
         "variation_id": 120,
     },
@@ -1359,7 +1329,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 28, 27, 780137, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 28, 27, 780137, tzinfo=datetime.UTC
         ),
         "variation_id": 231,
     },
@@ -1368,7 +1338,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 28, 27, 841465, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 28, 27, 841465, tzinfo=datetime.UTC
         ),
         "variation_id": 235,
     },
@@ -1377,7 +1347,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 28, 27, 882337, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 28, 27, 882337, tzinfo=datetime.UTC
         ),
         "variation_id": 237,
     },
@@ -1386,7 +1356,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 247659, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 247659, tzinfo=datetime.UTC
         ),
         "variation_id": 112,
     },
@@ -1395,7 +1365,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 280597, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 280597, tzinfo=datetime.UTC
         ),
         "variation_id": 116,
     },
@@ -1404,7 +1374,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 355683, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 355683, tzinfo=datetime.UTC
         ),
         "variation_id": 123,
     },
@@ -1413,7 +1383,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 379146, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 379146, tzinfo=datetime.UTC
         ),
         "variation_id": 124,
     },
@@ -1422,7 +1392,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 488634, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 488634, tzinfo=datetime.UTC
         ),
         "variation_id": 132,
     },
@@ -1431,7 +1401,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 512198, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 512198, tzinfo=datetime.UTC
         ),
         "variation_id": 133,
     },
@@ -1440,7 +1410,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 533800, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 533800, tzinfo=datetime.UTC
         ),
         "variation_id": 134,
     },
@@ -1449,7 +1419,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 577511, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 577511, tzinfo=datetime.UTC
         ),
         "variation_id": 137,
     },
@@ -1458,7 +1428,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 626103, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 626103, tzinfo=datetime.UTC
         ),
         "variation_id": 140,
     },
@@ -1467,7 +1437,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 648364, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 648364, tzinfo=datetime.UTC
         ),
         "variation_id": 141,
     },
@@ -1476,7 +1446,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 690368, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 690368, tzinfo=datetime.UTC
         ),
         "variation_id": 142,
     },
@@ -1485,7 +1455,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 723231, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 723231, tzinfo=datetime.UTC
         ),
         "variation_id": 143,
     },
@@ -1494,7 +1464,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 749805, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 749805, tzinfo=datetime.UTC
         ),
         "variation_id": 144,
     },
@@ -1503,7 +1473,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 783191, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 783191, tzinfo=datetime.UTC
         ),
         "variation_id": 145,
     },
@@ -1512,7 +1482,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 809807, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 809807, tzinfo=datetime.UTC
         ),
         "variation_id": 146,
     },
@@ -1521,7 +1491,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 36, 832985, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 36, 832985, tzinfo=datetime.UTC
         ),
         "variation_id": 147,
     },
@@ -1530,7 +1500,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 37, 94393, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 37, 94393, tzinfo=datetime.UTC
         ),
         "variation_id": 164,
     },
@@ -1539,7 +1509,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 37, 118433, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 37, 118433, tzinfo=datetime.UTC
         ),
         "variation_id": 165,
     },
@@ -1548,7 +1518,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 37, 261508, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 37, 261508, tzinfo=datetime.UTC
         ),
         "variation_id": 175,
     },
@@ -1557,7 +1527,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 37, 285582, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 37, 285582, tzinfo=datetime.UTC
         ),
         "variation_id": 176,
     },
@@ -1566,7 +1536,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 32, 37, 904109, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 32, 37, 904109, tzinfo=datetime.UTC
         ),
         "variation_id": 227,
     },
@@ -1575,7 +1545,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 33, 25, 890259, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 33, 25, 890259, tzinfo=datetime.UTC
         ),
         "variation_id": 199,
     },
@@ -1584,7 +1554,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 35, 17, 979573, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 35, 17, 979573, tzinfo=datetime.UTC
         ),
         "variation_id": 52,
     },
@@ -1593,7 +1563,7 @@ events_37c3 = [
         "old_state": "available",
         "new_state": "few available",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 35, 18, 853410, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 35, 18, 853410, tzinfo=datetime.UTC
         ),
         "variation_id": 178,
     },
@@ -1602,7 +1572,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 35, 18, 880649, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 35, 18, 880649, tzinfo=datetime.UTC
         ),
         "variation_id": 180,
     },
@@ -1611,7 +1581,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 35, 18, 909912, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 35, 18, 909912, tzinfo=datetime.UTC
         ),
         "variation_id": 182,
     },
@@ -1620,7 +1590,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 35, 18, 935931, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 35, 18, 935931, tzinfo=datetime.UTC
         ),
         "variation_id": 183,
     },
@@ -1629,7 +1599,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 16, 35, 18, 970702, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 16, 35, 18, 970702, tzinfo=datetime.UTC
         ),
         "variation_id": 185,
     },
@@ -1638,7 +1608,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 17, 53, 54, 723941, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 17, 53, 54, 723941, tzinfo=datetime.UTC
         ),
         "variation_id": 219,
     },
@@ -1647,7 +1617,7 @@ events_37c3 = [
         "old_state": "few available",
         "new_state": "sold out",
         "datetime": datetime.datetime(
-            2023, 12, 29, 18, 32, 26, 690746, tzinfo=datetime.timezone.utc
+            2023, 12, 29, 18, 32, 26, 690746, tzinfo=datetime.UTC
         ),
         "variation_id": 140,
     },

@@ -16,28 +16,49 @@ This is a software for merchandise sale at Chaos Communication Congress.
 
 ### Setup
 
-For now, this is a pretty standard Django Application developed with python3.7. Use `pip install -U -r requirements.txt` (in a seperate python environment/virtualenv) to install the dependencies.
+We use uv for package management. Install uv and run `uv sync` to install the dependencies.
 
 #### Development
 
 Setting up hagrid for local development is simple.
 
-1. Run `./manage.py migrate` to setup a test database.
-2. Run `./manage.py createsuperuser` to setup a default admin user.
-3. Run `./manage.py runserver` to start the local development server.
+1. Copy `.env.example` to `.env` and adjust the settings as needed. The defaults should work for development.
+2. Run `./manage.py migrate` to setup a test database.
+3. Run `./manage.py devdata` to setup a default admin user (admin/admin) and some initial data).
+4. Run `./manage.py runserver` to start the local development server.
 
 #### Production
 
-Make sure to adjust the following settings in a `local_settings.py` for use in production.
+Make sure to adjust the following settings in a `.env` file for use in production.
 
 * `ALLOWED_HOSTS`
 * `DEBUG` (should be `False`)
 * `SECRET_KEY` (should be random and secret)
 * `SITE_URL` (URL for building absolute links)
-* `MEDIA_ROOT` (where to put user-uploaded content)
-* `DATABASES`
+* `DATA_DIR` (where to store data like logs or user-uploaded content)
+* `DATABASE_URL` for which DB to use.
+* `DEFAULT_FROM_EMAIL` for sending emails (e.g. for password resets).
 
 See the [Django Docs](https://docs.djangoproject.com/en/2.2/ref/settings/) or the comments in `settings.py` on what these do.
+
+hagrid requires an ASGI server like daphne to run, as well as redis for caching and event streaming. You can use something like nginx to serve static and media files directly and proxy requests to the ASGI server.
+
+Nginx must be configured for EventStream under the `/api/events/` route: 
+
+```
+location /api/event/ {
+    proxy_pass # ......
+    
+    # Crucial for Server-Sent Events
+    proxy_set_header Connection "";
+    # Disable buffering to allow real-time streaming
+    proxy_buffering off;
+    proxy_cache off;
+    # Increase timeouts for long-lived connections
+    proxy_read_timeout 24h;
+    proxy_send_timeout 24h;
+}
+```
 
 Run `python3 manage.py migrate` to initialize the database.
 
