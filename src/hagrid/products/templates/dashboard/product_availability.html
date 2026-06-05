@@ -42,16 +42,16 @@
                                             </span>
                                         {% endif %}
                                     {% endif %}
-                                    <a href="" title="Show product images"
+                                    <a href="{# TODO #}" title="Show product images"
                                        class="product-image-icon">
                                         <img src="{% static 'image.svg' %}"/>
                                     </a>
                                 </div>
-                                {% if entry.image %}
-                                    <a class="product-image" href="">
-                                        <img src="{{ entry.image.image.url }}"/>
-                                        {% if entry.image_count_more %}
-                                            <div class="product-image-count-more">+{{ entry.image_count_more }}</div>
+                                {% if table.image %}
+                                    <a class="product-image" href="{# TODO #}">
+                                        <img src="{{ table.image.image.url }}"/>
+                                        {% if table.image_count_more %}
+                                            <div class="product-image-count-more">+{{ table.image_count_more }}</div>
                                         {% endif %}
                                     </a>
                                 {% else %}

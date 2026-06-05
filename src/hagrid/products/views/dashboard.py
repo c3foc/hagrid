@@ -8,6 +8,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
+from hagrid.gallery.models import GalleryImage
 from hagrid.operations.models import Event, OpenStatus
 from hagrid.products.models import (
     DesignVariation,
@@ -27,7 +28,11 @@ class DashboardTable:
         self.design_variations = design_variations
         self.size_scale = product.size_scale
         self._sizes = list(self.size_scale.sizes.all())
-        # todo images
+
+        # images
+        images = GalleryImage.objects.filter(design_variation__in=self.design_variations)
+        self.image = images.first()
+        self.image_count_more = max(0, images.count() - 1)
 
     def iterate_size_label(self):
         for size in self._sizes:
