@@ -2,11 +2,11 @@ import math
 
 import numpy
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 
-from hagrid.operations.models import EventTime
+from hagrid.operations.models import Event, EventTime
 from hagrid.products.models import SizeVariation
 
 MAX_FIT_DEGREE = 2
@@ -14,8 +14,9 @@ MAX_FIT_DEGREE = 2
 
 @login_required()
 @require_GET
-def operator_stats(request):
-    event_time = EventTime()
+def operator_stats(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event_time = EventTime(event)
 
     coefficients = numpy.zeros((MAX_FIT_DEGREE + 1,))
     for variation in SizeVariation.objects.prefetch_related("count_events").all():
@@ -67,16 +68,16 @@ def operator_stats(request):
         rate = numpy.array([])
 
     availabilities = []
-    for i, variation in enumerate(SizeVariation.objects.prefetch_related("events").all()):
-        xy = {0: 2}
-        for c in variation.events.all():
-            xy[event_time.datetime_to_event_time(c.datetime)] = (
-                2
-                if c.new_state == SizeVariation.STATE_MANY_AVAILABLE
-                else 1
-                if c.new_state == SizeVariation.STATE_FEW_AVAILABLE
-                else 0
-            )
+    for i, variation in enumerate(
+        SizeVariation.objects.prefetch_related("availability_events").all()
+    ):
+        xy = {0.0: 2}
+        for c in variation.availability_events.all():
+            xy[event_time.datetime_to_event_time(c.datetime)] = {
+                SizeVariation.STATE_MANY_AVAILABLE: 2,
+                SizeVariation.STATE_FEW_AVAILABLE: 1,
+                SizeVariation.STATE_SOLD_OUT: 0,
+            }[c.new_state]
         avail = sorted(xy.items())
         avail.append((event_time.total_event_duration, avail[-1][1]))
         timeline = [{"x": x, "x2": x2, "y": i, "v": v} for (x, v), (x2, _) in pairs(avail)]
@@ -85,8 +86,9 @@ def operator_stats(request):
 
     return render(
         request,
-        "stats.html",
+        "operator/stats.html",
         {
+            "event": event,
             "chart_data": {
                 "now": event_time.datetime_to_event_time(timezone.now()),
                 "remainingStock": numpy.stack([stock_times, stock], axis=-1).tolist(),

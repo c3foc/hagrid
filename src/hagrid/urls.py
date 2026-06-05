@@ -51,7 +51,7 @@ urlpatterns = [
     p("operator/availability/", variation_availability_config),
     p("operator/availability/<int:product_id>/", variation_availability_config),
     p("operator/variations/", size_variation_config),
-    p("operator/stats/", operator_stats),
+    p("operator/stats/<int:event_id>/", operator_stats),
     p("operator/variations/<int:product_id>/", size_variation_config),
     p("operator/count/queue", variation_count_overview),
     p("operator/count/edit", variation_count_config),
