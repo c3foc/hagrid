@@ -8,14 +8,18 @@ from hagrid.products.models import DesignVariation
 class GalleryImage(models.Model):
     image = models.ImageField(upload_to="galleryimages/")  # todo public
     design_variation = models.ForeignKey(
-        DesignVariation, blank=True, null=True, on_delete=models.SET_NULL
+        DesignVariation,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="images",
     )
     title = models.CharField(max_length=200, blank=True)
     caption = models.TextField(blank=True)
     alt_text = models.TextField(blank=True)
 
     def __str__(self):
-        return self.title or f"{self.product} {self.SizeScale}"
+        return self.title or str(self.design_variation)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

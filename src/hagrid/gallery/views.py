@@ -8,13 +8,16 @@ from .models import GalleryImage
 @csrf_exempt
 @cache_page(10)
 def gallery_view(request, product_id=None):
-    if isinstance(product_id, int):
-        images = GalleryImage.objects.filter(product__id=product_id)
+    if product_id is not None:
+        images = GalleryImage.objects.filter(design_variation__product__id=product_id)
     else:
-        images = GalleryImage.objects.filter(product__product_group__isnull=False)
+        images = GalleryImage.objects.all()
 
     images = images.order_by(
-        "product__product_group__position", "product__position", "SizeScale__position"
+        "-design_variation__design__event__day_1",
+        "design_variation__product__category__position",
+        "design_variation__product__position",
+        "design_variation__design__position",
     )
 
     return render(
