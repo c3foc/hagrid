@@ -272,7 +272,7 @@ def variation_count_config(request, product_id=None):
     def render_variation_form(variation):
         field = form.field_for_rendering_by_variation(variation)
         return render_to_string(
-            "variation_count_box.html",
+            "counting/variation_count_box.html",
             context={"field": field, "variation": variation},
             request=request,
         )
@@ -449,6 +449,7 @@ class EventPricesForm(forms.Form):
             )
 
     def save(self):
+        created_count, changed_count = 0, 0
         for product, current_key, old_key in zip(
             self.products, self.current_products_keys, self.old_products_keys
         ):
@@ -459,7 +460,9 @@ class EventPricesForm(forms.Form):
                     valid_for_products_from_event=self.event,
                     defaults={"amount": amount},
                 )
+                created_count += created
                 if not created and price.amount != amount:
+                    changed_count += 1
                     price.amount = amount
                     price.save(update_fields=["amount"])
 
@@ -471,9 +474,12 @@ class EventPricesForm(forms.Form):
                         valid_for_products_from_event=old_event,
                         defaults={"amount": amount},
                     )
+                    created_count += created
                     if not created and price.amount != amount:
+                        changed_count += 1
                         price.amount = amount
                         price.save(update_fields=["amount"])
+        return created_count, changed_count
 
 
 class EventPricesConfigView(FormView):
@@ -481,7 +487,8 @@ class EventPricesConfigView(FormView):
     template_name = "operator/event_prices_config.html"
 
     def form_valid(self, form):
-        form.save()
+        created_count, changed_count = form.save()
+        messages.success(self.request, f"Created {created_count}, changed {changed_count} prices.")
         return HttpResponseRedirect(reverse("operator_overview"))
 
     def get_form_kwargs(self):

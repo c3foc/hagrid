@@ -121,7 +121,7 @@ def variation_count(request, code, variation_id=None):
 
                 return render(
                     request,
-                    "variation_count_queue.html",
+                    "counting/variation_count_queue.html",
                     {
                         "form": form,
                         "total_variations": len(priorities),
@@ -157,7 +157,9 @@ def variation_count(request, code, variation_id=None):
     ]
 
     common_name = []
-    products_used = list(Product.objects.filter(variations__in=variations).distinct())
+    products_used = list(
+        Product.objects.filter(design_variations__size_variations__in=variations).distinct()
+    )
     product_column = len(products_used) > 1
     if not product_column:
         common_name.append(str(products_used[0]))
@@ -247,7 +249,7 @@ def variation_count(request, code, variation_id=None):
     if variation_id:
         return render(
             request,
-            "variation_count_from_queue.html",
+            "counting/variation_count_from_queue.html",
             {
                 "access_code": access_code,
                 "variation": items[0]["variation"],
@@ -258,7 +260,7 @@ def variation_count(request, code, variation_id=None):
 
     return render(
         request,
-        "variation_count.html",
+        "counting/variation_count.html",
         {
             "product_column": product_column,
             "SizeScale_column": SizeScale_column,
@@ -282,7 +284,7 @@ def variation_count_success(request):
 
     return render(
         request,
-        "variation_count_success.html",
+        "counting/variation_count_success.html",
         {
             "total": total,
             "items_changed": items_changed,
@@ -343,7 +345,7 @@ def variation_count_overview(request):
     priorities = sorted(priorities, key=lambda s: s["total"], reverse=True)
 
     context = {"priorities": priorities}
-    return render(request, "variation_count_overview.html", context)
+    return render(request, "counting/variation_count_overview.html", context)
 
 
 @login_required()
@@ -361,4 +363,4 @@ def variation_count_log(request):
             for event in events
         ]
     }
-    return render(request, "variation_count_log.html", context)
+    return render(request, "counting/variation_count_log.html", context)

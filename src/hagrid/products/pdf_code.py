@@ -141,19 +141,13 @@ def generate_access_code_pdf(request, access_codes, filename: str):
             html += ", ".join(map(str, products))
             html += "<br />"
 
-        SizeScales = access_code.SizeScales.all()
-        if SizeScales:
-            html += "<b>Size Groups:</b> "
-            html += ", ".join(map(str, SizeScales))
+        events = access_code.events.all()
+        if events:
+            html += "<b>Events:</b> "
+            html += ", ".join(map(str, events))
             html += "<br />"
 
-        sizes = access_code.sizes.all()
-        if sizes:
-            html += "<b>Sizes:</b> "
-            html += ", ".join(map(str, sizes))
-            html += "<br />"
-
-        if not products and not SizeScales and not sizes:
+        if not products and not events:
             html += "<b>All items</b><br />"
         if access_code.as_queue:
             html += "<b>VIA QUEUE</b><br />"
