@@ -10,7 +10,6 @@
         <thead>
             <tr>
                 <th>Product</th>
-                <th>SizeScale</th>
                 <th>Size</th>
                 <th>Stock</th>
                 <th>Initial</th>
@@ -22,8 +21,7 @@
         <tbody>
             {% for item in items %}
                 <tr>
-                    <td><a href="{% url 'variation_count_config' item.event.variation.product.id %}">{{ item.event.variation.product.name }}</a></td>
-                    <td>{{ item.event.variation.size.group.name }}</td>
+                    <td><a href="{% url 'variation_count_config' item.event.variation.design_variation.product.id %}">{{ item.event.variation.design_variation.product.name }}</a></td>
                     <td>{{ item.event.variation.size.name }}</td>
                     <td>
                         {% if item.event.variation.count == item.event.count %}

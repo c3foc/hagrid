@@ -360,16 +360,12 @@ class CountAccessCode(models.Model):
         help_text="allow editing only products from these events",
         blank=True,
     )
-    sizes = models.ManyToManyField(
-        Size, help_text="allow editing only variations these sizes", blank=True
-    )
-
     disabled = models.BooleanField(help_text="disable the code so it cannot be used at the moment")
     as_queue = models.BooleanField(help_text="use queue mode for this code", default=False)
 
     def __str__(self):
         filters = []
-        for attr in ["products", "SizeScales", "sizes"]:
+        for attr in ["products", "events"]:
             items = getattr(self, attr).all()
 
             if items:
@@ -388,20 +384,15 @@ class CountAccessCode(models.Model):
 
         products = self.products.all()
         if products:
-            queryset = queryset.filter(product__in=products)
-
-        sizes = self.sizes.all()
-        if sizes:
-            queryset = queryset.filter(size__in=sizes)
-
-        SizeScales = self.SizeScales.all()
-        if SizeScales:
-            queryset = queryset.filter(size__group__in=SizeScales)
+            queryset = queryset.filter(design_variation__product__in=products)
+        events = self.events.all()
+        if events:
+            queryset = queryset.filter(design_variation__design__event__in=events)
 
         queryset = queryset.order_by(
-            "product__product_group__position",
-            "product__position",
-            "size__group__position",
+            "design_variation__product__category__position",
+            "design_variation__product__position",
+            "design_variation__design__position",
             "size__position",
         )
 

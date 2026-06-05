@@ -12,7 +12,7 @@
 
     <input type="checkbox" id="show-explanation" class="toggle-visibility-checkbox" />
     <div>
-        <p>Each variation is listed here with information that is relevant to keeping count:</p>
+        <p>Each product-design-size variation is listed here with information that is relevant to keeping count:</p>
         <ul>
             <li><b>Product</b>: Click it to go to the operator product count page.</li>
             <li><b>Stock</b>: How many items were last counted, out of total for sale.</li>
@@ -39,8 +39,7 @@
         <thead>
             <tr>
                 <th>Score</th>
-                <th>Product</th>
-                <th>SizeScale</th>
+                <th>Design Variation</th>
                 <th>Size</th>
                 <th>Stock</th>
                 <th>Counted</th>
@@ -66,8 +65,7 @@
                             </div>
                         </div>
                     </td>
-                    <td><a href="{% url 'variation_count_config' priority.variation.product.id %}">{{ priority.variation.product.name }}</a></td>
-                    <td>{{ priority.variation.size.group.name }}</td>
+                    <td>{{ priority.variation.design_variation }}</td>
                     <td>{{ priority.variation.size.name }}</td>
 
                     <td{% if priority.scores.running_low > 0.5 or priority.highest_reason == 'missing_count' %} class="error"{% endif %}>

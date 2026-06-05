@@ -105,15 +105,17 @@ class CountEventAdmin(admin.ModelAdmin):
 @admin.register(CountAccessCode)
 class CountAccessCodeAdmin(admin.ModelAdmin):
     list_display = ("code", "name", "description", "as_queue", "code_actions")
+    list_editable = ["as_queue"]
     actions = ("make_pdf",)
 
     def description(self, obj):
-        return str(obj)  # here you can do whatever you want
+        return str(obj)
 
     def code_actions(self, obj):
         return format_html(
-            '<a class="button" href="{}">PDF</a>',
+            '<a class="button" href="{}">PDF</a> <a class="button" href="{}">Open</a> ',
             reverse("admin:products_variationcountaccesscode_add", args=[obj.pk]),
+            reverse("variation_count", args=[obj.code]),
         )
 
     code_actions.short_description = "Actions"

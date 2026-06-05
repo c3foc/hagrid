@@ -50,8 +50,8 @@
                         {% for item in items %}
                             <tr>
                                 <td>
-                                    {{ item.variation.product.name }}<br/>
-                                    <small>{{ item.variation.size.group.name }} {{ item.variation.size.name }}</small>
+                                    {{ item.variation.design_variation }}<br/>
+                                    <small><b>{{ item.variation.size.name }}</b></small>
                                     {% if item.variation.has_crate_size %}
                                         <br/><small class="crate-size">{{ item.variation.crate_size_value }}</small>
                                     {% endif %}
