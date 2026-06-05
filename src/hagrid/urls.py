@@ -21,6 +21,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from hagrid.products.views.config import (
+    EventPricesConfigView,
     htmx_update_variation_availability,
     operator_overview,
     size_variation_config,
@@ -56,6 +57,7 @@ urlpatterns = [
     p("operator/count/edit", variation_count_config),
     p("operator/count/log", variation_count_log),
     p("operator/count/<int:product_id>/", variation_count_config),
+    path("operator/prices/", EventPricesConfigView.as_view(), name="event_prices_config"),
     p("history/", variation_availability_event_list),
     p("count/success", variation_count_success),
     p("count/<slug:code>/", variation_count),

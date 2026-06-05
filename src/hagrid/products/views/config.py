@@ -1,16 +1,21 @@
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.views import login_required
-from django.http import HttpResponse
+from django.db.models import Max, Min
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods
+from django.views.generic import FormView
 
 from hagrid.operations.models import Event, OpenStatus
 from hagrid.products.models import (
     AvailabilityEvent,
     CountEvent,
+    DesignVariation,
+    Price,
     Product,
     ProductCategory,
     SizeVariation,
@@ -361,3 +366,126 @@ def variation_availability_event_list(request):
         "variation_availability_event_list.html",
         {"change_events": AvailabilityEvent.objects.order_by("-datetime")},
     )
+
+
+class EventPricesForm(forms.Form):
+    def _get_price_field(self, label, initial, help_text=None):
+        return forms.DecimalField(
+            label=label,
+            decimal_places=2,
+            max_digits=10,
+            min_value=0,
+            initial=initial,
+            required=initial is not None,  # cannot delete price
+            help_text=help_text,
+        )
+
+    def _get_key(self, event_id, product):
+        return f"event-{event_id}-product-{product.id}"
+
+    def __init__(self, *args, event=None, **kwargs):
+        self.event = event
+
+        super().__init__(*args, **kwargs)
+
+        self.products = Product.objects.all()
+        self.current_products_keys = []
+        self.old_products_keys = []
+        self.old_events = Event.objects.all().exclude(id=self.event.id)
+        for product in self.products:
+            # current event
+            if DesignVariation.objects.filter(product=product, design__event=self.event).exists():
+                help_text = None
+                try:
+                    initial = Price.objects.get(
+                        product=product,
+                        valid_at=self.event,
+                        valid_for_products_from_event=self.event,
+                    ).amount
+                except Price.DoesNotExist:
+                    initial = None
+                    help_text = "not set"
+
+                key = self._get_key(self.event.id, product)
+                self.fields[key] = self._get_price_field(
+                    label=f"{self.event!s} {product!s}", initial=initial, help_text=help_text
+                )
+                self.current_products_keys.append(key)
+            else:
+                self.current_products_keys.append(None)
+            # old events
+            if DesignVariation.objects.filter(
+                product=product, design__event__in=self.old_events
+            ).exists():
+                prices = Price.objects.filter(
+                    product=product,
+                    valid_at=self.event,
+                    valid_for_products_from_event__in=self.old_events,
+                ).aggregate(min=Min("amount"), max=Max("amount"))
+                min_amount, max_amount = prices["min"], prices["max"]
+                initial = None
+                help_text = "not set"
+                if min_amount is not None and min_amount == max_amount:
+                    initial = min_amount
+                    help_text = None
+                elif min_amount != max_amount:
+                    help_text = f"ranges from {min_amount} to {max_amount}"
+                key = self._get_key("old", product)
+                self.fields[key] = self._get_price_field(
+                    label=f"old {product!s}", initial=initial, help_text=help_text
+                )
+                self.old_products_keys.append(key)
+            else:
+                self.old_products_keys.append(None)
+
+    def iter_product_current_old_fields(self):
+        for product, current_key, old_key in zip(
+            self.products, self.current_products_keys, self.old_products_keys
+        ):
+            yield (
+                product,
+                self[current_key] if current_key else None,
+                self[old_key] if old_key else None,
+            )
+
+    def save(self):
+        for product, current_key, old_key in zip(
+            self.products, self.current_products_keys, self.old_products_keys
+        ):
+            if current_key and (amount := self.cleaned_data[current_key]) is not None:
+                price, created = Price.objects.get_or_create(
+                    product=product,
+                    valid_at=self.event,
+                    valid_for_products_from_event=self.event,
+                    defaults={"amount": amount},
+                )
+                if not created and price.amount != amount:
+                    price.amount = amount
+                    price.save(update_fields=["amount"])
+
+            if old_key and (amount := self.cleaned_data[old_key]) is not None:
+                for old_event in self.old_events:
+                    price, created = Price.objects.get_or_create(
+                        product=product,
+                        valid_at=self.event,
+                        valid_for_products_from_event=old_event,
+                        defaults={"amount": amount},
+                    )
+                    if not created and price.amount != amount:
+                        price.amount = amount
+                        price.save(update_fields=["amount"])
+
+
+class EventPricesConfigView(FormView):
+    form_class = EventPricesForm
+    template_name = "operator/event_prices_config.html"
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect(reverse("operator_overview"))
+
+    def get_form_kwargs(self):
+        return {
+            "event": get_current_open_status().event,
+            **super().get_form_kwargs(),
+        }
