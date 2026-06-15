@@ -20,6 +20,7 @@ from hagrid.products.models import (
     SizeVariation,
     StoreSettings,
 )
+from hagrid.products.views.dashboard import get_current_open_status
 
 
 class VariationCountForm(forms.ModelForm):
@@ -34,21 +35,10 @@ class VariationCountForm(forms.ModelForm):
 
     class Meta:
         model = CountEvent
-        exclude = ["datetime", "variation", "comment", "name"]
+        exclude = ["datetime", "variation", "comment"]
 
 
 class VariationCountCommonForm(forms.Form):
-    name = forms.CharField(
-        label="Nickname",
-        max_length=100,
-        required=False,
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "optional, see tutorial",
-                "data-synclocalstorage": "nickname",
-            }
-        ),
-    )
     comment = forms.CharField(
         label="Comment",
         max_length=250,
@@ -77,8 +67,8 @@ def variation_count(request, code, variation_id=None):
     if access_code.as_queue:
         if not variation_id:
             form = forms.Form(request.POST or None)
-
-            event_time = EventTime()
+            event = get_current_open_status().event
+            event_time = EventTime(event)
 
             priorities = []
             available_variations = access_code.variations.filter(
@@ -225,7 +215,6 @@ def variation_count(request, code, variation_id=None):
                         count=count,
                         variation=variation,
                         comment=common_form.cleaned_data["comment"],
-                        name=common_form.cleaned_data["name"],
                     ).save()
                 if new_availability != old_availability:
                     variation.availability = new_availability
@@ -306,7 +295,8 @@ class VariationBumpForm(forms.Form):
 @login_required()
 @require_http_methods(["POST", "GET"])
 def variation_count_overview(request):
-    event_time = EventTime()
+    event = get_current_open_status().event
+    event_time = EventTime(event)
 
     priorities = []
     for variation in SizeVariation.objects.all():
@@ -351,7 +341,8 @@ def variation_count_overview(request):
 @login_required()
 @require_GET
 def variation_count_log(request):
-    event_time = EventTime()
+    event = get_current_open_status().event
+    event_time = EventTime(event)
     now = event_time.datetime_to_event_time(timezone.now())
     events = CountEvent.objects.order_by("-datetime").all()
     context = {

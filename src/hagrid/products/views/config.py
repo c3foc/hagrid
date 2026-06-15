@@ -109,9 +109,13 @@ def size_variation_config(request, product_id=None):
                         "availability": SizeVariation.STATE_MANY_AVAILABLE,
                     },
                 )
-                if not created and variation.amount_initial != amount_initial:
+                if not created and (
+                    variation.amount_initial != amount_initial
+                    or variation.amount_preordered != amount_preordered
+                ):
                     changed_count += 1
                     variation.amount_initial = amount_initial
+                    variation.amount_preordered = amount_preordered
                     variation.save()
                 elif created:
                     created_count += 1
@@ -321,7 +325,6 @@ def variation_count_config(request, product_id=None):
                 CountEvent(
                     count=value,
                     variation=variation,
-                    name=request.user.username,
                 ).save()
 
                 items_changed += 1

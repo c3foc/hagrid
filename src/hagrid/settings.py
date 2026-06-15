@@ -62,6 +62,7 @@ else:
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 SITE_URL = env.str("SITE_URL").rstrip("/")
+CSRF_TRUSTED_ORIGINS = [SITE_URL]
 
 EMAIL_CONFIG = env.email_url("EMAIL_URL")
 vars().update(EMAIL_CONFIG)
