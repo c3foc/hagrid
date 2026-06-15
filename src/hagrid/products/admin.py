@@ -56,7 +56,7 @@ class SizeAdmin(admin.ModelAdmin):
 
 @admin.register(CountEvent)
 class CountEventAdmin(admin.ModelAdmin):
-    list_display = ["datetime", "variation", "name", "comment", "count"]
+    list_display = ["datetime", "variation", "comment", "count"]
     list_filter = [
         "variation__design_variation",
         "variation__design_variation__design__event",

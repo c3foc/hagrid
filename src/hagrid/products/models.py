@@ -326,7 +326,6 @@ class CountEvent(models.Model):
         SizeVariation, related_name="count_events", on_delete=models.CASCADE
     )
     comment = models.TextField(blank=True, default="")
-    name = models.TextField(blank=True, default="")
 
     def __str__(self):
         date = self.datetime.strftime("%Y-%m-%d %H:%M:%S")
