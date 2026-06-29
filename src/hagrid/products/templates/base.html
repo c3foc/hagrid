@@ -5,9 +5,10 @@
 <html lang="en" data-bs-theme="dark">
     <head>
         <title>{% block thetitle %}c3foc{% endblock %}</title>
-        <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="{% static "img/favicon.svg" %}">
 
         {% compress css %}
+            <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
             <link rel="stylesheet" type="text/x-scss" href="{% static "hagrid.scss" %}"/>
         {% endcompress %}
 
@@ -24,8 +25,7 @@
 
         {% endblock %}
     </head>
-    <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
-
+    <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}' class="d-flex flex-column min-vh-100">
         <nav class="navbar navbar-expand-md border-body" data-bs-theme="dark">
             <div class="container">
                 <a class="navbar-brand" href="{% url 'dashboard' %}">c3foc</a>
@@ -49,7 +49,11 @@
                                 <a class="nav-link" href="{% url 'reservationapplication' %}">Apply for Reservation</a>
                             </li>
                         {% endif %}
-
+                        {% for page in headerpages %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'staticpages' page.slug %}">{{ page.title }}</a>
+                            </li>
+                        {% endfor %}
                         {% if request.user.is_superuser %}
                             </ul>
                             <ul class="navbar-nav right admin">
@@ -66,17 +70,11 @@
                                     <a class="nav-link" href="{% url 'admin:login' %}?next=/">Login</a>
                                 </li>
                         {% endif %}
-                        {% for page in headerpages %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'staticpages' page.slug %}">{{ page.title }}</a>
-                            </li>
-                        {% endfor %}
                     </ul>
                 </div>
             </div>
         </nav>
-
-        <main role="main" class="container">
+        <main role="main" class="flex-grow-1 container">
             {% if messages %}
                 {% for message in messages %}
                     <div class="{{ message.tags }}" role="alert">
@@ -89,15 +87,14 @@
             {% endblock %}
         </main>
         <footer class="footer p-5">
-            <div class="container">
-                <div class="row">
-                    <ul>
-                        {% for page in footerpages %}
-                            <li><a href="{% url 'staticpages' page.slug %}">{{ page.title }}</a></li>{% endfor %}
-                    </ul>
-                </div>
-            </div>
+            <p class="text-center">
+                {% for page in footerpages %}
+                    <span><a href="{% url 'staticpages' page.slug %}">{{ page.title }}</a></span>
+                    {% if not forloop.last %}
+                        <span> &#183; </span>
+                    {% endif %}
+                {% endfor %}
+            </p>
         </footer>
-
     </body>
 </html>
