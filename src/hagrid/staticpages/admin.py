@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models import PageImage, StaticPage
+from .models import StaticPage
 
 admin.site.register(StaticPage)
-admin.site.register(PageImage)
