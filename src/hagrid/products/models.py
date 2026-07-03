@@ -363,6 +363,10 @@ class CountAccessCode(models.Model):
     )
     disabled = models.BooleanField(help_text="disable the code so it cannot be used at the moment")
     as_queue = models.BooleanField(help_text="use queue mode for this code", default=False)
+    allow_automatic_availability = models.BooleanField(
+        help_text="use automatic determination of availability based on counts as default in the forms",
+        default=True,
+    )
 
     def __str__(self):
         filters = []

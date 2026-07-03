@@ -29,7 +29,7 @@ Setting up hagrid for local development is simple.
 
 #### Production
 
-Make sure to adjust the following settings in a `.env` file for use in production.
+Make sure to adjust the following settings in a `.env` file for use in production. See `.env.example` for a template.
 
 * `ALLOWED_HOSTS`
 * `DEBUG` (should be `False`)

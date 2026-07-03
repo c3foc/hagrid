@@ -16,9 +16,9 @@ Including another URLconf
 
 import django_eventstream
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.views.static import serve
 
 from hagrid.products.views.config import (
     EventPricesConfigView,
@@ -87,7 +87,18 @@ urlpatterns = [
     ),
     path("api/", include("hagrid.api.urls")),
     path("pages/", include("hagrid.staticpages.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(
+            r"^publicmedia/(?P<path>.*)$",
+            serve,
+            {
+                "document_root": settings.PUBLIC_MEDIA_ROOT,
+            },
+        ),
+    ]
 
 if settings.ENABLE_DEBUG_TOOLBAR:
     import debug_toolbar

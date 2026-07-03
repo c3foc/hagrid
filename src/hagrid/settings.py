@@ -39,6 +39,7 @@ STATIC_ROOT = env.str("STATIC_ROOT", os.path.join(PUBLIC_DIR, "static"))
 PRIVATE_DIR = env.str("PRIVATE_DIR", os.path.join(DATA_DIR, "private"))
 LOG_DIR = env.str("LOG_DIR", os.path.join(PRIVATE_DIR, "logs"))
 MEDIA_ROOT = env.str("MEDIA_ROOT", os.path.join(PRIVATE_DIR, "media"))
+PUBLIC_MEDIA_ROOT = env.str("PUBLIC_MEDIA_ROOT", os.path.join(PUBLIC_DIR, "media"))
 
 DIRECTORIES = {
     "DATA_DIR": DATA_DIR,
@@ -47,9 +48,27 @@ DIRECTORIES = {
     "PRIVATE_DIR": PRIVATE_DIR,
     "LOG_DIR": LOG_DIR,
     "MEDIA_ROOT": MEDIA_ROOT,
+    "PUBLIC_MEDIA_ROOT": PUBLIC_MEDIA_ROOT,
 }
 for directory in DIRECTORIES.values():
     os.makedirs(directory, exist_ok=True)
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "public_media": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": PUBLIC_MEDIA_ROOT,
+            "base_url": "/media/",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 
 if "SECRET_KEY" in env:
     SECRET_KEY = env.str("SECRET_KEY")
