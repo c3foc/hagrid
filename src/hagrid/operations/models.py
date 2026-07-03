@@ -2,7 +2,6 @@ from datetime import datetime
 
 import numpy
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -62,27 +61,6 @@ class OpenStatus(models.Model):
     @property
     def open(self):
         return self.mode != OpenStatus.Mode.CLOSED
-
-    @classmethod
-    def get_status(cls):
-        now = timezone.now()
-
-        prev_status = cls.objects.filter(datetime__lt=now).order_by("-datetime").first()
-        next_status = cls.objects.filter(datetime__gte=now).order_by("datetime").first()
-
-        is_open = prev_status.open if prev_status else False
-
-        return {
-            "open": is_open,
-            "start": prev_status.datetime if prev_status else None,
-            "stop": next_status.datetime if next_status else None,
-            "closed_info": prev_status.public_info
-            if not is_open
-            else (next_status.public_info if next_status else None),
-            "open_info": prev_status.public_info
-            if is_open
-            else (next_status.public_info if next_status else None),
-        }
 
 
 class EventTime:

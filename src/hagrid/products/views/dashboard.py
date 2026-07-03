@@ -1,5 +1,7 @@
+import asyncio
 from typing import Any
 
+from asgiref.sync import sync_to_async
 from django.db.models import Max, Min
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -28,11 +30,13 @@ class DashboardTable:
         self.design_variations = design_variations
         self.size_scale = product.size_scale
         self._sizes = list(self.size_scale.sizes.all())
+        self.image = None
+        self.image_count_more = 0
 
-        # images
+    async def fetch_images(self):
         images = GalleryImage.objects.filter(design_variation__in=self.design_variations)
-        self.image = images.first()
-        self.image_count_more = max(0, images.count() - 1)
+        self.image = await images.afirst()
+        self.image_count_more = max(0, await images.acount() - 1)
 
     def iterate_size_label(self):
         for size in self._sizes:
@@ -49,23 +53,70 @@ class DashboardTable:
             yield str(design_variation), [size_mapping[size] for size in self._sizes]
 
 
+def _open_status():
+    return (
+        OpenStatus.objects
+        .filter(datetime__lte=timezone.now())
+        .select_related("event")
+        .order_by("-datetime")
+    )
+
+
 def get_current_open_status():
-    return OpenStatus.objects.filter(datetime__lte=timezone.now()).order_by("-datetime").first()
+    return _open_status().first()
+
+
+async def _get_status_context():
+    now = timezone.now()
+
+    prev_status, next_status = await asyncio.gather(
+        OpenStatus.objects.filter(datetime__lt=now).order_by("-datetime").afirst(),
+        OpenStatus.objects.filter(datetime__gte=now).order_by("datetime").afirst(),
+    )
+    is_open = prev_status.open if prev_status else False
+
+    return {
+        "open": is_open,
+        "start": prev_status.datetime if prev_status else None,
+        "stop": next_status.datetime if next_status else None,
+        "closed_info": prev_status.public_info
+        if not is_open
+        else (next_status.public_info if next_status else None),
+        "open_info": prev_status.public_info
+        if is_open
+        else (next_status.public_info if next_status else None),
+    }
 
 
 @cache_page(10)
-@csrf_exempt
 @require_GET
-def dashboard(request):
-    open_status = get_current_open_status()
-    sections = []
+async def dashboard(request):
+    store_settings, open_status = await asyncio.gather(
+        StoreSettings.objects.afirst(), _open_status().afirst()
+    )
 
+    dashboard_text = None
+    if store_settings is not None and "%open_status%" in (
+        dashboard_text := store_settings.dashboard_text
+    ):
+        status_text = render_to_string(
+            "open_status.html", {"open_status": await _get_status_context()}
+        )
+        dashboard_text = dashboard_text.replace("%open_status%", status_text)
+
+    sections = []
     if open_status is not None:
         current_event = open_status.event
-        tables = built_product_tables(current_event, [current_event])
+        tables = await built_product_tables(current_event, [current_event])
         sections.append({"title": current_event.name, "tables": tables, "description": ""})
-        if (other_events := open_status.selling_items_from.exclude(id=current_event.id)) and (
-            other_event_tables := built_product_tables(current_event, other_events)
+        other_events = [
+            e
+            async for e in open_status.selling_items_from.exclude(id=current_event.id).values_list(
+                "id", flat=True
+            )
+        ]
+        if other_events and (
+            other_event_tables := await built_product_tables(current_event, other_events)
         ):
             sections.append({
                 "title": "Previous Events",
@@ -73,22 +124,16 @@ def dashboard(request):
                 "description": "",
             })
 
-    dashboard_text: str | None = StoreSettings.objects.first().dashboard_text
-    if dashboard_text and "%open_status%" in dashboard_text:
-        open_status = render_to_string("open_status.html", {"open_status": OpenStatus.get_status()})
-        dashboard_text = dashboard_text.replace("%open_status%", open_status)
-
     context = {
         "sections": sections,
         "dashboard_text": dashboard_text,
     }
 
-    return render(request, "dashboard/dashboard.html", context)
+    return await sync_to_async(lambda: render(request, "dashboard/dashboard.html", context))()
 
 
-def built_product_tables(current_event: Event, events: list[Any]) -> list[Any]:
-    tables = []
-    for product in Product.objects.all():
+async def built_product_tables(current_event: Event, events: list[Any]) -> list[Any]:
+    async def _produce_table(product):
         design_variations = (
             DesignVariation.objects
             .filter(
@@ -101,25 +146,38 @@ def built_product_tables(current_event: Event, events: list[Any]) -> list[Any]:
             )
             .order_by("product__position")
         )
-        if not design_variations:
-            continue
-        price = Price.objects.filter(
+        if not [_ async for _ in design_variations]:
+            return None
+        price = await Price.objects.filter(
             valid_at=current_event,
             valid_for_products_from_event__in=events,
             product=product,
-        ).aggregate(
+        ).aaggregate(
             min_price=Min("amount"),
             max_price=Max("amount"),
         )
-        tables.append(
-            DashboardTable(
-                title=product.name,
-                product=product,
-                price=price,
-                design_variations=design_variations,
-            )
+        table = DashboardTable(
+            title=product.name,
+            product=product,
+            price=price,
+            design_variations=design_variations,
         )
-    return tables
+        await table.fetch_images()
+        return table
+
+    # gather tables and filter out None
+    return list(
+        filter(
+            bool,
+            await asyncio.gather(*[
+                _produce_table(p)
+                async for p in Product.objects
+                .select_related("size_scale")
+                .prefetch_related("size_scale__sizes")
+                .all()
+            ]),
+        )
+    )
 
 
 @cache_page(10)
