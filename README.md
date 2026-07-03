@@ -33,15 +33,14 @@ Make sure to adjust the following settings in a `.env` file for use in productio
 
 * `ALLOWED_HOSTS`
 * `DEBUG` (should be `False`)
-* `SECRET_KEY` (should be random and secret)
+* `SECRET_KEY` (should be random and secret, omit and the app creates a random secret and stores it in a file)
 * `SITE_URL` (URL for building absolute links)
 * `DATA_DIR` (where to store data like logs or user-uploaded content)
 * `DATABASE_URL` for which DB to use.
 * `DEFAULT_FROM_EMAIL` for sending emails (e.g. for password resets).
+* `PUBLIC_DIR` for where to store public files (static and public media)
 
-See the [Django Docs](https://docs.djangoproject.com/en/2.2/ref/settings/) or the comments in `settings.py` on what these do.
-
-hagrid requires an ASGI server like daphne to run, as well as redis for caching and event streaming. You can use something like nginx to serve static and media files directly and proxy requests to the ASGI server.
+hagrid requires an ASGI server like daphne to run. If you deploy multiple workes, django-eventstreams requires some system to persist receivers (like redis). You can use something like nginx to serve static and media files directly and proxy requests to the ASGI server.
 
 Nginx must be configured for EventStream under the `/api/events/` route: 
 
@@ -64,8 +63,20 @@ Run `python3 manage.py migrate` to initialize the database.
 
 Run `python3 manage.py collectstatic` to collect all static files into the `static.dist` folder, from where all files under `/static/` should be served from. Also, everything under `/media/` should point to the `MEDIA_ROOT` you configured. You probably want to use a webserver and uwsgi or something similar for the setup.
 
-All configuration/management views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage.
+All configuration/management views are only visible to logged in superusers. Using `./manage.py createsuperuser`, create a new superuser and login on the webpage und `/admin/` to access the management views for initial setup.
 
+##### uberspace
+
+For a quick setup on uberspace 8:
+
+1. Install daphne and hagrid (in a virtualenv).
+2. As a folder for public data to be serverd by apache, create path `/var/www/virtual/<username>/hagrid/public` and softlink (`ln -s`) `/var/www/virtual/<username>/html` (or whatever your domain is) to the public dir.
+3. Create a `~/var/data/hagrid` folder for data storage.
+4. Create `~/.env` based on `.env.example` and adjust the settings as needed, especially `DATA_DIR` and `PUBLIC_DIR` to the ones created above.
+5. Configure web backends to serve `/` under the port used by daphne (8000) and apache for `/static/` and `/media/`.
+6. Run management commands to initialize the database and collect static files.
+7. Run the following command to create the daemon: `uberspace service add hagrid "/home/<user>/.loca/bin/daphne -b 0.0.0.0 hagrid.asgi:application" --env ENV_PATH=".env" --workdir ~` 
+8. Enable the service (`systemctl --user enable hagrid.service`) and adjust the service file to your needs.
 
 ### License
 

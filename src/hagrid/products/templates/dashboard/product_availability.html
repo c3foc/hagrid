@@ -44,19 +44,19 @@
                                     {% endif %}
                                     <a href="{# TODO #}" title="Show product images"
                                        class="product-image-icon">
-                                        <img src="{% static 'image.svg' %}"/>
+                                        <img src="{% static 'image.svg' %}" width="32" height="32" alt="images"/>
                                     </a>
                                 </div>
                                 {% if table.image %}
                                     <a class="product-image" href="{# TODO #}">
-                                        <img src="{{ table.image.image.url }}"/>
+                                        <img src="{{ table.image.image.url }}" alt="{{ table.image.alt_text }}"/>
                                         {% if table.image_count_more %}
                                             <div class="product-image-count-more">+{{ table.image_count_more }}</div>
                                         {% endif %}
                                     </a>
                                 {% else %}
                                     <div class="product-image">
-                                        <img src="{% static 'tshirt-small.svg' %}"/>
+                                        <img src="{% static 'tshirt-small.svg' %}" alt="t-shirt placeholder"/>
                                     </div>
                                 {% endif %}
 
