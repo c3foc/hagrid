@@ -28,10 +28,15 @@ class VariationCountForm(forms.ModelForm):
         choices=SizeVariation.AVAILABILITY_STATES,
     )
 
-    def __init__(self, *args, count_required=False, **kwargs):
+    def __init__(self, *args, count_required=False, allow_automatic=True, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["count"].widget = forms.NumberInput()
         self.fields["count"].required = count_required
+        if allow_automatic:
+            self.fields["availability"].choices = [
+                ("automatic", "Automatic"),
+                *SizeVariation.AVAILABILITY_STATES,
+            ]
 
     class Meta:
         model = CountEvent
@@ -131,6 +136,7 @@ def variation_count(request, code, variation_id=None):
 
     common_form = VariationCountCommonForm(request.POST or None)
 
+    automatic_availability = access_code.allow_automatic_availability
     items = [
         {
             "variation": variation,
@@ -138,8 +144,11 @@ def variation_count(request, code, variation_id=None):
                 request.POST or None,
                 prefix=f"variation_{variation.id}",
                 count_required=bool(variation_id),
+                allow_automatic=automatic_availability,
                 initial={
-                    "availability": variation.availability,
+                    "availability": "automatic"
+                    if automatic_availability
+                    else variation.availability
                 },
             ),
         }
@@ -170,7 +179,6 @@ def variation_count(request, code, variation_id=None):
         if common_form.is_valid() and common_form.cleaned_data["action"] != "save":
             if variation_id:
                 variation = SizeVariation.objects.get(id=variation_id)
-                common_form.cleaned_data["action"]
                 variation.count_disabled_reason = common_form.cleaned_data["action"]
                 if variation.count_disabled_reason in (
                     "cannot_find",
@@ -198,8 +206,6 @@ def variation_count(request, code, variation_id=None):
                 form = item["form"]
                 variation = item["variation"]
                 count = form.cleaned_data["count"]
-                old_availability = variation.availability
-                new_availability = form.cleaned_data["availability"]
                 if count is not None:
                     variation.count = count
                     variation.count_reserved_until = None
@@ -216,7 +222,14 @@ def variation_count(request, code, variation_id=None):
                         variation=variation,
                         comment=common_form.cleaned_data["comment"],
                     ).save()
-                if new_availability != old_availability:
+                old_availability = variation.availability
+                new_availability = form.cleaned_data["availability"]
+                availability_information_available = (
+                    new_availability != "automatic" or count is not None
+                )
+                if new_availability != old_availability and availability_information_available:
+                    if new_availability == "automatic":
+                        new_availability = variation.computed_availability
                     variation.availability = new_availability
                     variation.save()
                     AvailabilityEvent(

@@ -1,12 +1,30 @@
+import secrets
+
+from django.core.files.storage import storages
 from django.db import models
+from django.utils.text import slugify
 from PIL import Image
 from PIL.Image import Resampling
 
 from hagrid.products.models import DesignVariation
 
 
+def public_media_storage():
+    return storages["public_media"]
+
+
+def gallery_image_directory_path(instance, filename):
+    random_path = secrets.token_urlsafe(8)
+    slug = slugify(str(instance.design_variation))
+    return f"galleryimages/{random_path}/{slug}_{filename}"
+
+
 class GalleryImage(models.Model):
-    image = models.ImageField(upload_to="galleryimages/")  # todo public
+    image = models.ImageField(
+        # file will be uploaded to PUBLIC_MEDIA_ROOT/<random>/<slug>_<filename>
+        storage=public_media_storage(),
+        upload_to=gallery_image_directory_path,
+    )
     design_variation = models.ForeignKey(
         DesignVariation,
         blank=True,
