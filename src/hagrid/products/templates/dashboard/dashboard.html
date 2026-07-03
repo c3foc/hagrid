@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="dashboard-logo">
-        <img src="{% static "c3foc-logo.svg" %}" />
+        <img src="{% static "c3foc-logo.svg" %}" alt="c3foc logo" {# TODO width and height to avoid layout shift #}/>
     </div>
 
     {% if dashboard_text %}
