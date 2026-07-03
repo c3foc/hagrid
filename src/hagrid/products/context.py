@@ -1,4 +1,4 @@
-from .models import StoreSettings
+from hagrid.products.models import StoreSettings
 
 
 def contextprocessor(request):
