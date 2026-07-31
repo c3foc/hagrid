@@ -29,7 +29,7 @@ Setting up hagrid for local development is simple.
 
 #### Production
 
-Make sure to adjust the following settings in a `.env` file for use in production. See `.env.example` for a template.
+Make sure to adjust the following settings in a `.env` file for use in production. See `.env.example` for a template and https://django-environ.readthedocs.io/en/latest/index.html for documentation on value syntax.
 
 * `ALLOWED_HOSTS`
 * `DEBUG` (should be `False`)
@@ -39,8 +39,13 @@ Make sure to adjust the following settings in a `.env` file for use in productio
 * `DATABASE_URL` for which DB to use.
 * `DEFAULT_FROM_EMAIL` for sending emails (e.g. for password resets).
 * `PUBLIC_DIR` for where to store public files (static and public media)
+* `EMAIL_URL` for smtp settings
+* `SERVER_EMAIL` for sender information
+* `ADMINS` for whom to mail for admin notifications
+* `CACHE_URL` for the default cache
+* `EVENTSTREAM_REDIS` for the eventstream redis
 
-hagrid requires an ASGI server like daphne to run. If you deploy multiple workes, django-eventstreams requires some system to persist receivers (like redis). You can use something like nginx to serve static and media files directly and proxy requests to the ASGI server.
+hagrid requires an ASGI server like daphne to run. django-eventstreams requires some system to persist receivers (we use redis). You must use something like nginx to serve static and media files directly and proxy requests to the ASGI server. The files are stored in the data dir subdirectory `public`, under the paths `publicmedia/` and `static` respectively. 
 
 Nginx must be configured for EventStream under the `/api/events/` route: 
 
