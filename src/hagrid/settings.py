@@ -260,7 +260,7 @@ CACHES = {
     "default": env.cache_url(),
 }
 
-if not DEBUG:
+if not DEBUG and env.bool("EVENTSTREAM_USE_REDIS", True):
     # in production, redis must be used to coordinate event streams
     CACHES["eventstream"] = env.cache_url("EVENTSTREAM_REDIS")
     eventstream_redis_url = urlsplit(CACHES["eventstream"]["LOCATION"])
