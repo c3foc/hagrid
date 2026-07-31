@@ -31,7 +31,7 @@ dependencies = [
     "reportlab==4.0.4",
     "sqlparse==0.5.4",
     "django-eventstream[drf]>=5.3.4",
-    "daphne>=4.2.1",
+    "daphne>=4.2.2",
     "django-htmx>=1.27.0",
     "redis>=8.1.0",
 ]
