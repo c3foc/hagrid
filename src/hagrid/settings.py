@@ -14,9 +14,11 @@ import datetime
 import os
 from email.utils import getaddresses
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import environ
 from django.contrib.messages import constants as messages
+from django.utils.csp import CSP
 
 # PACKAGE_DIR is the directory containing this settings.py file, which is usually src/hagrid
 PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -61,7 +63,7 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
             "location": PUBLIC_MEDIA_ROOT,
-            "base_url": "/media/",
+            "base_url": "/publicmedia/",
         },
     },
     "staticfiles": {
@@ -125,6 +127,7 @@ MESSAGE_TAGS = {
 MIDDLEWARE = [
     # make sure all are async-capable
     "django.middleware.security.SecurityMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -149,6 +152,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "hagrid.products.context.contextprocessor",
                 "hagrid.staticpages.context.context_processor",
+                "django.template.context_processors.csp",
             ],
         },
     },
@@ -208,12 +212,6 @@ STATICFILES_FINDERS = (
     "compressor.finders.CompressorFinder",
 )
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    }
-}
-
 # logging
 LOGGING = {
     "version": 1,
@@ -258,6 +256,25 @@ LOGGING = {
     },
     "root": {"handlers": ["mail_admins", "console", "file"], "level": "INFO"},
 }
+CACHES = {
+    "default": env.cache_url(),
+}
+
+if not DEBUG:
+    # in production, redis must be used to coordinate event streams
+    CACHES["eventstream"] = env.cache_url("EVENTSTREAM_REDIS")
+    eventstream_redis_url = urlsplit(CACHES["eventstream"]["LOCATION"])
+    EVENTSTREAM_REDIS = {
+        "host": eventstream_redis_url.hostname,
+        "port": eventstream_redis_url.port,
+        "db": eventstream_redis_url.path,
+    }
+
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "script-src": [CSP.SELF, CSP.NONCE],
+    "style-src": [CSP.SELF, CSP.UNSAFE_INLINE],
+}
 
 ENABLE_DEBUG_TOOLBAR = env.bool("DEBUG_TOOLBAR", False)
 if ENABLE_DEBUG_TOOLBAR:
@@ -265,3 +282,11 @@ if ENABLE_DEBUG_TOOLBAR:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
     INTERNAL_IPS = env.list("INTERNAL_IPS", default=["127.0.0.1"])
+
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = "DENY"
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_REFERRER_POLICY = "same-origin"

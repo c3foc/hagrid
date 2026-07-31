@@ -308,7 +308,9 @@ class VariationBumpForm(forms.Form):
 @login_required()
 @require_http_methods(["POST", "GET"])
 def variation_count_overview(request):
-    event = get_current_open_status().event
+    if not (os := get_current_open_status()):
+        raise Http404("Must first configure open status")
+    event = os.event
     event_time = EventTime(event)
 
     priorities = []
@@ -354,7 +356,9 @@ def variation_count_overview(request):
 @login_required()
 @require_GET
 def variation_count_log(request):
-    event = get_current_open_status().event
+    if not (os := get_current_open_status()):
+        raise Http404("Must first configure open status")
+    event = os.event
     event_time = EventTime(event)
     now = event_time.datetime_to_event_time(timezone.now())
     events = CountEvent.objects.order_by("-datetime").all()

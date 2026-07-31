@@ -77,7 +77,11 @@
                 <a class="btn btn-secondary" href="{% url 'variation_availability_event_list' %}">History of
                     availabilities</a>
                 <a class="btn btn-secondary" href="{% url 'reservationstatistics' %}">Item reservations</a>
-                <a class="btn btn-secondary" href="{% url 'operator_stats' event_id=last_open_status.event.id %}">Sale Rate</a>
+                {% if last_open_status.event %}
+                    <a class="btn btn-secondary" href="{% url 'operator_stats' event_id=last_open_status.event.id %}">
+                        Sale Rate
+                    </a>
+                {% endif %}
             </p>
         </div>
     </div>

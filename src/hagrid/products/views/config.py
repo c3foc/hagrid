@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.views import login_required
+from django.db import transaction
 from django.db.models import Max, Min
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -71,7 +72,9 @@ def size_variation_config(request, product_id=None):
         return render_form(form)
 
     open_status = get_current_open_status()
-    current_event = open_status.event if open_status else Event.objects.order_by("-day_1").first()
+    if not open_status:
+        raise Http404("Must first configure open status")
+    current_event = open_status.event
     tables = [
         table
         for event_groups, label in [
@@ -207,14 +210,15 @@ def variation_availability_config(request, product_id=None):
     ]
 
     if request.POST and form.is_valid():
-        changed_count = 0
-        for key, value in form.cleaned_data.items():
-            variation_id = int(key.rsplit("_", 1)[-1])
-            variation = get_object_or_404(SizeVariation, id=variation_id)
-            if variation.availability != value:
-                variation.availability = value
-                variation.save()
-                changed_count += 1
+        with transaction.atomic():
+            changed_count = 0
+            for key, value in form.cleaned_data.items():
+                variation_id = int(key.rsplit("_", 1)[-1])
+                variation = get_object_or_404(SizeVariation, id=variation_id)
+                if variation.availability != value:
+                    variation.availability = value
+                    variation.save()
+                    changed_count += 1
         messages.add_message(
             request,
             messages.SUCCESS,
@@ -307,28 +311,26 @@ def variation_count_config(request, product_id=None):
     ]
 
     if request.POST and form.is_valid():
-        now = timezone.now()
-        items_changed = 0
+        with transaction.atomic():
+            now = timezone.now()
+            items_changed = 0
 
-        for key, value in form.cleaned_data.items():
-            variation_id = int(key.rsplit("_", 1)[-1])
-            variation = get_object_or_404(SizeVariation, id=variation_id)
-            if value is not None and variation.count != value:
-                variation.count = value
-                variation.count_reserved_until = None
-                variation.count_disabled_until = None
-                variation.count_disabled_reason = None
-                variation.counted_at = now
-                variation.count_prio_bumped = False
-                variation.save()
-
-                CountEvent(
-                    count=value,
-                    variation=variation,
-                ).save()
-
-                items_changed += 1
-
+            for key, value in form.cleaned_data.items():
+                variation_id = int(key.rsplit("_", 1)[-1])
+                variation = get_object_or_404(SizeVariation, id=variation_id)
+                if value is not None and variation.count != value:
+                    variation.count = value
+                    variation.count_reserved_until = None
+                    variation.count_disabled_until = None
+                    variation.count_disabled_reason = None
+                    variation.counted_at = now
+                    variation.count_prio_bumped = False
+                    variation.save()
+                    CountEvent(
+                        count=value,
+                        variation=variation,
+                    ).save()
+                    items_changed += 1
         messages.info(request, f"Updated {items_changed} item counts.")
         return (
             redirect("variation_count_config", product_id)
@@ -495,7 +497,9 @@ class EventPricesConfigView(FormView):
         return HttpResponseRedirect(reverse("operator_overview"))
 
     def get_form_kwargs(self):
+        if not (os := get_current_open_status()):
+            raise Http404("Must first configure open status")
         return {
-            "event": get_current_open_status().event,
+            "event": os.event,
             **super().get_form_kwargs(),
         }

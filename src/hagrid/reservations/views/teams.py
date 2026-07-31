@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import Sum
 from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404, redirect, render
@@ -206,15 +207,14 @@ class ReservationPartTitleForm(forms.ModelForm):
 
 class ReservationPartDetailView(View):
     @require_reservation_state(Reservation.STATE_EDITABLE, superuser_bypass=True)
+    @transaction.atomic()
     def post(self, request, secret, part_id):
         reservation_part = get_object_or_404(ReservationPart, id=part_id)
         variation_tables, variation_forms = self.get_variation_tables_and_forms(
             request, reservation_part
         )
         part_form = ReservationPartTitleForm(request.POST, instance=reservation_part)
-        if part_form.is_valid():
-            part_form.save()
-        else:
+        if not part_form.is_valid() and all(f.is_valid() for f in variation_forms):
             return render(
                 request,
                 "reservationpartdetail.html",
@@ -223,28 +223,20 @@ class ReservationPartDetailView(View):
                     "part_form": ReservationPartTitleForm(instance=reservation_part),
                 },
             )
+
+        part_form.save()
         for form in variation_forms:
-            if form.is_valid():
-                if form.cleaned_data["amount"]:
-                    position, created = ReservationPosition.objects.get_or_create(
-                        part=reservation_part,
-                        variation=form.cleaned_data["variation"],
-                    )
-                    position.amount = form.cleaned_data["amount"]
-                    position.save()
-                else:
-                    ReservationPosition.objects.filter(
-                        part=reservation_part, variation=form.cleaned_data["variation"]
-                    ).delete()
-            else:
-                return render(
-                    request,
-                    "reservationpartdetail.html",
-                    {
-                        "variation_tables": variation_tables,
-                        "part_form": ReservationPartTitleForm(instance=reservation_part),
-                    },
+            if form.cleaned_data["amount"]:
+                position, created = ReservationPosition.objects.get_or_create(
+                    part=reservation_part,
+                    variation=form.cleaned_data["variation"],
                 )
+                position.amount = form.cleaned_data["amount"]
+                position.save()
+            else:
+                ReservationPosition.objects.filter(
+                    part=reservation_part, variation=form.cleaned_data["variation"]
+                ).delete()
         messages.add_message(
             self.request,
             messages.SUCCESS,
