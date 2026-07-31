@@ -42,13 +42,15 @@
                                             </span>
                                         {% endif %}
                                     {% endif %}
-                                    <a href="{# TODO #}" title="Show product images"
-                                       class="product-image-icon">
-                                        <img src="{% static 'image.svg' %}" width="32" height="32" alt="images"/>
-                                    </a>
+                                    {% if table.image %}
+                                        <a href="{{ table.get_gallery_url }}" title="Show product images"
+                                           class="product-image-icon">
+                                            <img src="{% static 'image.svg' %}" width="32" height="32" alt="images"/>
+                                        </a>
+                                    {% endif %}
                                 </div>
                                 {% if table.image %}
-                                    <a class="product-image" href="{# TODO #}">
+                                    <a class="product-image" href="{{ table.get_gallery_url }}">
                                         <img src="{{ table.image.image.url }}" alt="{{ table.image.alt_text }}"/>
                                         {% if table.image_count_more %}
                                             <div class="product-image-count-more">+{{ table.image_count_more }}</div>

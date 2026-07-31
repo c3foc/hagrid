@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -134,7 +134,9 @@ class ReservationAdministrationView(LoginRequiredMixin, View):
         return redirect("reservationadministration")
 
     def get(self, request):
-        event = get_current_open_status().event
+        if not (os := get_current_open_status()):
+            raise Http404("Must first configure open status")
+        event = os.event
         return render(
             request,
             self.template_name,

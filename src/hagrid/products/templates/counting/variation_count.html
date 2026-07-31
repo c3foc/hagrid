@@ -4,7 +4,7 @@
 {% load static %}
 
 {% block content %}
-    <style>@media (max-width: 1023px) {
+    <style nonce="{{ csp_nonce }}">@media (max-width: 1023px) {
         body {
             padding-bottom: 0
         }

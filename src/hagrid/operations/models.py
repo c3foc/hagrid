@@ -68,7 +68,6 @@ class EventTime:
 
     def __init__(self, event):
         self.event = event
-        # TODO: make this more resilient against partial configuration or misconfiguration
         statuses = OpenStatus.objects.filter(event=event).order_by("datetime").all()
 
         self.status_change_timestamps = numpy.array([

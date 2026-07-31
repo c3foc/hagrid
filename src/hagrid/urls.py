@@ -29,7 +29,7 @@ from hagrid.products.views.config import (
     variation_availability_event_list,
     variation_count_config,
 )
-from hagrid.products.views.dashboard import dashboard, dashboard_table
+from hagrid.products.views.dashboard import dashboard
 from hagrid.products.views.stats import operator_stats
 from hagrid.products.views.variation_count import (
     variation_count,
@@ -46,7 +46,6 @@ def p(pathname, fn):
 
 urlpatterns = [
     p("", dashboard),
-    p("table/", dashboard_table),
     p("operator/", operator_overview),
     p("operator/availability/", variation_availability_config),
     p("operator/availability/<int:product_id>/", variation_availability_config),

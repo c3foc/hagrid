@@ -7,9 +7,9 @@ from .models import GalleryImage
 
 @csrf_exempt
 @cache_page(10)
-def gallery_view(request, product_id=None):
-    if product_id is not None:
-        images = GalleryImage.objects.filter(design_variation__product__id=product_id)
+def gallery_view(request):
+    if request.GET.get("d"):
+        images = GalleryImage.objects.filter(design_variation__in=request.GET.get("d"))
     else:
         images = GalleryImage.objects.all()
 

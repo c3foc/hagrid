@@ -33,6 +33,7 @@ dependencies = [
     "django-eventstream[drf]>=5.3.4",
     "daphne>=4.2.1",
     "django-htmx>=1.27.0",
+    "redis>=8.1.0",
 ]
 
 [dependency-groups]

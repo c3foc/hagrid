@@ -14,9 +14,21 @@ from .models import *
 admin.site.register(StoreSettings)
 admin.site.register(SizeScale)
 admin.site.register(AvailabilityEvent)
-admin.site.register(ProductCategory)
 admin.site.register(DesignVariation)
-admin.site.register(Design)
+
+
+@admin.register(ProductCategory)
+class ProductCategoryAdmin(admin.ModelAdmin):
+    list_display = ["name", "position"]
+    list_editable = ["position"]
+    list_filter = []
+
+
+@admin.register(Design)
+class DesignAdmin(admin.ModelAdmin):
+    list_display = ["name", "event", "position"]
+    list_editable = ["position"]
+    list_filter = ["event"]
 
 
 @admin.register(Price)
@@ -51,6 +63,7 @@ class SizeVariationAdmin(admin.ModelAdmin):
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
     list_display = ["name", "scale", "position"]
+    list_editable = ["position"]
     list_filter = ["scale"]
 
 

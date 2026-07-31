@@ -5,9 +5,9 @@ from asgiref.sync import sync_to_async
 from django.db.models import Max, Min
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.cache import cache_page
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from hagrid.gallery.models import GalleryImage
@@ -16,9 +16,6 @@ from hagrid.products.models import (
     DesignVariation,
     Price,
     Product,
-    Size,
-    SizeScale,
-    SizeVariation,
     StoreSettings,
 )
 
@@ -41,6 +38,12 @@ class DashboardTable:
     def iterate_size_label(self):
         for size in self._sizes:
             yield size.name
+
+    def get_gallery_url(self):
+        query = "&".join([
+            f"d={design_variation.pk}" for design_variation in self.design_variations
+        ])
+        return f"{reverse('gallery')}?{query}"
 
     def iterate_rows(self):
         """
@@ -178,27 +181,3 @@ async def built_product_tables(current_event: Event, events: list[Any]) -> list[
             ]),
         )
     )
-
-
-@cache_page(10)
-@csrf_exempt
-@require_GET
-def dashboard_table(request):
-    def render_variation(variation):
-        if variation.availability == SizeVariation.STATE_MANY_AVAILABLE:
-            return '<div class="text-center"><span class="badge bg-success">&#10003;</span></div>'
-        if variation.availability == SizeVariation.STATE_FEW_AVAILABLE:
-            return '<div class="text-center"><span class="badge bg-warning">&#9888;</span></div>'
-        if variation.availability == SizeVariation.STATE_SOLD_OUT:
-            return '<div class="text-center"><span class="badge bg-danger">&#10007;</span></div>'
-
-    context = {
-        # TODO: check if we all this content
-        "products": Product.objects.all(),
-        "sizes": Size.objects.all(),
-        "SizeScales": SizeScale.objects.all(),
-        "variations": SizeVariation.objects.all(),
-        "availability_tables": [],
-    }
-    # TODO what is this view and how do we use it?
-    return render(request, "dashboard_table.html", context)
