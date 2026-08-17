@@ -29,7 +29,7 @@ dependencies = [
     "pytz==2023.3",
     "qrcode==7.4.2",
     "reportlab==4.0.4",
-    "sqlparse==0.5.4",
+    "sqlparse==0.6.0",
     "django-eventstream[drf]>=5.3.4",
     "daphne>=4.2.2",
     "django-htmx>=1.27.0",
