@@ -22,7 +22,7 @@ dependencies = [
     "django-filter==24.3",
     "django-libsass==0.9",
     "django-positions==0.6.0",
-    "djangorestframework>=3.15",
+    "djangorestframework>=3.17.2",
     "environ>=1.0",
     "isort==5.12.0",
     "numpy>=2.5",
